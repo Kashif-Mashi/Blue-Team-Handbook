@@ -198,8 +198,6 @@ Do not use these techniques on systems that you do not own or have explicit perm
 
 **Kashif Mashi**
 
-Cybersecurity Student • Aspiring SOC Analyst
-
 - GitHub: https://github.com/kashifkhanamv123-cmd
 - LinkedIn: *(https://www.linkedin.com/in/kashif-masih-79b8813b7/)*
 
