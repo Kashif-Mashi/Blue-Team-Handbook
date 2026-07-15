@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="assets/banner.png" alt="Blue Team Handbook Banner" width="100%">
+</p>
 # 🛡️ Blue Team Handbook
 
 A practical, beginner-friendly cybersecurity handbook focused on **Blue Team operations**, **Security Operations Center (SOC)** concepts, and **hands-on lab implementation**.
