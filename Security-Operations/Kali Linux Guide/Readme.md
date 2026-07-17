@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="assests/kali-banner.png" alt="Kali Linux Installation Guide Banner" width="100%">
-</p>
+<img src="../../../assets/kali-banner.png" alt="Kali Linux Installation Guide Banner" width="100%">
 
 # Kali Linux Installation Guide
 
