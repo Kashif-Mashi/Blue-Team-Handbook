@@ -1,6 +1,5 @@
-<p align="center">
-  <img src="assets/Ubuntu-banner.png" alt="Ubuntu Server Guide Banner" width="100%">
-</p>
+<img src="../../assets/Ubuntu-banner.png" alt="Ubuntu Server Guide Banner" width="100%">
+
 # Ubuntu Server Guide
 
 A practical, beginner-friendly guide to installing, configuring, and managing **Ubuntu Server 22.04.5 LTS** for cybersecurity home labs and enterprise environments.

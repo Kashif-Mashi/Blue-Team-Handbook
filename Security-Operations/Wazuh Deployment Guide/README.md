@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="assets/Wazuh-banner.png" alt="Wazuh Deployment Guide Banner" width="100%">
-</p>
+<img src="../../assets/Wazuh-banner.png" alt="Wazuh Deployment Guide Banner" width="100%">
 
 # Wazuh Deployment Guide
 
