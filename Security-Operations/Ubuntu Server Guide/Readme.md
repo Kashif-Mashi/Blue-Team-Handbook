@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/Ubuntu-banner.png" alt="Ubuntu Deployment Guide Banner" width="100%">
+  <img src="assets/Ubuntu-banner.png" alt="Ubuntu Server Guide Banner" width="100%">
 </p>
 # Ubuntu Server Guide
 
