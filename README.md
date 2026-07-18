@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assests/banner.png" alt="Blue Team Handbook Banner" width="100%">
+  <img src="assets/banner.png" alt="Blue Team Handbook Banner" width="100%">
 </p>
 # 🛡️ Blue Team Handbook
 

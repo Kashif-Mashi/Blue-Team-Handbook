@@ -59,21 +59,23 @@ README.md
 
 Command-Cheat-Sheet.md
 
-Chapter 1.pdf
+Chapter 1 – Introduction to Ubuntu Server
 
-Chapter 2.pdf
+Chapter 2 – System Requirements & Download
 
-Chapter 3.pdf
+Chapter 3 – Creating the Virtual Machine
 
-Chapter 4.pdf
+Chapter 4 – Installing Ubuntu Server
 
-Chapter 5.pdf
+Chapter 5 – Initial Server Configuration
 
-Chapter 6.pdf
+Chapter 6 – Network Configuration
 
-Chapter 7.pdf
+Chapter 7 – OpenSSH Server & Remote Administration
 
-Chapter 8.pdf
+Chapter 8 – Package Management with APT
+
+Chapter 9 – Linux File System & Directory Structure
 ```
 
 ---
