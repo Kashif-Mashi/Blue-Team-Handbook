@@ -1,5 +1,3 @@
-# 🛡️ Blue Team Handbook
-
 <p align="center">
   <img src="assets/banner.png" alt="Blue Team Handbook Banner" width="100%">
 </p>
@@ -16,296 +14,214 @@
 
 ---
 
-# 📖 About
+# 🗺️ Blue Team Handbook Roadmap
 
-**Blue Team Handbook** is an open-source learning project that provides practical, beginner-friendly guides for building a modern Blue Team home lab and developing Security Operations Center (SOC) skills.
+Welcome to the development roadmap for the **Blue Team Handbook**.
 
-The purpose of this repository is to help learners understand not only **how** to deploy and configure security technologies, but also **why** they are used in real-world environments.
+This document outlines the current progress of the project, upcoming guides, future improvements, and the long-term vision for building a comprehensive Blue Team learning resource.
 
-Each guide follows a structured, hands-on approach with detailed explanations, architecture diagrams, troubleshooting steps, and best practices to help you build practical cybersecurity knowledge.
-
----
-
-# 🎯 Objectives
-
-This project aims to help learners:
-
-- Build a complete Blue Team home lab
-- Learn Linux and Windows administration
-- Understand virtualization and networking
-- Deploy and manage security monitoring platforms
-- Develop SOC Analyst skills
-- Prepare for real-world Blue Team environments
+> **Note:** This roadmap is subject to change as the project evolves.
 
 ---
 
-# 🚀 Learning Roadmap
+# 🎯 Project Vision
 
-```text
-Security Operations
+The goal of the Blue Team Handbook is to become a free, open-source learning resource that helps beginners and aspiring SOC analysts build practical Blue Team skills through hands-on documentation and home lab projects.
 
-│
+The repository focuses on:
 
-├── Ubuntu Server Guide
-│
-├── Windows 11 Guide
-│
-├── Kali Linux Guide
-│
-├── Wazuh Guide
-│
-├── Sysmon Guide
-│
-├── Sigma Rules Guide
-│
-├── YARA Guide
-│
-├── Threat Hunting Guide
-│
-├── Digital Forensics Guide
-│
-├── Incident Response Guide
-│
-├── Splunk Guide
-│
-└── Microsoft Sentinel Guide
-```
+- Beginner-friendly explanations
+- Step-by-step deployment guides
+- Practical home lab environments
+- Security monitoring
+- Detection engineering
+- Threat hunting
+- Incident response
 
 ---
 
-# 📚 Repository Structure
+# 📊 Project Progress
 
-```text
-Blue-Team-Handbook/
-│
-├── Security-Operations/
-│   ├── Ubuntu Server Guide/
-│   ├── Windows 11 Guide/
-│   ├── Kali Linux Guide/
-│   ├── Wazuh Guide/
-│   ├── Sysmon Guide/
-│   ├── Sigma Rules Guide/
-│   ├── YARA Guide/
-│   ├── Threat Hunting Guide/
-│   ├── Digital Forensics Guide/
-│   ├── Incident Response Guide/
-│   ├── Splunk Guide/
-│   └── Microsoft Sentinel Guide/
-│
-├── assets/
-│
-└── README.md
-```
-
----
-
-# 📘 Completed Guides
-
-| Guide | Status |
-|--------|--------|
+| Category | Status |
+|----------|--------|
+| Repository Structure | ✅ Complete |
 | Ubuntu Server Guide | ✅ Complete |
 | Windows 11 Guide | ✅ Complete |
 | Kali Linux Guide | ✅ Complete |
-| Wazuh Guide | ✅ Complete |
+| Wazuh Guide | 🚧 In Progress |
+| Documentation Assets | 🚧 In Progress |
 
 ---
 
-# 🚧 Upcoming Guides
+# 🚀 Phase 1 — Foundation
 
-- Sysmon
-- Sigma Rules
-- YARA
-- Threat Hunting
-- Digital Forensics
-- Incident Response
-- Splunk Enterprise
-- Microsoft Sentinel
-- Elastic Stack
-- Security Onion
-- Velociraptor
+Build the core operating systems required for a Blue Team home lab.
+
+## Guides
+
+- [x] Ubuntu Server Guide
+- [x] Windows 11 Guide
+- [x] Kali Linux Guide
+- [x] Wazuh Guide *(Documentation in Progress)*
+
+### Learning Outcomes
+
+- Install virtual machines
+- Configure networking
+- Understand Linux fundamentals
+- Understand Windows administration
+- Build a functional cybersecurity home lab
+- Deploy a SIEM platform
+
+---
+
+# 🛡️ Phase 2 — Endpoint Monitoring
+
+Focus on endpoint visibility and security monitoring.
+
+## Planned Guides
+
+- [ ] Sysmon Installation
+- [ ] Windows Event Logging
+- [ ] Sigma Rules
+- [ ] YARA
+- [ ] File Integrity Monitoring
+
+### Learning Outcomes
+
+- Improve endpoint visibility
+- Detect malicious behavior
+- Create detection rules
+- Understand Windows event logs
+- Monitor system activity
+
+---
+
+# 🔍 Phase 3 — Threat Hunting
+
+Learn proactive detection techniques.
+
+## Planned Guides
+
+- [ ] Threat Hunting Fundamentals
+- [ ] MITRE ATT&CK
+- [ ] IOC Hunting
+- [ ] Log Analysis
+- [ ] Detection Engineering
+
+### Learning Outcomes
+
+- Search for suspicious activity
+- Understand attacker behavior
+- Build detection logic
+- Investigate security events
+
+---
+
+# 🚨 Phase 4 — Incident Response
+
+Learn how to respond to security incidents.
+
+## Planned Guides
+
+- [ ] Incident Response Lifecycle
+- [ ] Malware Investigation
+- [ ] Digital Forensics
+- [ ] Memory Analysis
+- [ ] Evidence Collection
+
+### Learning Outcomes
+
+- Investigate incidents
+- Preserve evidence
+- Analyze compromised systems
+- Document findings
+
+---
+
+# 📈 Phase 5 — Enterprise SIEM Platforms
+
+Expand beyond Wazuh into enterprise technologies.
+
+## Planned Guides
+
+- [ ] Splunk Enterprise
+- [ ] Microsoft Sentinel
+- [ ] Elastic Stack
+- [ ] Security Onion
+
+### Learning Outcomes
+
+- Deploy enterprise SIEM platforms
+- Collect and analyze logs
+- Build dashboards
+- Create detection rules
+- Investigate alerts
+
+---
+
+# 🔐 Future Topics
+
+Additional guides planned for future releases include:
+
+- Active Directory
 - Microsoft Defender for Endpoint
+- Velociraptor
+- Zeek
+- Suricata
+- Osquery
+- TheHive
+- Cortex
+- OpenCTI
+- Docker for Security Labs
+- Kubernetes Security
+- Cloud Security Monitoring
 
 ---
 
-# 🖥️ Home Lab Architecture
+# 📅 Current Priority
 
-```text
-                         Internet
-                             │
-                    VirtualBox Network
-                             │
-      ┌──────────────────────┼──────────────────────┐
-      │                      │                      │
-      ▼                      ▼                      ▼
- Ubuntu Server         Windows 11 VM         Kali Linux
-      │                      │                      │
-      │                Wazuh Agent                 │
-      │                      │                      │
-      └──────────────────────┼──────────────────────┘
-                             │
-                      Wazuh Manager
-                      Wazuh Indexer
-                     Wazuh Dashboard
-                             │
-                             ▼
-                       SOC Analyst
-```
+The current development focus is:
+
+1. Complete Wazuh Guide
+2. Sysmon Guide
+3. Sigma Rules Guide
+4. Threat Hunting Guide
+5. Splunk Guide
 
 ---
 
-# 🛠️ Skills Covered
+# 💡 Long-Term Goals
 
-## Operating Systems
+The long-term vision for this project is to:
 
-- Ubuntu Server
-- Windows 11
-- Kali Linux
-
-## Virtualization
-
-- Oracle VirtualBox
-- Virtual Machine Management
-- Snapshots
-- Guest Additions
-
-## Networking
-
-- NAT
-- Host-Only Networking
-- IP Addressing
-- Network Troubleshooting
-
-## Windows Administration
-
-- Event Viewer
-- Windows Security
-- PowerShell
-- Command Prompt
-- Services
-- Device Manager
-- Task Manager
-
-## Linux Administration
-
-- User Management
-- File Permissions
-- Services
-- Package Management
-- SSH
-- Networking
-
-## Security Operations
-
-- Wazuh Deployment
-- Endpoint Monitoring
-- Log Collection
-- Security Monitoring
-- Event Analysis
-- Blue Team Fundamentals
-
----
-
-# 🎓 Who Is This Repository For?
-
-This project is designed for:
-
-- Cybersecurity Beginners
-- BSIT / BSCS Students
-- SOC Analyst Aspirants
-- Blue Team Learners
-- IT Support Engineers
-- System Administrators
-- Home Lab Builders
-
-No prior Blue Team experience is required.
-
----
-
-# 📖 Documentation Style
-
-Every guide in this repository follows a consistent structure:
-
-- Learning Objectives
-- Beginner-Friendly Explanations
-- Step-by-Step Instructions
-- Command Explanations
-- Architecture Diagrams
-- Screenshot Placeholders
-- Troubleshooting
-- Best Practices
-- Chapter Summary
-- One-Line Summary
-
----
-
-# 📚 Recommended Learning Order
-
-For the best learning experience, complete the guides in the following order:
-
-1. Ubuntu Server Guide
-2. Windows 11 Guide
-3. Kali Linux Guide
-4. Wazuh Guide
-5. Sysmon Guide
-6. Sigma Rules Guide
-7. YARA Guide
-8. Threat Hunting Guide
-9. Digital Forensics Guide
-10. Incident Response Guide
-11. Splunk Guide
-12. Microsoft Sentinel Guide
-
----
-
-# 📖 References
-
-This repository is built using official documentation and industry best practices, including:
-
-- Microsoft Learn
-- Ubuntu Documentation
-- Kali Linux Documentation
-- Wazuh Documentation
-- MITRE ATT&CK Framework
-- OWASP
-- Oracle VirtualBox Documentation
+- Build a complete Blue Team learning path
+- Create practical home lab documentation
+- Help beginners transition into SOC Analyst roles
+- Provide free and accessible cybersecurity education
+- Maintain high-quality, community-driven documentation
 
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome.
 
-You can contribute by:
+If you would like to improve an existing guide or suggest a new topic, please open an Issue or submit a Pull Request.
 
-- Reporting issues
-- Improving documentation
-- Correcting mistakes
-- Suggesting new guides
-- Opening Pull Requests
+For contribution guidelines, see:
 
----
-
-# 📜 License
-
-This project is licensed under the **MIT License**.
+- **CONTRIBUTING.md**
 
 ---
 
 # ⭐ Support the Project
 
-If this repository helps you learn cybersecurity, consider supporting the project by:
+If you find this project useful:
 
-- ⭐ Starring the repository
-- 🍴 Forking the repository
-- 📢 Sharing it with other learners
-- 🤝 Contributing improvements
+- ⭐ Star the repository
+- 🍴 Fork the repository
+- 📝 Suggest improvements
+- 📢 Share it with the community
 
----
-
-<p align="center">
-
-# Learn • Practice • Defend
-
-### Building Practical Blue Team Skills, One Guide at a Time.
-
-</p>
+Every contribution helps make this project better for future learners.
