@@ -1,6 +1,6 @@
 # 🪟 Windows 11 Installation & Configuration Guide
 
-<img src="../../assets/windows11-banner.png" alt="windows11 Installation Guide Banner" width="100%">
+<img src="../../assets/Window-banner.png" alt="Window Installation Guide Banner" width="100%">
 <p align="center">
 
 ![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?style=for-the-badge&logo=windows11&logoColor=white)
