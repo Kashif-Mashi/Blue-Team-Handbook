@@ -48,7 +48,7 @@ The repository focuses on:
 | Ubuntu Server Guide | ✅ Complete |
 | Windows 11 Guide | ✅ Complete |
 | Kali Linux Guide | ✅ Complete |
-| Wazuh Guide | 🚧 In Progress |
+| Wazuh Guide | ✅ Complete | 
 | Documentation Assets | 🚧 In Progress |
 
 ---
@@ -62,7 +62,7 @@ Build the core operating systems required for a Blue Team home lab.
 - [x] Ubuntu Server Guide
 - [x] Windows 11 Guide
 - [x] Kali Linux Guide
-- [x] Wazuh Guide *(Documentation in Progress)*
+- [x] Wazuh Guide 
 
 ### Learning Outcomes
 
