@@ -16,7 +16,7 @@ A complete beginner-friendly guide to installing, configuring, and deploying a p
 
 ![Version](https://img.shields.io/badge/Wazuh-v4.12-green?style=for-the-badge)
 
-![Status](https://img.shields.io/badge/Status-In%20Progress-yellow?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-%20Complete-yellow?style=for-the-badge)
 
 ![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
