@@ -1,267 +1,308 @@
 # Changelog
 
-All notable changes to the **Blue Team Handbook** project will be documented in this file.
+All notable changes to the **Blue-Team-Handbook** project are documented in this file.
 
-The format of this changelog is inspired by **Keep a Changelog**, and the project follows **Semantic Versioning (SemVer)** where practical.
+# July 25, 2026
+
+## Overview
+
+Today's development focused on completing the **Linux Fundamentals** documentation for the **Blue Team Handbook**. The primary objective was to build a comprehensive, beginner-friendly, and GitHub-ready learning resource that serves as the foundation for future Blue Team and SOC-related topics.
 
 ---
 
-## [Unreleased]
+## ✅ Linux Fundamentals Completed
+
+Successfully completed all **14 chapters** of the Linux Fundamentals handbook.
+
+### Chapters Completed
+
+* Chapter 01 – Introduction to Linux
+* Chapter 02 – Installing Linux
+* Chapter 03 – Linux File System
+* Chapter 04 – Shell & Terminal Basics
+* Chapter 05 – Navigation Commands
+* Chapter 06 – File & Directory Management
+* Chapter 07 – Users & Groups
+* Chapter 08 – Permissions & Ownership
+* Chapter 09 – Processes & Services
+* Chapter 10 – Linux Networking Basics
+* Chapter 11 – Logging & Monitoring
+* Chapter 12 – Package Management
+* Chapter 13 – Bash Scripting Basics
+* Chapter 14 – Linux Security Fundamentals
+
+---
+
+## 📖 Documentation Standardization
+
+Every chapter follows a consistent structure to improve readability and maintainability.
+
+Each chapter includes:
+
+* Learning Objectives
+* Introduction
+* Core Concepts
+* Detailed Explanations
+* ASCII Diagrams
+* Command Syntax
+* Practical Examples
+* Screenshot Placeholders
+* Blue Team Perspective
+* Common Mistakes
+* Best Practices
+* Chapter Summary
+* Interview Questions
+* References
+
+---
+
+## 📁 Repository Organization
+
+Designed the Linux section with a scalable structure for future content.
+
+```text
+Linux/
+├── README.md
+├── Fundamentals/
+├── Labs/
+├── Cheat-Sheets/
+├── Commands/
+├── Screenshots/
+├── Resources/
+└── Assets/
+```
+
+---
+
+## 📄 Documentation Improvements
+
+Created supporting documentation for the Linux section:
+
+* Linux README
+* Linux Cheat Sheet
+* Linux Learning Resources
+* Commands Index
+
+---
+
+## 📝 Documentation Strategy
+
+Decided to use **Markdown (.md)** as the primary documentation format instead of individual PDF files.
+
+Reasons:
+
+* Better GitHub compatibility
+* Easier maintenance
+* Version control with Git
+* Better collaboration
+* Easy future updates
+* Ability to generate professional PDF releases when required
+
+---
+
+## 🎯 Current Progress
+
+* ✅ Linux Fundamentals documentation completed (14 Chapters)
+* ✅ Repository structure finalized
+* ✅ Documentation standardized
+* ✅ Cheat Sheet created
+* ✅ Learning Resources compiled
+* ✅ Commands Index created
+* ✅ Markdown-based documentation workflow established
+
+---
+
+## 🚀 Next Phase
+
+The next phase of the project will focus on transforming the documentation into a complete learning experience by adding practical visual content.
+
+Planned tasks include:
+
+* Capture screenshots for every Linux command and example.
+* Organize screenshots into chapter-wise folders.
+* Replace screenshot placeholders with actual images.
+* Create practical Linux labs.
+* Develop additional command reference guides.
+* Review and proofread all chapters.
+* Generate the first official **Linux Fundamentals v1.0** release.
+
+---
+
+## Status
+
+**Linux Fundamentals documentation is now complete.** The next milestone is to enhance the handbook with screenshots, practical labs, and visual assets before publishing the first release on GitHub.
+
+---
+
+# Changelog
+
+All notable changes to the **Blue-Team-Handbook** project are documented in this file.
+
+---
+
+## 13 July 2026 — Project Kickoff
 
 ### Added
+- Started learning Security Information and Event Management (SIEM).
+- Began studying Wazuh fundamentals.
+- Completed Chapters 1–4 of the Wazuh learning path.
+- Planned the structure for a beginner-friendly Blue Team documentation project.
 
-- Planned Sysmon Guide
-- Planned Sigma Rules Guide
-- Planned YARA Guide
-- Planned Threat Hunting Guide
-- Planned Digital Forensics Guide
-- Planned Incident Response Guide
-- Planned Splunk Guide
-- Planned Microsoft Sentinel Guide
+---
+
+## 14 July 2026 — Ubuntu Server Preparation
+
+### Added
+- Installed Ubuntu Server.
+- Configured the server environment.
+- Learned Ubuntu Server networking fundamentals.
+- Continued Wazuh deployment documentation.
+
+---
+
+## 15 July 2026 — Deployment Challenges
+
+### Fixed
+- Investigated Wazuh installation failures caused by insufficient system resources.
+- Identified storage and resource limitations.
+
+### Learned
+- Always verify hardware and software requirements before deployment.
+- Importance of troubleshooting before reinstalling.
+
+---
+
+## 16 July 2026 — Ubuntu Configuration
+
+### Added
+- Completed Ubuntu Server configuration.
+- Verified networking and system readiness.
+- Updated installation documentation.
+
+---
+
+## 17 July 2026 — Kali Linux Setup
+
+### Added
+- Installed Kali Linux.
+- Configured networking.
+- Prepared Kali Linux for future Wazuh agent deployment.
+
+---
+
+## 18 July 2026 — Windows Endpoint
+
+### Added
+- Installed Windows 11.
+- Completed Windows configuration.
+- Prepared Windows as a Wazuh endpoint.
+
+---
+
+## 20 July 2026 — Wazuh Deployment
+
+### Added
+- Installed Wazuh Manager.
+- Installed Wazuh Dashboard.
+- Installed Wazuh Indexer.
+- Began Wazuh configuration and deployment documentation.
+
+---
+
+## 21 July 2026 — Documentation Progress
+
+### Added
+- Completed the first five chapters of the Wazuh Installation Guide.
+- Improved documentation formatting.
+- Organized repository structure.
+
+---
+
+## 22 July 2026 — Successful Deployment
+
+### Added
+- Successfully deployed the Wazuh environment.
+- Connected Windows 11 agent.
+- Connected Kali Linux agent.
+- Verified communication between endpoints and the Wazuh Manager.
+
+### Fixed
+- Storage space issues.
+- LVM partition expansion.
+- Package installation failures.
+- VirtualBox networking issues.
+- NAT and Host-Only adapter configuration.
+- DNS resolution problems.
+- Agent enrollment issues.
+- Incorrect Wazuh Manager IP configuration.
+
+### Documentation
+- Added troubleshooting notes based on real deployment scenarios.
+- Updated installation guides with common fixes.
+
+---
+
+## 23–25 July 2026 — Repository Enhancement
+
+### Added
+- Professional repository structure.
+- Project roadmap.
+- README files for all major guides.
+- Cheat Sheets.
+- Quick Reference guides.
+- Resource documentation.
+- Project badges.
+- GitHub improvements.
 
 ### Improved
-
-- Documentation consistency
-- Repository organization
-- Visual assets
-- Learning roadmap
-
----
-
-# [v1.0.0] - Initial Release
-
-## Added
-
-### Repository
-
-- Initial GitHub repository
-- Repository branding
-- Main README
-- Project roadmap
-- Documentation structure
-- Assets directory
+- Repository organization.
+- Documentation consistency.
+- Navigation between guides.
+- Markdown formatting.
+- Overall project presentation.
 
 ---
 
-### Ubuntu Server Guide
+# Current Progress
 
-Added a complete beginner-friendly guide covering:
+## Completed
 
-- Ubuntu Server introduction
-- Installation
-- Initial configuration
-- Networking
-- Package management
-- SSH
-- Troubleshooting
-- Maintenance
-
-Supporting documentation:
-
-- README
-- Quick Reference
-- Cheat Sheet
-- Resources
+- ✅ Foundation structure
+- ✅ Ubuntu Server Guide
+- ✅ Windows Guide
+- ✅ Kali Linux Guide
+- ✅ Wazuh Installation & Deployment (7 Chapters)
+- ✅ Wazuh Home Lab
+- ✅ Windows Agent Deployment
+- ✅ Kali Linux Agent Deployment
+- ✅ Troubleshooting Documentation
+- ✅ Repository Documentation
 
 ---
 
-### Windows 11 Guide
-
-Added a complete Windows 11 deployment guide including:
-
-- VirtualBox installation
-- Windows installation
-- Initial configuration
-- Networking
-- Administrative tools
-- Windows security
-- Preparing Windows for Wazuh
-
-Supporting documentation:
-
-- README
-- Quick Reference
-- Cheat Sheet
-- Resources
-
----
-
-### Kali Linux Guide
-
-Added a complete Kali Linux guide covering:
-
-- Installation
-- Initial configuration
-- Networking
-- Package management
-- Essential tools
-- Blue Team lab preparation
-
-Supporting documentation:
-
-- README
-- Quick Reference
-- Cheat Sheet
-- Resources
-
----
-
-### Wazuh Guide
-
-Documentation currently includes:
-
-- Introduction
-- Architecture
-- Requirements
-- Installation
-- Dashboard
-- Manager configuration
-- Agent deployment
-- Log collection
-- Security features
-- Troubleshooting
-
-> **Note:** The Wazuh guide is actively being improved and expanded.
-
----
-
-## Documentation
-
-Added:
-
-- Consistent chapter formatting
-- Learning objectives
-- Step-by-step explanations
-- Command breakdowns
-- Best practices
-- Troubleshooting sections
-- Chapter summaries
-- One-line summaries
-
----
-
-## Visual Improvements
-
-Added:
-
-- Repository banners
-- Guide banners
-- Improved Markdown formatting
-- Professional README layouts
-- Repository badges
-
----
-
-## Home Lab
-
-Documented the recommended Blue Team home lab consisting of:
-
-- Ubuntu Server
-- Windows 11
-- Kali Linux
-- Wazuh
-
----
-
-## Learning Path
-
-Established a structured learning order:
-
-1. Ubuntu Server
-2. Windows 11
-3. Kali Linux
-4. Wazuh
-5. Sysmon
-6. Sigma Rules
-7. Threat Hunting
-8. Incident Response
-
----
-
-# Versioning
-
-Future releases will follow this format:
-
-## [Major.Minor.Patch]
-
-### Major
-
-Breaking changes or significant project milestones.
-
-Example:
-
-```
-v2.0.0
-```
-
----
-
-### Minor
-
-New guides or major documentation additions.
-
-Example:
-
-```
-v1.1.0
-```
-
----
-
-### Patch
-
-Bug fixes, typo corrections, formatting improvements, and minor documentation updates.
-
-Example:
-
-```
-v1.0.1
-```
-
----
-
-# Upcoming Releases
-
-## v1.1.0
-
-Planned:
-
-- Complete Wazuh Guide
-- Additional screenshots
-- Architecture diagrams
-- Improved troubleshooting
-
----
-
-## v1.2.0
-
-Planned:
-
-- Sysmon Guide
-- Event ID reference
-- Detection examples
-
----
-
-## v1.3.0
-
-Planned:
-
-- Sigma Rules Guide
-- Detection engineering examples
-
----
-
-## v2.0.0
-
-Planned:
-
+# Next Milestone
+
+The next phase of the project will focus on practical learning and Blue Team operations.
+
+### Planned
+
+- Linux Fundamentals
+- Linux Practical Labs
+- Bash Scripting
+- Log Analysis
+- File Integrity Monitoring (FIM)
+- Security Configuration Assessment (SCA)
+- Vulnerability Detection
+- Active Response
+- Rules & Decoders
 - Threat Hunting
-- Splunk
-- Microsoft Sentinel
-- Digital Forensics
-- Incident Response
+- Detection Engineering
+- SOC Analyst Practical Labs
+- Incident Response Scenarios
+- Additional diagrams and screenshots
 
 ---
 
-Thank you to everyone who supports, contributes to, and shares the Blue Team Handbook.
+**Project Status:** 🟢 Active Development
+
+**Last Updated:** July 2026
