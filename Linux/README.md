@@ -55,10 +55,8 @@ Linux/
 ├── Fundamentals/
 ├── Labs/
 ├── Cheat-Sheets/
-├── Commands/
 ├── Screenshots/
 ├── Resources/
-└── Assets/
 ```
 
 ---
