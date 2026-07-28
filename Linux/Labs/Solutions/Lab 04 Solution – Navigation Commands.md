@@ -232,12 +232,6 @@ Save your report as a Markdown or text file.
 | System logs | `/var/log` |
 | Current directory | `pwd` |
 
-### Screenshot
-
-```md
-![Challenge](../../Screenshot/solution/Lab-04/task-08.png)
-```
-
 ---
 
 ## 🎉 Lab Complete!
