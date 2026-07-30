@@ -1,7 +1,7 @@
 # Windows Fundamentals
 
 <p align="center">
-  <img src="../assets/Windows-Fundamentals.png" alt="Windows Fundamentals Banner" width="100%">
+  <img src="../assets/Windows-Fundamental.png" alt="Windows Fundamentals Banner" width="100%">
 </p>
 
 <p align="center">
