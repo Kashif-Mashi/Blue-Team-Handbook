@@ -1,3 +1,5 @@
+<img src="../assets/Linux-Fundamentals.png" alt="Linux Fundamentals" width="100%">
+
 # 🐧 Linux Fundamentals
 
 Welcome to the **Linux Fundamentals** section of the **Blue Team Handbook**.
