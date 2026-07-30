@@ -45,9 +45,6 @@ Verify:
 ```bash
 tree ~/Incident-2026
 ```
-
-> **TODO:** Screenshot missing for this task.
-
 ---
 
 # Task 2 – Investigate User Accounts
@@ -81,9 +78,6 @@ View group memberships:
 ```bash
 groups analyst1
 ```
-
-> **TODO:** Screenshot missing for this task.
-
 ---
 
 # Task 3 – Examine File Permissions
@@ -115,9 +109,6 @@ Correct permissions if required:
 ```bash
 chmod 750 ~/Incident-2026
 ```
-
-> **TODO:** Screenshot missing for this task.
-
 ---
 
 # Task 4 – Investigate Running Processes
@@ -145,9 +136,6 @@ Search for a specific process:
 ```bash
 ps aux | grep sleep
 ```
-
-> **TODO:** Screenshot missing for this task.
-
 ---
 
 # Task 5 – Examine Network Activity
@@ -181,9 +169,6 @@ Review active connections:
 ```bash
 ss -tunap
 ```
-
-> **TODO:** Screenshot missing for this task.
-
 ---
 
 # Task 6 – Analyze System Logs
@@ -223,9 +208,6 @@ Reboot history:
 ```bash
 last reboot
 ```
-
-> **TODO:** Screenshot missing for this task.
-
 ---
 
 # Task 7 – Verify Software & System Security
@@ -259,8 +241,6 @@ Check firewall:
 ```bash
 sudo ufw status verbose
 ```
-
-> **TODO:** Screenshot missing for this task.
 
 ---
 
@@ -301,8 +281,6 @@ Generate a security report:
 ```bash
 ./system_check.sh
 ```
-
-> **TODO:** Screenshot missing for this task.
 
 ---
 
