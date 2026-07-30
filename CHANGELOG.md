@@ -2,6 +2,50 @@
 
 All notable changes to the **Blue-Team-Handbook** project are documented in this file.
 
+## 30 July 2026
+
+### 🚀 Windows Fundamentals Kickoff & Linux Screenshot Repair
+
+Today focused on launching the **Windows Fundamentals** module and completing a full audit and fix of all screenshot references across the **Linux Fundamentals** solutions.
+
+### ✨ Completed
+
+* ✅ **Windows Fundamentals Module Initialization**:
+  * Created `Windows/README.md` with complete module overview, learning objectives, hands-on lab listings, and fixed banner image linking to `../assets/Windows-Fundamental.png`.
+  * Created `Windows/Cheat Sheet/Commands.md` covering Event IDs, startup locations, Registry hives, and PowerShell essentials for Blue Team analysts.
+  * Created `Windows/Commands/Commands.md` quick reference guide for Command Prompt, PowerShell, Services, Registry, and System maintenance.
+  * Created `Windows/Resources/Resources.md` listing Microsoft Learn, Sysinternals Suite, recommended books, YouTube channels, and certification paths.
+
+* ✅ **Windows Architecture & Installation Chapters**:
+  * Completed **Chapter 01 — Introduction to Windows Operating System** covering Windows architecture, boot process (BIOS/UEFI, POST, Boot Manager, `ntoskrnl.exe`), user vs kernel mode, and 32-bit vs 64-bit architecture.
+  * Converted the Windows architecture ASCII diagram into a modern interactive **Mermaid flowchart** with Kernel Mode subgraphs.
+  * Completed **Chapter 02 — Windows Installation & Initial Configuration** detailing the installation steps, Out-of-Box Experience (OOBE), Local vs Microsoft accounts, privilege separation, and Windows Update categories.
+  * Created **Lab 01 — Windows Installation** guide and solution reference.
+
+* ✅ **Linux Solutions Screenshot Repair & Cleanup**:
+  * Audited all 13 solution files in `Linux/Labs/Solutions/`.
+  * Fixed 57+ broken screenshot references across Labs 03–13 by unwrapping them from fenced code blocks (` ```md ``` `) to ensure proper rendering on GitHub.
+  * Verified all relative image paths (`../../Screenshot/solution/Lab-XX/task-XX.png`).
+  * Added `TODO` comments for missing screenshots in Lab 06, Lab 07, Lab 10, Lab 13, and Lab 14.
+  * Cleaned up obsolete screenshot placeholders across Linux Fundamentals chapters.
+  * Fixed banner image path in `Linux/README.md` to `../assets/Linux-Fundamentals.png`.
+
+---
+
+## 29 July 2026
+
+### 🛠️ Windows Fundamentals Module Structure & Planning
+
+Yesterday focused on designing the structure for the upcoming **Windows Fundamentals** module and preparing repository resources.
+
+### ✨ Completed
+
+* ✅ Outlined the 14-chapter roadmap for Windows Fundamentals (Editions, File System, CMD/PowerShell, NTFS Permissions, Users & Groups, Processes & Services, Event Logs, Windows Security, Registry, Software Management, Scripting, Hardening, and Blue Team Challenge).
+* ✅ Standardized directory layout for Windows module (`Chapters/`, `Labs/`, `Solutions/`, `Cheat-Sheets/`, `Commands/`, `Resources/`, `Screenshots/`).
+* ✅ Prepared Windows module assets and updated module banners.
+
+---
+
 ##  28 July 2026
 
 ### 🚀 Blue Team Handbook – Linux Fundamentals Completed
