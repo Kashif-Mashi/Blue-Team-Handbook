@@ -30,9 +30,7 @@ whoami
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-06/task-01.png)
-```
 
 ---
 
@@ -65,9 +63,7 @@ id analyst2
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-06/task-02.png)
-```
 
 ---
 
@@ -91,9 +87,7 @@ getent group soc-team
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-06/task-03.png)
-```
 
 ---
 
@@ -119,9 +113,7 @@ groups analyst2
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-06/task-04.png)
-```
 
 ---
 
@@ -153,9 +145,7 @@ The output displays:
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-06/task-05.png)
-```
 
 ---
 
@@ -183,6 +173,9 @@ Return to your administrator account:
 ```bash
 exit
 ```
+
+> **TODO:** Screenshot missing for this task.
+
 ---
 
 # Task 7 – Remove an Analyst from the Team
@@ -207,9 +200,7 @@ groups analyst2
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-06/task-07.png)
-```
 
 ---
 

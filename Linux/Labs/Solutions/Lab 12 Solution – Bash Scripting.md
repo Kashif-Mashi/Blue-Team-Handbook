@@ -44,9 +44,7 @@ Run the script:
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-12/task-01.png)
-```
 
 ---
 
@@ -75,9 +73,7 @@ Run the script:
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-12/task-02.png)
-```
 
 ---
 
@@ -97,9 +93,7 @@ echo "Welcome, $name!"
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-12/task-03.png)
-```
 
 ---
 
@@ -121,9 +115,7 @@ echo "Host: $host"
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-12/task-04.png)
-```
 
 ---
 
@@ -147,9 +139,7 @@ fi
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-12/task-05.png)
-```
 
 ---
 
@@ -170,9 +160,7 @@ done
 
 ### Screenshot
 
-```md
 ![Task 6](../../Screenshot/solution/Lab-12/task-06.png)
-```
 
 ---
 
@@ -230,12 +218,9 @@ cat security-report.txt
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-12/task-07.png)
-```
-```md
+
 ![Task 8](../../Screenshot/solution/Lab-12/task-08.png)
-```
 
 ---
 

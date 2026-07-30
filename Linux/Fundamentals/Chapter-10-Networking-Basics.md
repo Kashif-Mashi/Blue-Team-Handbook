@@ -285,10 +285,6 @@ ip link
 
 Displays all available network interfaces.
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `ip addr`.*
-
 ---
 
 # Command: ping
@@ -372,11 +368,6 @@ Display all listening TCP ports:
 ```bash
 ss -tuln
 ```
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `ss -tuln`.*
-
 ---
 
 # Command: netstat

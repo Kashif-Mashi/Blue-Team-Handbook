@@ -34,9 +34,7 @@ You should see:
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-07/task-01.png)
-```
 
 ---
 
@@ -62,9 +60,7 @@ ls -l Evidence Reports
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-07/task-02.png)
-```
 
 ---
 
@@ -94,9 +90,7 @@ ls -ld Evidence Reports Backups Notes
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-07/task-03.png)
-```
 
 ---
 
@@ -120,9 +114,7 @@ ls -l Evidence/evidence-log.txt
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-07/task-04.png)
-```
 
 ---
 
@@ -148,9 +140,7 @@ ls -l
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-07/task-05.png)
-```
 
 ---
 
@@ -177,6 +167,9 @@ Return to the administrator account:
 ```bash
 exit
 ```
+
+> **TODO:** Screenshot missing for this task.
+
 ---
 
 # Task 7 – Review Final Permissions
@@ -204,9 +197,7 @@ Expected secure configuration:
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-07/task-07.png)
-```
 
 ---
 

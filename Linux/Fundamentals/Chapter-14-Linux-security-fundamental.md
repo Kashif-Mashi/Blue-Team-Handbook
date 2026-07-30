@@ -345,11 +345,6 @@ Example Output:
 ```text
 Rule added
 ```
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `sudo ufw status`.*
-
 ---
 
 # Software Updates

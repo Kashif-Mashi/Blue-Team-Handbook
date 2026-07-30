@@ -322,10 +322,6 @@ pwd
 
 This command tells you where you are currently located in the Linux file system.
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of **`pwd`**.*
-
 ---
 
 ## whoami
@@ -350,11 +346,6 @@ kashif
 
 * Verify your current user.
 * Confirm whether you are logged in as a normal user or root.
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of **`whoami`**.*
-
 ---
 
 ## clear

@@ -160,11 +160,6 @@ Example Output:
 
 ```text
 Hello, Linux!
-```
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the creation and execution of `hello.sh`.*
 
 ---
 

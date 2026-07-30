@@ -133,12 +133,6 @@ The `-p` option creates all missing parent directories automatically.
 
 ---
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing a newly created directory.*
-
----
-
 # Command: touch
 
 ## Purpose
@@ -170,13 +164,6 @@ Creates an empty file called **notes.txt**.
 ```bash
 touch chapter1.md chapter2.md chapter3.md
 ```
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing files created with `touch`.*
-
 ---
 
 # Command: cp
@@ -225,12 +212,6 @@ The `-r` (recursive) option copies the directory and all of its contents.
 
 ---
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing a copied file.*
-
----
-
 # Command: mv
 
 ## Purpose
@@ -270,13 +251,6 @@ Moves the file into the **Documents** directory.
 ```bash
 mv LinuxNotes Documents/
 ```
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing a file before and after being renamed.*
-
 ---
 
 # Command: rm
@@ -337,13 +311,6 @@ Options:
 * `-f` → Force deletion without confirmation
 
 ⚠️ **Be extremely careful with `rm -rf`.** It can permanently remove large portions of the file system if used incorrectly.
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot demonstrating the safe use of `rm`.*
-
 ---
 
 # Command: rmdir
@@ -405,13 +372,6 @@ cat file1.txt file2.txt
 ```
 
 Displays both files one after another.
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `cat`.*
-
 ---
 
 # Command: less
@@ -515,13 +475,6 @@ tail -f /var/log/auth.log
 The `-f` option continuously displays new content as it is added.
 
 This is especially useful for monitoring log files.
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing `tail -f` monitoring a log file.*
-
 ---
 
 # Command: file
@@ -635,13 +588,6 @@ find . -type d
 ```bash
 find . -type f
 ```
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing search results from the `find` command.*
-
 ---
 
 # Command: locate

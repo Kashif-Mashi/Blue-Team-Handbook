@@ -34,9 +34,7 @@ Common log files:
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-10/task-01.png)
-```
 
 ---
 
@@ -58,9 +56,7 @@ Press **Ctrl + C** to stop monitoring.
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-10/task-02.png)
-```
 
 ---
 
@@ -98,9 +94,7 @@ Record:
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-10/task-03.png)
-```
 
 ---
 
@@ -132,9 +126,7 @@ sudo grep user /var/log/auth.log
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-10/task-04.png)
-```
 
 ---
 
@@ -166,9 +158,7 @@ journalctl -p err
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-10/task-05.png)
-```
 
 ---
 
@@ -200,9 +190,7 @@ journalctl -p warning
 
 ### Screenshot
 
-```md
 ![Task 6](../../Screenshot/solution/Lab-10/task-06.png)
-```
 
 ---
 
@@ -220,6 +208,7 @@ Summarize the important events collected during the investigation.
 | 09:30 | SSH Service Restart | root | Service restarted |
 
 Save the timeline as a Markdown or text file.
+
 ---
 
 # Challenge Answers
@@ -235,9 +224,7 @@ Save the timeline as a Markdown or text file.
 
 ---
 
-```md
-![Challenge](../../Screenshot/solution/Lab-10/task-08.png)
-```
+> **TODO:** Screenshot missing for this task.
 
 ---
 

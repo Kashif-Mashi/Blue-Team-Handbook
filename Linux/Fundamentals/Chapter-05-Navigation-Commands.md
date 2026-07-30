@@ -208,11 +208,6 @@ Whenever you are unsure where you are in the Linux file system, use `pwd`.
 * Before creating files.
 * Before deleting files.
 * During scripting.
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `pwd`.*
-
 ---
 
 # Command: ls
@@ -330,15 +325,6 @@ Example
 15M
 2.5G
 ```
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert screenshots showing `ls`, `ls -l`, and `ls -la`.*
-
----
-
 # Command: cd
 
 ## Purpose
@@ -408,13 +394,6 @@ Move using a relative path.
 ```bash
 cd Documents/Projects
 ```
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert screenshots demonstrating `cd`, `cd ..`, `cd /`, and `cd ~`.*
-
 ---
 
 # Command: tree

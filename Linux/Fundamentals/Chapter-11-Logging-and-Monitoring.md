@@ -221,10 +221,6 @@ Useful Keys:
 | /     | Search        |
 | q     | Quit          |
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the `less` command viewing `/var/log/syslog`.*
-
 ---
 
 # Command: head
@@ -280,10 +276,6 @@ tail -f /var/log/syslog
 The `-f` option continuously displays new log entries as they are written.
 
 This is extremely useful during troubleshooting and incident response.
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing `tail -f` monitoring a log file.*
 
 ---
 
@@ -374,10 +366,6 @@ journalctl -u ssh
 ```
 
 Replace `ssh` with the name of another service as needed.
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing `journalctl -u ssh`.*
 
 ---
 

@@ -34,9 +34,7 @@ echo $0
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-03/task-01.png)
-```
 
 ---
 
@@ -71,9 +69,7 @@ abcd
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-03/task-02.png)
-```
 
 ---
 
@@ -93,9 +89,7 @@ Use the **↑** and **↓** arrow keys to browse previous commands.
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-03/task-03.png)
-```
 
 ---
 
@@ -129,9 +123,7 @@ info bash
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-03/task-04.png)
-```
 
 ---
 
@@ -165,9 +157,7 @@ Ctrl + L
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-03/task-05.png)
-```
 
 ---
 

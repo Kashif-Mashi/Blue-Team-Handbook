@@ -28,9 +28,7 @@ pwd
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-04/task-01.png)
-```
 
 ---
 
@@ -58,9 +56,7 @@ Common folders include:
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-04/task-02.png)
-```
 
 ---
 
@@ -89,9 +85,7 @@ pwd
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-04/task-03.png)
-```
 
 ---
 
@@ -118,9 +112,7 @@ cd etc
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-04/task-04.png)
-```
 
 ---
 
@@ -152,9 +144,7 @@ cd ~
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-04/task-05.png)
-```
 
 ---
 
@@ -198,10 +188,10 @@ find / -type d -name log 2>/dev/null
 
 ### Screenshot
 
-```md
 ![Task 6](../../Screenshot/solution/Lab-04/task-06.png)
-```
-![Task 6](../../Screenshot/solution/Lab-04/task-07.png)
+
+![Task 7](../../Screenshot/solution/Lab-04/task-07.png)
+
 ---
 
 # Task 7 – Document Your Investigation

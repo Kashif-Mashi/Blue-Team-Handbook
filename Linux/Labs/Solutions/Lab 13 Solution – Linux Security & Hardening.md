@@ -36,9 +36,7 @@ whoami
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-13/task-01.png)
-```
 
 ---
 
@@ -66,9 +64,7 @@ sudo cat /etc/login.defs
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-13/task-02.png)
-```
 
 ---
 
@@ -104,9 +100,7 @@ chmod 750 Incident-2026
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-13/task-03.png)
-```
 
 ---
 
@@ -140,9 +134,7 @@ sudo systemctl disable apache2
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-13/task-04.png)
-```
 
 ---
 
@@ -180,9 +172,7 @@ sudo ufw status
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-13/task-05.png)
-```
 
 ---
 
@@ -211,6 +201,8 @@ Review pending updates:
 ```bash
 apt list --upgradable
 ```
+
+> **TODO:** Screenshot missing for this task.
 
 ---
 
@@ -248,9 +240,7 @@ last
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-13/task-07.png)
-```
 
 ---
 

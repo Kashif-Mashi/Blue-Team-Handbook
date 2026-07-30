@@ -280,10 +280,6 @@ ps aux
 
 This is one of the most commonly used commands by Linux administrators.
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `ps aux`.*
-
 ---
 
 # Command: top
@@ -317,10 +313,6 @@ q
 ```
 
 to exit.
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the `top` command.*
 
 ---
 
@@ -508,11 +500,6 @@ systemctl enable apache2
 ```bash
 systemctl disable apache2
 ```
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing `systemctl status ssh`.*
-
 ---
 
 # Command: journalctl

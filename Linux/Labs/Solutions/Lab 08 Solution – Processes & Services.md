@@ -38,9 +38,7 @@ You should be able to identify:
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-08/task-01.png)
-```
 
 ---
 
@@ -66,9 +64,7 @@ htop
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-08/task-02.png)
-```
 
 ---
 
@@ -102,9 +98,7 @@ ps -fp 1234
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-08/task-03.png)
-```
 
 ---
 
@@ -142,9 +136,7 @@ ps aux | grep sleep
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-08/task-04.png)
-```
 
 ---
 
@@ -178,9 +170,7 @@ services.
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-08/task-05.png)
-```
 
 ---
 
@@ -220,9 +210,7 @@ sudo systemctl status ssh
 
 ### Screenshot
 
-```md
 ![Task 6](../../Screenshot/solution/Lab-08/task-06.png)
-```
 
 ---
 
@@ -248,9 +236,7 @@ Identify any services that may not be necessary in your lab environment.
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-08/task-07.png)
-```
 
 ---
 

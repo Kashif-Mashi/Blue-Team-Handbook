@@ -169,10 +169,6 @@ This command **does not install updates**.
 
 It only refreshes the package database so Linux knows which software versions are available.
 
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `sudo apt update`.*
-
 ---
 
 # Command: apt upgrade
@@ -250,13 +246,6 @@ APT automatically:
 ```bash
 sudo apt install git curl wget
 ```
-
----
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the installation of a package.*
-
 ---
 
 # Command: apt remove

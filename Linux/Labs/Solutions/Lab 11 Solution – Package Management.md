@@ -30,9 +30,7 @@ dpkg -l | grep ssh
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-11/task-01.png)
-```
 
 ---
 
@@ -52,9 +50,7 @@ Verify that the update completes successfully without errors.
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-11/task-02.png)
-```
 
 ---
 
@@ -82,9 +78,7 @@ Record the number of upgraded packages displayed by APT.
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-11/task-03.png)
-```
 
 ---
 
@@ -112,9 +106,7 @@ tree --version
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-11/task-04.png)
-```
 
 ---
 
@@ -147,9 +139,7 @@ Record:
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-11/task-05.png)
-```
 
 ---
 
@@ -175,9 +165,7 @@ dpkg -l | grep tree
 
 ### Screenshot
 
-```md
 ![Task 6](../../Screenshot/solution/Lab-11/task-06.png)
-```
 
 ---
 
@@ -203,9 +191,7 @@ sudo apt clean
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-11/task-07.png)
-```
 
 ---
 

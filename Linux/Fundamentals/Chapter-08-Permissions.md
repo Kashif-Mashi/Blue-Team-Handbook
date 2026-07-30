@@ -75,11 +75,6 @@ Example Output:
 
 ```text
 -rw-r--r-- 1 kashif students 2048 Jul 25 report.txt
-```
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `ls -l`.*
 
 ---
 
@@ -314,12 +309,6 @@ Result:
 Owner  : Read + Write
 Group  : Read
 Others : Read
-```
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing permission changes using `chmod`.*
-
 ---
 
 # Command: chown

@@ -341,11 +341,6 @@ Displays:
 * UID
 * GID
 * Group Membership
-
-📸 **Screenshot Placeholder**
-
-*Insert a screenshot showing the output of `id`.*
-
 ---
 
 ## groups

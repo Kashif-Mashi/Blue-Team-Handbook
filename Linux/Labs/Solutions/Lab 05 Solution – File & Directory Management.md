@@ -34,9 +34,7 @@ ls -R ~/Incident-2026
 
 ### Screenshot
 
-```md
 ![Task 1](../../Screenshot/solution/Lab-05/task-01.png)
-```
 
 ---
 
@@ -63,9 +61,7 @@ find ~/Incident-2026
 
 ### Screenshot
 
-```md
 ![Task 2](../../Screenshot/solution/Lab-05/task-02.png)
-```
 
 ---
 
@@ -95,9 +91,7 @@ cat ~/Incident-2026/Reports/incident-report.txt
 
 ### Screenshot
 
-```md
 ![Task 3](../../Screenshot/solution/Lab-05/task-03.png)
-```
 
 ---
 
@@ -111,7 +105,7 @@ Create backup copies before making any changes.
 
 ```bash
 cp ~/Incident-2026/Evidence/evidence-log.txt \
-~/Incident-2026/Backups/
+   ~/Incident-2026/Backups/
 ```
 
 Verify:
@@ -122,9 +116,7 @@ ls ~/Incident-2026/Backups
 
 ### Screenshot
 
-```md
 ![Task 4](../../Screenshot/solution/Lab-05/task-04.png)
-```
 
 ---
 
@@ -140,14 +132,14 @@ Rename a file:
 
 ```bash
 mv ~/Incident-2026/Notes/network-findings.txt \
-~/Incident-2026/Notes/network-analysis.txt
+   ~/Incident-2026/Notes/network-analysis.txt
 ```
 
 Move the file:
 
 ```bash
 mv ~/Incident-2026/Notes/network-analysis.txt \
-~/Incident-2026/Reports/
+   ~/Incident-2026/Reports/
 ```
 
 Verify:
@@ -158,9 +150,7 @@ tree ~/Incident-2026
 
 ### Screenshot
 
-```md
 ![Task 5](../../Screenshot/solution/Lab-05/task-05.png)
-```
 
 ---
 
@@ -194,9 +184,7 @@ rmdir ~/Incident-2026/Test
 
 ### Screenshot
 
-```md
 ![Task 6](../../Screenshot/solution/Lab-05/task-06.png)
-```
 
 ---
 
@@ -233,9 +221,7 @@ Confirm that:
 
 ### Screenshot
 
-```md
 ![Task 7](../../Screenshot/solution/Lab-05/task-07.png)
-```
 
 ---
 
