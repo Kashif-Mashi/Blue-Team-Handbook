@@ -2,6 +2,52 @@
 
 All notable changes to the **Blue-Team-Handbook** project are documented in this file.
 
+# 31 July 2026
+### Improved
+
+- Standardized chapter structure to match the Linux Fundamentals module.
+- Added learning objectives, summaries, key takeaways, and professional GitHub formatting.
+- Added notes directing readers to the dedicated **Security Operations** repository for the complete Windows installation and configuration guide, avoiding duplicate documentation.
+
+---
+
+## 🗂 Windows File System
+
+### Added
+
+- Started **Chapter 03 — Windows File System & File Explorer**.
+- Added an overview of the Windows File System and its responsibilities.
+- Explained the relationship between **Disks, Partitions, Volumes, and Drive Letters**.
+- Documented the architecture and features of the **NTFS File System**.
+- Added Mermaid diagrams to visualize storage hierarchy and NTFS architecture.
+- Included Blue Team notes highlighting the forensic importance of NTFS metadata and file system artifacts.
+
+---
+
+## 🧪 Labs
+
+### Added
+
+- Created **Lab 02 — File System Investigation**.
+- Added practical exercises for exploring Windows directories, file metadata, hidden files, file extensions, NTFS attributes, and Alternate Data Streams (ADS).
+- Included a Blue Team investigation scenario for analyzing a suspicious file.
+
+### Solutions
+
+- Created the complete solution guide for **Lab 02**.
+- Added step-by-step explanations, expected outputs, command references, investigation notes, and security recommendations.
+
+---
+
+## 📖 Documentation
+
+### Improved
+
+- Enhanced documentation consistency across chapters and labs.
+- Improved Markdown formatting for GitHub readability.
+- Added professional notes, tables, and Mermaid diagrams where appropriate.
+- Maintained a beginner-friendly learning path while incorporating Blue Team and Digital Forensics perspectives.
+
 ## 30 July 2026
 
 ### 🚀 Windows Fundamentals Kickoff & Linux Screenshot Repair
