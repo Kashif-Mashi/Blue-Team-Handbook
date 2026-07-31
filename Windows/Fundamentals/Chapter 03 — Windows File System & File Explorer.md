@@ -396,7 +396,7 @@ File Explorer is simply a graphical front-end; all actual storage operations are
 
 ```mermaid
 graph TD
-    Root["C:\ (Root Partition)"] --> Windows["Windows<br/>(OS Binaries & Drivers)"]
+    Root["C:/ (Root Partition)"] --> Windows["Windows<br/>(OS Binaries & Drivers)"]
     Root --> Users["Users<br/>(User Profiles)"]
     Root --> ProgFiles["Program Files<br/>(64-bit Apps)"]
     Root --> ProgFiles86["Program Files (x86)<br/>(32-bit Apps)"]
@@ -480,7 +480,7 @@ Relative path navigation shortcuts:
 
 ```mermaid
 flowchart LR
-    Drive["C:<br/>(Drive Letter)"] --> RootSep["\<br/>(Root Directory)"]
+    Drive["C:<br/>(Drive Letter)"] --> RootSep["Root Directory<br/>(Root Slash)"]
     RootSep --> Folder1["Users<br/>(Parent Directory)"]
     Folder1 --> Folder2["Kashif<br/>(Subfolder)"]
     Folder2 --> Folder3["Desktop<br/>(Subfolder)"]
