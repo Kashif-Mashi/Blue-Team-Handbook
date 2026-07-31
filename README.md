@@ -397,12 +397,12 @@ Follow the learning roadmap sequentially. Each module builds on the knowledge fr
 | Repository Structure & Documentation | ✅ Complete |
 | Cybersecurity Foundations | ✅ Complete |
 | Linux Fundamentals | ✅ Complete |
-| Windows Fundamentals | ✅ Complete |
+| Windows Fundamentals | 🚧 In Progress |
 | Security Operations — Ubuntu Server Guide | ✅ Complete |
 | Security Operations — Windows 11 Guide | ✅ Complete |
 | Security Operations — Kali Linux Guide | ✅ Complete |
 | Security Operations — Wazuh Deployment Guide | ✅ Complete |
-| Threat Detection (Sysmon · Sigma · YARA) | 🚧 In Progress |
+| Threat Detection (Sysmon · Sigma · YARA) | 📋 Planned |
 | Threat Hunting | 📋 Planned |
 | Incident Response | 📋 Planned |
 | Detection Engineering | 📋 Planned |

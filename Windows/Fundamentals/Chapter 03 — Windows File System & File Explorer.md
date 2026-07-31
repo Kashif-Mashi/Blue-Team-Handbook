@@ -37,13 +37,13 @@ Before Windows can store files, a physical storage device must be organized into
 
 ```mermaid
 flowchart TD
-    Disk["Physical Storage Device<br/>(HDD / SSD / NVMe)"] --> PartitionTable["Partition Table<br/>(GPT / MBR)"]
-    PartitionTable --> Partitions["Partitions<br/>(Logical Divisions)"]
-    Partitions --> FileSystem["File System<br/>(NTFS / exFAT / FAT32)"]
-    FileSystem --> Volume["Volume<br/>(Formatted Storage)"]
-    Volume --> DriveLetter["Drive Letter<br/>(C:, D:, E:)"]
-    DriveLetter --> Folders["Folders & Directories"]
-    Folders --> Files["Files & Data"]
+    Disk["Physical Storage Device<br>(HDD, SSD, NVMe)"] --> PartitionTable["Partition Table<br>(GPT, MBR)"]
+    PartitionTable --> Partitions["Partitions<br>(Logical Divisions)"]
+    Partitions --> FileSystem["File System<br>(NTFS, exFAT, FAT32)"]
+    FileSystem --> Volume["Volume<br>(Formatted Storage)"]
+    Volume --> DriveLetter["Drive Letter<br>(Drive C, D, E)"]
+    DriveLetter --> Folders["Folders and Directories"]
+    Folders --> Files["Files and Data"]
 ```
 
 Each layer has a specific responsibility that allows Windows to locate, store, and retrieve data efficiently across physical hardware.
@@ -92,10 +92,10 @@ Whenever an application opens or writes to a file, the request passes through mu
 
 ```mermaid
 flowchart LR
-    App["Application<br/>(e.g., Notepad)"] --> WinAPI["Windows API<br/>(CreateFile / ReadFile)"]
-    WinAPI --> Driver["NTFS Driver<br/>(ntfs.sys)"]
-    Driver --> StorageDriver["Storage Driver<br/>(disk.sys / stornvme.sys)"]
-    StorageDriver --> Hardware["Physical Storage<br/>(SSD / HDD)"]
+    App["Application<br>(e.g. Notepad)"] --> WinAPI["Windows API<br>(CreateFile, ReadFile)"]
+    WinAPI --> Driver["NTFS Driver<br>(ntfs.sys)"]
+    Driver --> StorageDriver["Storage Driver<br>(disk.sys, stornvme.sys)"]
+    StorageDriver --> Hardware["Physical Storage<br>(SSD, HDD)"]
 ```
 
 This layered architecture allows Windows to enforce security permissions, maintain system stability, and remain compatible with a wide variety of storage controllers.
@@ -179,11 +179,11 @@ Common conventions include:
 
 ```mermaid
 flowchart TD
-    PhysicalDisk["Physical Disk<br/>(Disk 0)"]
-    PhysicalDisk --> Partition["Partition<br/>(Partition 1)"]
+    PhysicalDisk["Physical Disk<br>(Disk 0)"]
+    PhysicalDisk --> Partition["Partition<br>(Partition 1)"]
     Partition --> FS["NTFS File System"]
-    FS --> Volume["C: Volume"]
-    Volume --> Folders["Folders / Directories"]
+    FS --> Volume["Drive C Volume"]
+    Volume --> Folders["Folders and Directories"]
     Folders --> Files["Files"]
 ```
 
@@ -245,8 +245,8 @@ Each MFT record stores attributes such as:
 flowchart TD
     UserApp["User Application"] --> API["Windows File System API"]
     API --> NTFS["NTFS Driver (ntfs.sys)"]
-    NTFS --> MFT["Master File Table ($MFT)<br/>Stores attributes, permissions, & pointers"]
-    MFT --> DataClusters["Disk Clusters / Storage Blocks"]
+    NTFS --> MFT["Master File Table MFT<br>Stores attributes, permissions, and pointers"]
+    MFT --> DataClusters["Disk Clusters and Storage Blocks"]
 ```
 
 ---
@@ -259,8 +259,8 @@ Before writing changes to disk, NTFS records the intended metadata changes into 
 
 ```mermaid
 flowchart LR
-    WriteReq["File Write Request"] --> LogWriter["Write Transaction to Journal<br/>($LogFile)"]
-    LogWriter --> DiskUpdate["Update Storage Clusters & $MFT"]
+    WriteReq["File Write Request"] --> LogWriter["Write Transaction to Journal<br>(LogFile)"]
+    LogWriter --> DiskUpdate["Update Storage Clusters and MFT"]
     DiskUpdate --> LogCommit["Mark Transaction Complete in Journal"]
 ```
 
@@ -358,9 +358,9 @@ If `explorer.exe` crashes or is terminated in Task Manager, the desktop backgrou
 
 ```mermaid
 flowchart LR
-    User["User Actions<br/>(Click / Drag / Open)"] --> Explorer["Explorer.exe"]
-    Explorer --> WinAPI["Windows API<br/>(Shell32 / Kernel32)"]
-    WinAPI --> NTFSDriver["NTFS Driver<br/>(ntfs.sys)"]
+    User["User Actions<br>(Click, Drag, Open)"] --> Explorer["Explorer.exe"]
+    Explorer --> WinAPI["Windows API<br>(Shell32, Kernel32)"]
+    WinAPI --> NTFSDriver["NTFS Driver<br>(ntfs.sys)"]
     NTFSDriver --> Storage["Storage Hardware"]
     Storage --> FileOpen["File Opened in Associated App"]
 ```
@@ -396,21 +396,21 @@ File Explorer is simply a graphical front-end; all actual storage operations are
 
 ```mermaid
 graph TD
-    Root["C:/ (Root Partition)"] --> Windows["Windows<br/>(OS Binaries & Drivers)"]
-    Root --> Users["Users<br/>(User Profiles)"]
-    Root --> ProgFiles["Program Files<br/>(64-bit Apps)"]
-    Root --> ProgFiles86["Program Files (x86)<br/>(32-bit Apps)"]
-    Root --> ProgData["ProgramData<br/>(Shared App Configs)"]
+    Root["Drive C Root Partition"] --> Windows["Windows<br>(OS Binaries and Drivers)"]
+    Root --> Users["Users<br>(User Profiles)"]
+    Root --> ProgFiles["Program Files<br>(64-bit Apps)"]
+    Root --> ProgFiles86["Program Files x86<br>(32-bit Apps)"]
+    Root --> ProgData["ProgramData<br>(Shared App Configs)"]
 
-    Windows --> System32["System32<br/>(Core DLLs & Utilities)"]
-    Windows --> SysWOW64["SysWOW64<br/>(32-bit System Files)"]
-    Windows --> Temp["Temp<br/>(System Temp Files)"]
+    Windows --> System32["System32<br>(Core DLLs and Utilities)"]
+    Windows --> SysWOW64["SysWOW64<br>(32-bit System Files)"]
+    Windows --> Temp["Temp<br>(System Temp Files)"]
 
     Users --> AdminProfile["Administrator"]
-    Users --> UserProfile["User Profile (e.g. Kashif)"]
+    Users --> UserProfile["User Profile"]
     UserProfile --> Desktop["Desktop"]
     UserProfile --> Downloads["Downloads"]
-    UserProfile --> AppData["AppData<br/>(Local / Roaming)"]
+    UserProfile --> AppData["AppData<br>(Local and Roaming)"]
 ```
 
 ---
@@ -480,11 +480,11 @@ Relative path navigation shortcuts:
 
 ```mermaid
 flowchart LR
-    Drive["C:<br/>(Drive Letter)"] --> RootSep["Root Directory<br/>(Root Slash)"]
-    RootSep --> Folder1["Users<br/>(Parent Directory)"]
-    Folder1 --> Folder2["Kashif<br/>(Subfolder)"]
-    Folder2 --> Folder3["Desktop<br/>(Subfolder)"]
-    Folder3 --> File["Report.docx<br/>(File Name & Extension)"]
+    Drive["Drive C<br>(Drive Letter)"] --> RootSep["Root Directory<br>(Root Slash)"]
+    RootSep --> Folder1["Users<br>(Parent Directory)"]
+    Folder1 --> Folder2["Kashif<br>(Subfolder)"]
+    Folder2 --> Folder3["Desktop<br>(Subfolder)"]
+    Folder3 --> File["Report.docx<br>(File Name and Extension)"]
 ```
 
 ---
@@ -600,9 +600,9 @@ Every standard file on NTFS has a default unnamed data stream (`:$DATA`). An Alt
 
 ```mermaid
 flowchart TD
-    File["document.txt (Primary File Entry)"] --> Stream1[":$DATA (Default Visible Content)"]
-    File --> Stream2[":hidden_payload.exe (Alternate Data Stream)"]
-    File --> Stream3[":Zone.Identifier (Mark-of-the-Web Metadata)"]
+    File["document.txt (Primary File Entry)"] --> Stream1["DATA Stream (Default Visible Content)"]
+    File --> Stream2["hidden_payload.exe (Alternate Data Stream)"]
+    File --> Stream3["Zone.Identifier (Mark-of-the-Web Metadata)"]
 ```
 
 ---
@@ -695,9 +695,9 @@ When a file (e.g., `Report.docx`) is moved to the Recycle Bin, Windows renames t
 
 ```mermaid
 flowchart TD
-    DeletedFile["User Deletes 'Report.docx'"] --> RecycleBin["$Recycle.Bin Folder"]
-    RecycleBin --> IFile["$I Metadata File ($Ixxxxxx.docx)<br/>Contains Original Path, Original Name,<br/>Deletion Timestamp, File Size"]
-    RecycleBin --> RFile["$R Data File ($Rxxxxxx.docx)<br/>Contains Actual File Data / Content"]
+    DeletedFile["User Deletes Report.docx"] --> RecycleBin["Recycle.Bin Folder"]
+    RecycleBin --> IFile["Metadata File<br>(Contains Original Path, Name, Deletion Time, Size)"]
+    RecycleBin --> RFile["Data File<br>(Contains Actual File Data and Content)"]
 ```
 
 1. **`$I` File (`$Ixxxxxx.ext`)**:
