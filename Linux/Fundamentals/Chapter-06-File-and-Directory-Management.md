@@ -690,3 +690,10 @@ In this chapter, you learned:
 * Ubuntu Documentation — https://help.ubuntu.com/
 
 ---
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter-07-Users-and-Groups](./Chapter-07-Users-and-Groups.md)**

@@ -255,3 +255,10 @@ A complete walkthrough, command explanations, expected outputs, troubleshooting 
 ## Next Lab
 
 Continue to **Lab 11 – Package Management**, where you will learn how to install, update, remove, and verify software packages while maintaining a secure and up-to-date Linux system.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2010%20Solution%20%E2%80%93%20Logging%20%26%20Monitoring.md)**

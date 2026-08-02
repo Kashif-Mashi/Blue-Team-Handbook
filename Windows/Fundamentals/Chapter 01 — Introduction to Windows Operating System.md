@@ -398,3 +398,10 @@ Windows uses **WOW64 (Windows-on-Windows 64)** to run many 32-bit applications o
 - Modern computers use 64-bit Windows for improved performance and memory support.
 
 ---
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 02 — Windows Installation & Initial Configuration](./Chapter%2002%20%E2%80%94%20Windows%20Installation%20%26%20Initial%20Configuration.md)**

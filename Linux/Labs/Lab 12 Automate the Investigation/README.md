@@ -240,3 +240,10 @@ A complete walkthrough, command explanations, expected outputs, troubleshooting 
 ## Next Lab
 
 Continue to **Lab 13 – Linux Security & Hardening**, where you will learn how to secure a Linux system by applying hardening techniques, reducing the attack surface, and implementing security best practices.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2012%20Solution%20%E2%80%93%20Bash%20Scripting.md)**

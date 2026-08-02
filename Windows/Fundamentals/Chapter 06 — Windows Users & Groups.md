@@ -329,3 +329,10 @@ Computer role:                                        WORKSTATION
 - [Microsoft Documentation: Security Identifiers (SIDs)](https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/security-identifiers)
 - [Microsoft Learn: User Account Control Overview](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/user-account-control/)
 - [MITRE ATT&CK: Create Account: Local Account (T1136.001)](https://attack.mitre.org/techniques/T1136/001/)
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 07 — NTFS Permissions & Access Control](./Chapter%2007%20%E2%80%94%20NTFS%20Permissions%20%26%20Access%20Control.md)**

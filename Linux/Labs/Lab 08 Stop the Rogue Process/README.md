@@ -246,3 +246,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 09 – Linux Networking**, where you will learn how to inspect network interfaces, verify connectivity, examine listening ports, and troubleshoot network communication from a Blue Team perspective.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2008%20Solution%20%E2%80%93%20Processes%20%26%20Services.md)**

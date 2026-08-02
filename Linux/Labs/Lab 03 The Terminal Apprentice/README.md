@@ -211,3 +211,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 04 – Navigation Commands**, where you will learn how to efficiently move through the Linux file system and locate important files and directories.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2003%20Solution%20%E2%80%93%20Shell%20%26%20Terminal%20Basics.md)**

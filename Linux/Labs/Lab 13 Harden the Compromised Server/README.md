@@ -258,3 +258,10 @@ A complete walkthrough, command explanations, expected outputs, troubleshooting 
 ## Next Lab
 
 Continue to **Lab 14 – Blue Team Linux Challenge**, where you will apply everything learned throughout the Linux Fundamentals course by investigating and securing a simulated Linux system in a comprehensive, real-world scenario.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2013%20Solution%20%E2%80%93%20Linux%20Security%20%26%20Hardening.md)**

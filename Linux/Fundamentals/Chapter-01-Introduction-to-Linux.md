@@ -191,3 +191,9 @@ Linux is widely used in cybersecurity because it powers:
 8. Why is Linux important for SOC analysts?
 9. What is the difference between the kernel and the shell?
 10. Name three cybersecurity tools that run on Linux.
+
+---
+
+# Next Chapter
+
+➡ **[Chapter-02-Linux-Ecosystem-and-Distributions](./Chapter-02-Linux-Ecosystem-and-Distributions.md)**

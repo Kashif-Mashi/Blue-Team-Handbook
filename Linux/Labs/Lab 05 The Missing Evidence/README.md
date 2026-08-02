@@ -232,3 +232,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 06 – Users & Groups**, where you will learn how to create users, manage groups, and control access to Linux systems using account management tools.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2005%20Solution%20%E2%80%93%20File%20%26%20Directory%20Management.md)**

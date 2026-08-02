@@ -297,3 +297,10 @@ Set-Service -Name "TestService" -StartupType Disabled
 - [Microsoft Learn: Service Applications](https://learn.microsoft.com/en-us/windows/win32/services/services)
 - [Sysinternals Utilities - Process Explorer](https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer)
 - [MITRE ATT&CK: System Services: Service Execution (T1569.002)](https://attack.mitre.org/techniques/T1569/002/)
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 09 — Windows Networking Fundamentals](./Chapter%2009%20%E2%80%94%20Windows%20Networking%20Fundamentals.md)**

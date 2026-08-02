@@ -633,3 +633,10 @@ In this chapter, you learned:
 * Ubuntu Documentation — https://help.ubuntu.com/
 
 ---
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter-08-Permissions](./Chapter-08-Permissions.md)**

@@ -185,3 +185,10 @@ Although Kali Linux is an excellent learning platform for security tools, defend
 
 ---
 
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter-03-Linux-File-System-Hierarchy](./Chapter-03-Linux-File-System-Hierarchy.md)**

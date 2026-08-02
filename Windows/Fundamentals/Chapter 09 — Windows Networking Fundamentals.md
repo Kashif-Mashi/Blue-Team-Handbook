@@ -323,3 +323,10 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 - [Microsoft Documentation: Windows Firewall with Advanced Security](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/)
 - [Sysinternals Utilities - TCPView](https://learn.microsoft.com/en-us/sysinternals/downloads/tcpview)
 - [MITRE ATT&CK: Remote Services: SMB/Windows Admin Shares (T1021.002)](https://attack.mitre.org/techniques/T1021/002/)
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 10 — Windows Event Viewer & Logging](./Chapter%2010%20%E2%80%94%20Windows%20Event%20Viewer%20%26%20Logging.md)**

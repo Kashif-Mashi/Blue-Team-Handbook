@@ -235,3 +235,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 07 – File Permissions & Ownership**, where you will learn how to control access to files and directories using Linux permissions, ownership, and access control principles.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2006%20Solution%20%E2%80%93%20Users%20%26%20Groups.md)**

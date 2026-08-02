@@ -120,3 +120,10 @@ To verify success:
 3. Pipe `netstat -ano` into `findstr` to identify any process listening on port `445` (SMB).
 4. Create a hash table in PowerShell containing key workstation metadata and convert it to JSON format using `ConvertTo-Json`.
 5. Identify any running process whose file path resides outside `C:\Windows` or `C:\Program Files`.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2003%20Solution.md)**

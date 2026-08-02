@@ -226,3 +226,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 05 – File & Directory Management**, where you will learn how to create, organize, copy, move, rename, and remove files and directories safely using Linux commands.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2004%20Solution%20%E2%80%93%20Navigation%20Commands.md)**

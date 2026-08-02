@@ -239,3 +239,10 @@ A complete walkthrough, command explanations, expected outputs, troubleshooting 
 ## Next Lab
 
 Continue to **Lab 12 – Bash Scripting**, where you will learn how to automate repetitive administrative tasks and create simple scripts to improve efficiency during Linux administration and security operations.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2011%20Solution%20%E2%80%93%20Package%20Management.md)**

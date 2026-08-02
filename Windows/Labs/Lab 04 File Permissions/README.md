@@ -118,3 +118,10 @@ To verify success:
 3. Use `Get-Acl` to output file owner SIDs across all `.exe` files in a given directory.
 4. Modify an ACL to explicitly Deny write access to a user while granting Read access, and test which rule takes precedence.
 5. Restore default inherited permissions on a directory using `icacls /reset`.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2004%20Solution.md)**

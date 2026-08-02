@@ -120,3 +120,10 @@ To verify success:
 3. Create an inbound Windows Firewall rule via PowerShell (`New-NetFirewallRule`) blocking port `445` (SMB).
 4. Perform a `tracert` to a public IP and identify all intermediate network hops.
 5. Inspect active DNS cache entries and pipe the results to `Select-String` to look for specific domain suffixes.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2007%20Solution.md)**

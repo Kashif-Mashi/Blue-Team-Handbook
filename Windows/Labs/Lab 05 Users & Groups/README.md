@@ -120,3 +120,10 @@ To verify success:
 3. Use PowerShell to check if the built-in Administrator account (RID 500) has been renamed.
 4. Test account lockout by attempting invalid logons against a test account until locked out, then locate Event ID **4740** (Account Lockout).
 5. Compare token privileges returned by `whoami /priv` before and after enabling `SeDebugPrivilege`.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2005%20Solution.md)**

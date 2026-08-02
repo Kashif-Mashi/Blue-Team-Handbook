@@ -237,3 +237,9 @@ Solutions/Lab 01 - Windows Installation.md
 - Microsoft Windows Documentation
 - Oracle VirtualBox Documentation
 - VMware Documentation
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2001%20-%20Windows%20Installation.md)**

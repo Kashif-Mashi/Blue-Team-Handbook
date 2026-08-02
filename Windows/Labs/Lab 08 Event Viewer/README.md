@@ -119,3 +119,10 @@ To verify success:
 3. Query Event ID **4670** (Permissions on an object were changed) to identify ACL modifications.
 4. Calculate the average number of logon events per hour on the machine using `Group-Object`.
 5. Export Sysmon Event ID **1** records to a JSON file using `ConvertTo-Json`.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2008%20Solution.md)**

@@ -230,3 +230,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 08 – Processes & Services**, where you will learn how to monitor running processes, manage system services, and identify suspicious activity on a Linux system.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2007%20Solution%20%E2%80%93%20File%20Permissions%20%26%20Ownership.md)**

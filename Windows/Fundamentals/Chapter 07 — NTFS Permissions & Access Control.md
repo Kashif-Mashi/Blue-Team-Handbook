@@ -320,3 +320,10 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 - [Microsoft Documentation: icacls Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/icacls)
 - [Microsoft Learn: How Access Check Works](https://learn.microsoft.com/en-us/windows/win32/secauthz/how-dacls-control-access-to-an-object)
 - [MITRE ATT&CK: File and Directory Permissions Modification (T1222.001)](https://attack.mitre.org/techniques/T1222/001/)
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 08 — Windows Processes & Services](./Chapter%2008%20%E2%80%94%20Windows%20Processes%20%26%20Services.md)**

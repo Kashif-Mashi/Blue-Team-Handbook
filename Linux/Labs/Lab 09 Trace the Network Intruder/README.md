@@ -257,3 +257,10 @@ A complete walkthrough, command explanations, expected outputs, troubleshooting 
 ## Next Lab
 
 Continue to **Lab 10 – Logging & Monitoring**, where you will learn how to investigate Linux log files, monitor system events, and identify indicators of suspicious activity using built-in logging tools.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2009%20Solution%20%E2%80%93%20Linux%20Networking.md)**

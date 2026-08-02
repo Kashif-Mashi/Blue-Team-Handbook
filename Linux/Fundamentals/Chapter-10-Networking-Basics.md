@@ -638,3 +638,10 @@ In this chapter, you learned:
 * RFC 8200 – Internet Protocol Version 6 (IPv6)
 
 ---
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter-11-Logging-and-Monitoring](./Chapter-11-Logging-and-Monitoring.md)**

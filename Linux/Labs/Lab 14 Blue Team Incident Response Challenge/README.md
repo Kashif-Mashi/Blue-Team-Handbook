@@ -325,3 +325,9 @@ Continue your learning journey with the next section of the **Blue Team Handbook
 ➡️ **Windows Fundamentals**
 
 In this section, learn the fundamentals of Microsoft Windows from a Blue Team perspective. Understand how Windows works, manage users and services, navigate the file system, analyze logs, and perform basic security hardening.
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2014%20Solution%20%E2%80%93%20Blue%20Team%20Linux%20Investigation%20Challenge.md)**

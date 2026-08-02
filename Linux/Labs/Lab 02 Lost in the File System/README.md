@@ -228,3 +228,10 @@ A complete walkthrough, command explanations, expected outputs, and troubleshoot
 ## Next Lab
 
 Continue to **Lab 03 – Shell & Terminal Basics**, where you will learn how to interact with Linux more efficiently using the Bash shell and essential terminal features.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solutions/Lab%2002%20Solution%20%E2%80%93%20Linux%20File%20System%20Exploration.md)**

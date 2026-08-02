@@ -119,3 +119,10 @@ To verify success:
 3. Identify all unquoted service paths on your system using `wmic service get name,displayname,pathname,startmode | findstr /i /v "c:\windows\\" | findstr /i /v """`.
 4. Use `Get-Process` to list processes with no associated file path on disk (potential memory injection indicator).
 5. Compare process listings between `tasklist` and Sysinternals `Process Explorer` to spot hidden processes.
+
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2006%20Solution.md)**

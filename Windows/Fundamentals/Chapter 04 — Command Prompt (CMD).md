@@ -301,6 +301,15 @@ echo [+] Collection Complete.
 
 ---
 
+# 🔑 Key Takeaways
+
+- **LotL Techniques**: Attackers heavily rely on CMD for Living-off-the-Land techniques to avoid detection.
+- **Context Matters**: Running as Administrator versus Standard User drastically changes what CMD can access and manipulate.
+- **Logging is Crucial**: Process Command Line logging (Event ID 4688 or Sysmon Event ID 1) is vital for detecting malicious CMD usage.
+- **Piping and Redirection**: Mastering operators like `>`, `>>`, and `|` is essential for both attack simulation and defensive triage.
+
+---
+
 # Key Commands
 
 | Command | Purpose | Example |
@@ -403,3 +412,9 @@ echo [+] Collection Complete.
 - [Microsoft Documentation: Windows Commands Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd)
 - [Sysinternals Utilities - Microsoft Learn](https://learn.microsoft.com/en-us/sysinternals/)
 - [MITRE ATT&CK: Command and Scripting Interpreter: Windows Command Shell (T1059.003)](https://attack.mitre.org/techniques/T1059/003/)
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 05 — PowerShell Fundamentals](./Chapter%2005%20%E2%80%94%20PowerShell%20Fundamentals.md)**

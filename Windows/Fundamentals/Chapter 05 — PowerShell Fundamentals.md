@@ -377,3 +377,10 @@ graph TD
 - [Microsoft Learn: About Execution Policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)
 - [Greater Visibility Through PowerShell Logging - Mandiant](https://www.mandiant.com/resources/blog/greater-visibility-through-powershell-logging)
 - [MITRE ATT&CK: Command and Scripting Interpreter: PowerShell (T1059.001)](https://attack.mitre.org/techniques/T1059/001/)
+
+
+---
+
+# Next Chapter
+
+➡ **[Chapter 06 — Windows Users & Groups](./Chapter%2006%20%E2%80%94%20Windows%20Users%20%26%20Groups.md)**

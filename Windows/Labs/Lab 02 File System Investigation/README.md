@@ -308,3 +308,9 @@ Solutions/
 ```
 
 > **Tip:** Complete the investigation yourself before reviewing the solution. Comparing your findings with the walkthrough will help reinforce your understanding of the Windows File System and basic Blue Team investigation techniques.
+
+---
+
+# Solution
+
+➡ **[View Solution](../Solution/Lab%2002-File%20System%20Investigation.md)**
