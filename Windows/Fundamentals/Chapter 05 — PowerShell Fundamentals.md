@@ -46,10 +46,10 @@ In PowerShell, `Get-Process` returns a collection of `System.Diagnostics.Process
 
 ```mermaid
 graph TD
-    Cmdlet[Get-Process] -->|Outputs| ObjectCollection[Collection of .NET Process Objects]
-    ObjectCollection --> Prop1[Property: Name = svchost]
-    ObjectCollection --> Prop2[Property: Id = 1024]
-    ObjectCollection --> Prop3[Property: WorkingSet = 45MB]
+    Cmdlet["Get-Process"] -->|Outputs| ObjectCollection["Collection of .NET Process Objects"]
+    ObjectCollection --> Prop1["Property: Name = svchost"]
+    ObjectCollection --> Prop2["Property: Id = 1024"]
+    ObjectCollection --> Prop3["Property: WorkingSet = 45MB"]
     ObjectCollection --> Method1["Method: Kill()"]
 ```
 
@@ -90,9 +90,9 @@ PowerShell pipelines pass complete objects from one cmdlet to another.
 
 ```mermaid
 flowchart LR
-    A["Get-Process<br>(Generates Process Objects)"] -->|Pipeline '|'| B["Where-Object {$_.CPU -gt 50}<br>(Filters Objects)"]
-    B -->|Pipeline '|'| C["Select-Object Name, Id, CPU<br>(Selects Properties)"]
-    C -->|Pipeline '|'| D["Out-File C:\HighCPU.txt<br>(Writes Output)"]
+    A["Get-Process<br>(Generates Process Objects)"] -->|Pipeline| B["Where-Object (CPU -gt 50)<br>(Filters Objects)"]
+    B -->|Pipeline| C["Select-Object Name, Id, CPU<br>(Selects Properties)"]
+    C -->|Pipeline| D["Out-File C:/HighCPU.txt<br>(Writes Output)"]
 ```
 
 ---
@@ -226,12 +226,12 @@ Get-HostTriage
 
 ```mermaid
 graph TD
-    UserScript[User/Attacker Script] --> PSEngine[PowerShell Engine]
-    PSEngine --> AMSI[Antimalware Scan Interface]
-    AMSI --> Defender[Antivirus Engine / Defender]
-    Defender -->|Clean| Exec[Execute Script]
-    Defender -->|Malicious| Block[Block & Trigger Alert]
-    PSEngine --> Log[Script Block Logging Event ID 4104]
+    UserScript["User/Attacker Script"] --> PSEngine["PowerShell Engine"]
+    PSEngine --> AMSI["Antimalware Scan Interface"]
+    AMSI --> Defender["Antivirus Engine / Defender"]
+    Defender -->|Clean| Exec["Execute Script"]
+    Defender -->|Malicious| Block["Block & Trigger Alert"]
+    PSEngine --> Log["Script Block Logging Event ID 4104"]
 ```
 
 ---
