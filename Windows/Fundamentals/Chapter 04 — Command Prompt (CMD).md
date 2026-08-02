@@ -1,6 +1,8 @@
 # Chapter 04 — Command Prompt (CMD)
 
-## Introduction
+---
+
+# 📖 Overview
 
 The **Command Prompt** (commonly referred to as **CMD** or `cmd.exe`) is the default command-line interpreter for the Microsoft Windows operating system. Unlike graphical user interfaces (GUIs) where operations are performed using a mouse, icons, and menus, a command-line interface (CLI) allows users, system administrators, and security professionals to interact with the operating system by typing text-based commands.
 
@@ -10,9 +12,9 @@ For SOC Analysts, Incident Responders, and Threat Hunters, mastering CMD is mand
 
 ---
 
-## Learning Objectives
+# 🎯 Learning Objectives
 
-Students should be able to:
+After completing this chapter, you will be able to:
 
 - Explain the architecture, history, and role of Command Prompt within Windows.
 - Distinguish between standard user and elevated (Administrator) CMD execution contexts.
@@ -24,7 +26,7 @@ Students should be able to:
 
 ---
 
-## Why Blue Teams Care
+# Why Blue Teams Care
 
 Command Prompt is one of the most frequently abused native binaries in Windows environments. Security operations teams analyze CMD activities for several critical reasons:
 
@@ -35,15 +37,17 @@ Command Prompt is one of the most frequently abused native binaries in Windows e
 
 ---
 
-## Core Concepts
+# Core Concepts
 
-### 1. Command Interpreter vs. Shell vs. GUI
+## Command Interpreter vs. Shell vs. GUI
 
 - **Graphical User Interface (GUI)**: Uses visual components (`explorer.exe`) such as windows, icons, and buttons. High usability, but slow for repetitive tasks and difficult to log programmatically.
 - **Command Line Interpreter (CLI)**: Accepts text inputs, interprets them, and passes instructions to the underlying Windows API.
 - **Shell**: The user interface for access to an operating system's services. CMD is a command-line shell for Windows.
 
-### 2. Architecture: `cmd.exe` vs `conhost.exe`
+---
+
+## Architecture: `cmd.exe` vs `conhost.exe`
 
 In modern Windows, when you launch Command Prompt:
 1. `cmd.exe` executes as the command interpreter (processing syntax, built-in commands, and scripts).
@@ -51,31 +55,33 @@ In modern Windows, when you launch Command Prompt:
 
 ```mermaid
 graph TD
-    UserInput[User Input in Console] --> Terminal[Windows Terminal / conhost.exe]
-    Terminal --> CMDProc[cmd.exe Interpreter]
-    CMDProc --> Builtin[Built-in Commands e.g. dir, cd, set]
-    CMDProc --> External[External Executables e.g. ping.exe, ipconfig.exe, net.exe]
-    Builtin --> WinAPI[Windows API Subsystem]
+    UserInput["User Input in Console"] --> Terminal["Windows Terminal / conhost.exe"]
+    Terminal --> CMDProc["cmd.exe Interpreter"]
+    CMDProc --> Builtin["Built-in Commands e.g. dir, cd, set"]
+    CMDProc --> External["External Executables e.g. ping.exe, ipconfig.exe, net.exe"]
+    Builtin --> WinAPI["Windows API Subsystem"]
     External --> WinAPI
-    WinAPI --> Kernel[Windows Executive / Kernel]
+    WinAPI --> Kernel["Windows Executive / Kernel"]
 ```
 
-### 3. Execution Context: Standard User vs. Elevated (Administrator)
+---
+
+## Execution Context: Standard User vs. Elevated (Administrator)
 
 Windows enforces Access Control Lists (ACLs) and User Account Control (UAC). Command Prompt inherits the security context of the user who launched it:
 
 - **Standard User CMD**: Operates with restricted privileges (Medium Integrity Level). Cannot modify system files (`C:\Windows`), alter global registry keys (`HKLM`), stop core services, or modify user accounts.
 - **Elevated CMD (Run as Administrator)**: Operates with administrative privileges (High Integrity Level). Allows system modifications, driver management, network configuration, and service manipulation.
 
-> **Blue Team Insight**
+> 💙 **Blue Team Note**
 > 
 > Attackers aim to elevate `cmd.exe` from Medium Integrity to High/System Integrity. SOC Analysts monitor for privilege escalation markers where standard processes launch elevated `cmd.exe` instances via UAC bypass techniques.
 
 ---
 
-## Practical Examples
+# Practical Examples
 
-### File & Directory Navigation
+## File & Directory Navigation
 
 | Command | Description | Example Syntax |
 |---|---|---|
@@ -84,7 +90,7 @@ Windows enforces Access Control Lists (ACLs) and User Account Control (UAC). Com
 | `mkdir` / `md` | Create a new directory | `mkdir C:\Triage` |
 | `rmdir` / `rd` | Remove a directory | `rmdir /s /q C:\TempDir` |
 
-#### Output Example: `dir`
+### Output Example: `dir`
 ```cmd
 C:\Users\Analyst> dir C:\Windows\System32\drivers\etc
 
@@ -103,7 +109,7 @@ C:\Users\Analyst> dir C:\Windows\System32\drivers\etc
 
 ---
 
-### System Enumeration Commands
+## System Enumeration Commands
 
 ```cmd
 :: Display detailed system configuration information
@@ -119,13 +125,13 @@ ver
 whoami /all
 ```
 
-> **Blue Team Insight**
+> 💙 **Blue Team Note**
 > 
 > Running `whoami /all` returns the current user's SID, group memberships, and assigned privileges (e.g., `SeDebugPrivilege`, `SeImpersonatePrivilege`). Adversaries run `whoami /all` immediately after gaining initial access to check if privilege escalation is needed.
 
 ---
 
-### Process Enumeration & Control
+## Process Enumeration & Control
 
 ```cmd
 :: List all running processes with PID and Memory usage
@@ -143,7 +149,7 @@ taskkill /IM malicious.exe /F
 
 ---
 
-### Network Discovery Commands
+## Network Discovery Commands
 
 ```cmd
 :: Display IP addresses, subnet mask, and default gateway
@@ -167,15 +173,15 @@ arp -a
 
 ```mermaid
 flowchart LR
-    Attacker[Adversary Host] -->|1. Execution| CMD[cmd.exe]
+    Attacker["Adversary Host"] -->|1. Execution| CMD["cmd.exe"]
     CMD -->|2. Network Recon| Netstat["netstat -ano"]
     CMD -->|3. Account Recon| NetUser["net user /domain"]
-    CMD -->|4. Output Log| File[C:\Users\Public\recon.txt]
+    CMD -->|4. Output Log| File["C:\Users\Public\recon.txt"]
 ```
 
 ---
 
-### User & Group Management Commands
+## User & Group Management Commands
 
 ```cmd
 :: List all local user accounts on the machine
@@ -196,9 +202,9 @@ net localgroup Administrators
 
 ---
 
-### Environment Variables, Redirection, & Pipes
+## Environment Variables, Redirection, & Pipes
 
-#### Environment Variables
+### Environment Variables
 Environment variables store system settings and dynamic paths:
 - `%SYSTEMROOT%`: Usually `C:\Windows`
 - `%USERPROFILE%`: Usually `C:\Users\<Username>`
@@ -209,7 +215,7 @@ echo %USERPROFILE%
 set
 ```
 
-#### Output Redirection & Piping
+### Output Redirection & Piping
 - `>`: Overwrite file with command output.
 - `>>`: Append command output to file.
 - `2>`: Redirect error stream.
@@ -228,7 +234,7 @@ netstat -ano | findstr "ESTABLISHED"
 
 ---
 
-### Windows Batch Scripts (`.bat` / `.cmd`)
+## Windows Batch Scripts (`.bat` / `.cmd`)
 
 Batch scripts store sequential CMD commands executed automatically.
 
@@ -245,15 +251,15 @@ netstat -ano | findstr /i "ESTABLISHED" >> C:\Triage\summary.txt
 echo [+] Collection Complete.
 ```
 
-> **Warning**
+> ⚠️ **Warning**
 > 
 > Attackers often drop obfuscated batch scripts in `%TEMP%` or `C:\Users\Public` to execute persistence mechanisms or launch hidden downloads.
 
 ---
 
-## Blue Team Investigation Notes
+# Blue Team Investigation Notes
 
-> **Blue Team Insight: Detecting Suspicious `cmd.exe` Flags**
+> 💙 **Blue Team Note: Detecting Suspicious `cmd.exe` Flags**
 > 
 > Adversaries execute commands non-interactively using specific switches:
 > - `cmd.exe /c`: Carries out the command specified by string and then terminates.
@@ -266,7 +272,7 @@ echo [+] Collection Complete.
 
 ---
 
-## Common Mistakes
+# Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
@@ -277,7 +283,7 @@ echo [+] Collection Complete.
 
 ---
 
-## Best Practices
+# Best Practices
 
 1. **Enable Command Line Process Auditing**: Configure Group Policy (`Computer Configuration -> Administrative Templates -> System -> Audit Process Creation -> Include command line in process creation events`) to populate Event ID 4688 with full arguments.
 2. **Deploy Sysmon**: Use Sysmon Event ID 1 (Process Creation) to monitor parent-child process pairs (e.g., MS Office launching CMD).
@@ -285,7 +291,7 @@ echo [+] Collection Complete.
 
 ---
 
-## Summary
+# Summary
 
 - Command Prompt (`cmd.exe`) is the legacy command interpreter built into Microsoft Windows.
 - It operates in two privilege contexts: Standard User (Medium Integrity) and Administrator (High Integrity).
@@ -295,7 +301,7 @@ echo [+] Collection Complete.
 
 ---
 
-## Key Commands
+# Key Commands
 
 | Command | Purpose | Example |
 |---|---|---|
@@ -312,7 +318,7 @@ echo [+] Collection Complete.
 
 ---
 
-## Quick Quiz
+# Quick Quiz
 
 1. **Which process is responsible for command-line syntax parsing in Command Prompt?**
    - A) `explorer.exe`
@@ -376,7 +382,7 @@ echo [+] Collection Complete.
 
 ---
 
-### Quiz Answers
+## Quiz Answers
 
 1. **B** (`cmd.exe`)
 2. **B** (Overwrites the target file with command output)
@@ -391,7 +397,7 @@ echo [+] Collection Complete.
 
 ---
 
-## Further Reading
+# Further Reading
 
 - [Microsoft Learn: Command Prompt Overview](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands)
 - [Microsoft Documentation: Windows Commands Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd)
