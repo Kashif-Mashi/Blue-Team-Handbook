@@ -2,6 +2,101 @@
 
 All notable changes to the **Blue-Team-Handbook** project are documented in this file.
 
+---
+
+## 02 August 2026 — Windows Fundamentals Chapters, Labs & Solutions (Chapters 04–09)
+
+### 🚀 Overview
+
+Authored and integrated **6 comprehensive chapter modules**, **6 practical hands-on labs**, and **6 full solution guides** for the Windows Fundamentals section of the Blue Team Handbook. All content was written in official Microsoft Learn / TryHackMe / HTB Academy style and committed to the `main` branch.
+
+---
+
+### 📚 Chapters Added
+
+| File | Topics |
+|---|---|
+| **Chapter 04 — Command Prompt (CMD)** | `cmd.exe` architecture, environment variables, piping, redirection, net/process enumeration, LotL execution, Batch scripting basics |
+| **Chapter 05 — PowerShell Fundamentals** | .NET objects vs text, Verb-Noun cmdlets, pipeline, execution policy, AMSI, Script Block Logging, Event ID 4104 |
+| **Chapter 06 — Windows Users & Groups** | Local vs Domain accounts, SAM database, SIDs/RIDs, Access Tokens, UAC integrity levels, Event IDs 4720/4732 |
+| **Chapter 07 — NTFS Permissions & Access Control** | Security Descriptors, DACLs, SACLs, ACEs, inheritance, evaluation order, `icacls`, `takeown`, Event ID 4663 |
+| **Chapter 08 — Windows Processes & Services** | Process components, virtual memory, threads, critical system processes (`lsass`, `svchost`, `services.exe`), Event IDs 4688/7045 |
+| **Chapter 09 — Windows Networking Fundamentals** | Windows Network Stack, Winsock, `netstat -ano`, TCP states, DNS cache, ARP, Windows Firewall, Sysmon Event ID 3 |
+
+Each chapter includes:
+- Learning Objectives
+- Blue Team relevance explanation
+- Core concepts with Mermaid architecture diagrams
+- Practical command examples (CMD + PowerShell)
+- Blue Team Investigation Notes
+- Common Mistakes & Best Practices
+- 10-question Quiz with Answer Key
+- Further Reading links (Microsoft Learn, MITRE ATT&CK)
+
+---
+
+### 🧪 Labs Added
+
+| Lab | Scenario | MITRE ATT&CK |
+|---|---|---|
+| **Lab 03 — CMD & PowerShell** | Host triage following unauthorized CLI execution alert | T1059.001, T1059.003, T1082, T1057, T1049 |
+| **Lab 04 — File Permissions** | Auditing sensitive directory DACLs and stripping inheritance | T1222.001, T1070.004 |
+| **Lab 05 — Users & Groups** | Rogue account creation investigation via Event ID 4720 | T1087.001, T1069.001, T1136.001, T1078.003 |
+| **Lab 06 — Processes & Services** | Process lineage analysis and service persistence via Event ID 7045 | T1569.002, T1057, T1036.005 |
+| **Lab 07 — Networking** | C2 beacon triage, socket-to-process correlation, firewall isolation | T1049, T1016, T1071.001, T1562.004 |
+| **Lab 08 — Event Viewer** | Security log analysis, command-line audit policy, Event ID 4688 extraction | T1070.001, T1059.001, T1059.003 |
+
+Each lab includes:
+- Realistic SOC incident scenario
+- 15 step-by-step hands-on tasks
+- Environment requirements & prerequisites
+- Verification criteria
+- Blue Team Notes
+- Common student errors
+- MITRE ATT&CK mapping
+- 5 advanced challenge questions
+
+---
+
+### 📝 Solutions Added
+
+Complete step-by-step solution guides created for all 6 labs:
+- **Lab 03 Solution** — CMD & PowerShell Triage
+- **Lab 04 Solution** — File Permissions Hardening
+- **Lab 05 Solution** — Users & Groups Investigation
+- **Lab 06 Solution** — Processes & Services Analysis
+- **Lab 07 Solution** — Network Connection Triage
+- **Lab 08 Solution** — Event Viewer Log Analysis
+
+Each solution includes exact CLI commands with expected output in code blocks, technical explanations for each task, and screenshot placeholders per task.
+
+---
+
+### 🛠️ Fixes
+
+- **Chapter 05 Mermaid Rendering**: Fixed broken Mermaid diagram syntax in `Chapter 05 — PowerShell Fundamentals.md`. Corrected node label formatting to resolve GitHub rendering failures in the object pipeline and AMSI flow diagrams.
+- **Chapter 08 Mermaid Rendering**: Resolved Mermaid diagram rendering issues in `Chapter 08 — Windows Processes & Services.md` by removing unsupported special characters from node labels in the process lineage and Windows boot tree diagrams.
+
+---
+
+### 📊 Commits
+
+| Commit | Description |
+|---|---|
+| `e7c5a96` | `add 6 comprehensive modules` — 37 files, 10,277 insertions |
+| `1b7e488` | `add 6 comprehensive modules` — Mermaid fix for Chapter 05 |
+
+---
+
+### 📊 Current Module Status
+
+| Module | Chapters | Labs | Solutions |
+|---|---|---|---|
+| ✅ Linux Fundamentals | 14 | 14 | 14 |
+| 🟡 Windows Fundamentals | 9 / 14 | 8 / 14 | 8 / 14 |
+
+---
+
 # 31 July 2026
 ### Improved
 
