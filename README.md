@@ -468,7 +468,7 @@ Every star and every contribution keeps this project moving forward.
 
 This project is maintained by a practitioner building in public.
 
-- **GitHub:** [kashifkhanamv123](https://github.com/kashifkhanamv123)
+- **GitHub:** [Kashif-Mashi](https://github.com/Kashif-Mashi/)
 
 ---
 
