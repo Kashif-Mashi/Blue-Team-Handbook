@@ -1,318 +1,198 @@
-# Chapter 07 — NTFS Permissions & Access Control
+# Chapter 07 – NTFS Permissions & Access Control
+
+## Overview
+
+Windows uses the **New Technology File System (NTFS)** to store files and folders. One of the most important features of NTFS is **Permissions**, which determine who can access, modify, or delete files and folders.
+
+Permissions help protect important data by ensuring that only authorized users can perform specific actions. Understanding NTFS permissions is an essential skill for Windows users, system administrators, and Blue Team professionals.
 
 ---
 
-# 📖 Overview
-
-In modern multi-user operating systems, controlling access to sensitive files, directories, and system resources is a fundamental requirement. The Windows operating system uses the **New Technology File System (NTFS)** to manage file storage, enforce granular security boundaries, and restrict user access through robust authorization mechanisms.
-
-NTFS Permissions dictate exactly which users, security groups, or system services can view, modify, execute, or delete specific files and folders. These permissions are enforced by the Windows Kernel whenever an application or user attempts to open a handle to a file object.
-
-For Blue Team professionals—including SOC Analysts, Incident Responders, and Systems Auditors—understanding NTFS access control is essential. Attackers routinely search for weak directory permissions to escalate privileges, hijack vulnerable service binaries, establish persistence, or exfiltrate sensitive corporate data.
-
----
-
-# 🎯 Learning Objectives
+## Learning Objectives
 
 After completing this chapter, you will be able to:
 
-- Explain the architecture of NTFS Security Descriptors, DACLs, SACLs, and ACEs.
-- Differentiate between Discretionary Access Control Lists (DACLs) and System Access Control Lists (SACLs).
-- Describe Standard NTFS permissions (Read, Write, Read & Execute, List Folder Contents, Modify, Full Control) and Special Permissions.
-- Analyze permission inheritance rules, parent-child folder propagation, and inheritance blocking.
-- Evaluate Effective Permissions and apply evaluation rules (Deny overrides Allow, explicit overrides inherited).
-- Manage file ownership and modify Access Control Lists using `icacls.exe`, `takeown.exe`, and PowerShell (`Get-Acl`, `Set-Acl`).
-- Configure object access auditing and analyze Security Event Logs (Event IDs 4663 and 4656).
+- Understand what NTFS permissions are
+- Identify common NTFS permission types
+- View and modify file permissions
+- Understand file ownership
+- Explain permission inheritance
+- Use basic `icacls` commands
+- Understand why permissions are important for Blue Teams
 
 ---
 
-# Why Blue Teams Care
+# What are NTFS Permissions?
 
-Access control is a core pillar of host security and forensic investigation:
+NTFS permissions control **who can access files and folders** and **what actions they are allowed to perform**.
 
-1. **Privilege Escalation via Weak File Permissions**: Adversaries search for system service executables, configuration files, or scheduled task scripts that grant Write `(W)` or Modify `(M)` access to standard `Users`. Replacing a legitimate binary with a malicious payload allows instant privilege escalation to `NT AUTHORITY\SYSTEM`.
-2. **Data Exfiltration & Confidentiality Breaches**: Overshared network drives and permissive folder ACLs allow unauthorized accounts to browse and steal sensitive documents.
-3. **Forensic Auditing & Object Tracking**: By configuring SACLs on sensitive files (e.g. database files, domain hashes, configuration files), Blue Teams generate Event ID 4663 whenever a user reads, modifies, or deletes targeted objects.
-4. **Restoring Hardened Baselines**: During incident containment, responders must rapidly strip unauthorized permissions, re-establish strict access boundaries, and transfer ownership back to trusted security principals.
+For example:
+
+- One user may only be able to read a file.
+- Another user may be allowed to edit it.
+- An administrator may have full control over it.
+
+Without permissions, anyone could access or modify important files.
 
 ---
 
-# Core Concepts
+## Why are Permissions Important?
 
-## 1. Security Descriptors, ACLs, and ACEs
+Permissions help to:
 
-Every NTFS file and folder object carries an invisible security data structure called a **Security Descriptor**.
+- Protect sensitive data
+- Prevent unauthorized access
+- Reduce accidental file deletion
+- Improve system security
+
+Proper permissions are an important part of keeping a Windows system secure.
+
+---
+
+## How Permissions Work
 
 ```mermaid
-graph TD
-    SecDesc["NTFS Security Descriptor"] --> Owner["Owner SID<br>(e.g. BUILTIN\Administrators)"]
-    SecDesc --> Group["Primary Group SID"]
-    SecDesc --> DACL["Discretionary Access Control List (DACL)<br>Defines WHO can access the object"]
-    SecDesc --> SACL["System Access Control List (SACL)<br>Defines WHAT actions trigger audit logs"]
-    
-    DACL --> ACE1["ACE 1: Allow - UserA - Read & Execute"]
-    DACL --> ACE2["ACE 2: Allow - AdminGroup - Full Control"]
-    DACL --> ACE3["ACE 3: Deny - TempUser - Write"]
-    
-    SACL --> SACE1["SACE 1: Audit Success/Failure - Everyone - Delete"]
+flowchart LR
+User --> File
+File --> Permissions
+Permissions --> Allow_or_Deny
 ```
 
-- **Discretionary Access Control List (DACL)**: Contains Access Control Entries (ACEs) that specify which users or groups are allowed or denied access to the object.
-- **System Access Control List (SACL)**: Specifies auditing rules for the object. Generates security event logs when users interact with the object.
-- **Access Control Entry (ACE)**: An individual record within an ACL containing:
-  - A Trustee (User, Group, or Service SID).
-  - An Access Type (`Allow` or `Deny`).
-  - Access Mask (Specific permissions like Read, Write, Delete).
-  - Inheritance flags.
+When a user tries to open a file, Windows checks the file's permissions before allowing access.
 
 ---
 
-## 2. Standard vs. Special NTFS Permissions
+# Common NTFS Permissions
 
-NTFS categorizes permissions into **Standard Permissions** (easy-to-use bundles) and **Special Permissions** (granular individual rights):
+Windows provides several standard permission levels.
 
-| Standard Permission | Description | Includes |
-|---|---|---|
-| **Read** | View file contents, folder contents, and file metadata. | Read Data, Read Attributes, Read Extended Attributes, Read Permissions. |
-| **Write** | Create new files, overwrite existing files, modify attributes. | Write Data, Append Data, Write Attributes, Write Extended Attributes. |
-| **Read & Execute** | Read files and run executable programs (`.exe`, `.bat`, `.ps1`). | Read permissions + Traverse Folder / Execute File. |
-| **List Folder Contents** | View filenames inside a directory (applies to folders). | Read & Execute rights scoped to folder objects. |
-| **Modify** | Read, Write, Execute, and Delete files and subfolders. | Read + Write + Execute + Delete. |
-| **Full Control** | Complete control over object, including changing permissions and taking ownership. | All permissions + Change Permissions + Take Ownership. |
+| Permission | Description |
+|------------|-------------|
+| Read | View files and folders |
+| Write | Create or modify files |
+| Read & Execute | Open and run programs |
+| Modify | Read, write, and delete files |
+| Full Control | Complete access, including changing permissions |
 
 ---
 
-## 3. Permission Inheritance & Evaluation Order
+# Viewing File Permissions
 
-When a user requests access to a file, Windows evaluates ACEs in the DACL using strict precedence rules:
+You can view permissions using File Explorer.
+
+### Steps
+
+1. Right-click a file or folder.
+2. Select **Properties**.
+3. Open the **Security** tab.
+4. Select a user or group.
+5. View the assigned permissions.
+
+The Security tab displays which users and groups have access to the selected file or folder.
+
+---
+
+# File Ownership
+
+Every file and folder has an **owner**.
+
+The owner is usually:
+
+- The user who created the file
+- An Administrator
+
+The owner has permission to manage the file's security settings.
+
+---
+
+# Permission Inheritance
+
+By default, files and folders **inherit permissions** from their parent folder.
+
+This means child folders and files automatically receive the same permissions unless inheritance is disabled.
 
 ```mermaid
 flowchart TD
-    Start["Access Request Received"] --> CheckExplicitDeny{"Explicit DENY match?"}
-    CheckExplicitDeny -->|Yes| AccessDenied["ACCESS DENIED"]
-    CheckExplicitDeny -->|No| CheckExplicitAllow{"Explicit ALLOW match?"}
-    CheckExplicitAllow -->|Yes| AccessGranted["ACCESS GRANTED"]
-    CheckExplicitAllow -->|No| CheckInheritedDeny{"Inherited DENY match?"}
-    CheckInheritedDeny -->|Yes| AccessDenied
-    CheckInheritedDeny -->|No| CheckInheritedAllow{"Inherited ALLOW match?"}
-    CheckInheritedAllow -->|Yes| AccessGranted
-    CheckInheritedAllow -->|No| ImplicitDeny["No matching ALLOW ACE (Implicit Deny) -> ACCESS DENIED"]
+ParentFolder --> Documents
+Documents --> Report.docx
+Documents --> Notes.txt
 ```
 
-### Key Rules of Access Evaluation:
-1. **Explicit permissions override Inherited permissions**. An explicit `Allow` on a file overrides an inherited `Deny` from its parent folder.
-2. **Deny ACEs override Allow ACEs** at the same level of the hierarchy.
-3. **Permissions are Cumulative**: If a user belongs to Group A (`Read`) and Group B (`Write`), their effective permission is `Modify/Read+Write`.
-4. **Implicit Deny**: If no matching `Allow` ACE exists for the user or their groups, access is denied by default.
+Inheritance makes permission management easier because administrators do not need to configure every file individually.
 
 ---
 
-# Practical Examples
+# Using icacls
 
-## Inspecting & Modifying Permissions with `icacls.exe`
+`icacls` is a Windows command used to view basic file and folder permissions.
 
-`icacls.exe` is the native command-line utility for inspecting and managing NTFS access control lists.
+### View Permissions
 
 ```cmd
-:: Display ACLs for a specific file or folder
-icacls C:\Windows\System32\cmd.exe
-
-:: Grant explicit Read and Execute access to a local user
-icacls C:\Data\Report.docx /grant AnalystJohn:(RX)
-
-:: Remove all permissions for a specific group
-icacls C:\Data\Report.docx /remove "Users"
-
-:: Disable inheritance on a folder and copy existing inherited ACEs as explicit ACEs
-icacls C:\Confidential /inheritance:d
-
-:: Restore default inherited permissions recursively
-icacls C:\Confidential /reset /T
+icacls C:\Users
 ```
 
-### Permission Notation Legend in `icacls`
-- `(F)`: Full Control
-- `(M)`: Modify
-- `(RX)`: Read & Execute
-- `(R)`: Read-Only
-- `(W)`: Write-Only
-- `(I)`: Permission inherited from parent container
-- `(OI)`: Object Inherit (applies to files)
-- `(CI)`: Container Inherit (applies to subfolders)
-
----
-
-## Managing ACLs via PowerShell (`Get-Acl` & `Set-Acl`)
-
-```powershell
-# Retrieve and view detailed Access Control List
-$Acl = Get-Acl -Path "C:\Confidential"
-$Acl.Access | Format-Table IdentityReference, FileSystemRights, AccessControlType, IsInherited
-
-# Disable Inheritance and remove inherited ACEs
-$Acl.SetAccessRuleProtection($true, $false) # Protect = true, PreserveInherited = false
-
-# Define a new explicit Access Rule granting Full Control to Administrators
-$Rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
-    "BUILTIN\Administrators",
-    "FullControl",
-    "ContainerInherit, ObjectInherit",
-    "None",
-    "Allow"
-)
-$Acl.AddAccessRule($Rule)
-
-# Apply updated ACL to disk
-Set-Acl -Path "C:\Confidential" -AclObject $Acl
-```
-
----
-
-## File Ownership & Reclaiming Access (`takeown.exe`)
-
-When permissions are misconfigured or corrupt, even Administrators may be denied access. An Administrator can take ownership of any file, which automatically restores their right to modify the DACL.
+### View Permissions of a Folder
 
 ```cmd
-:: Take ownership of a file as the local Administrators group
-takeown /F C:\LockedFile.dat /A
-
-:: Take ownership of an entire directory tree recursively
-takeown /F C:\RestrictedFolder /R /A /D Y
+icacls C:\Users\Student\Documents
 ```
 
----
-
-# Blue Team Investigation Notes
-
-> 💙 **Blue Team Note: Auditing Object Access (Event ID 4663)**
-> 
-> To generate audit logs for file access, configure a System Access Control List (SACL) on the targeted file/folder, and ensure **Audit Object Access** is enabled in Local Security Policy (`secpol.msc`).
-> 
-> Key Event IDs in the `Security` Event Log:
-> - **Event ID 4656**: A handle to an object was requested (logs intent).
-> - **Event ID 4663**: An attempt was made to access an object (logs actual access with process details and specific rights requested, e.g. `READ_DATA`, `WRITE_DATA`, `DELETE`).
-> - **Event ID 4670**: Permissions on an object were changed.
+The command displays the users or groups that have access to the selected folder.
 
 ---
 
-# Common Mistakes
+# Essential Commands
 
-| Mistake | Consequence | How to Avoid |
-|---|---|---|
-| Leaving `Users:(F)` on Root Drives | Standard users can write malicious binaries to `C:\` or service paths. | Keep standard NTFS restrictions on root and system folders. |
-| Overusing Deny ACEs | Deny ACEs cause unexpected access blockages due to high precedence. | Remove Allow ACEs instead of adding explicit Deny ACEs whenever possible. |
-| Forgetting Inheritance Propagation | Setting folder permissions without `(OI)(CI)` leaves inner files unprotected. | Use `(OI)(CI)` flags or `/T` switch when applying folder permissions. |
-
----
-
-# Best Practices
-
-1. **Follow the Principle of Least Privilege (PoLP)**: Grant only the minimum permissions necessary for users to perform their job functions.
-2. **Assign Permissions to Groups, Not Users**: Create role-based security groups (e.g. `Finance_Read_Group`) and assign permissions to groups rather than individual user SIDs.
-3. **Disable Inheritance on Sensitive Repositories**: Convert inherited ACEs to explicit ACEs and remove `BUILTIN\Users` from confidential data directories.
-4. **Audit Sensitive File Operations**: Apply SACLs to critical files (e.g., SAM database backups, configuration files) and send Event ID 4663 to SIEM.
+| Command | Purpose |
+|---------|---------|
+| icacls C:\Users | View permissions |
+| icacls C:\Folder | View folder permissions |
+| whoami | Display the current user |
+| whoami /groups | Display group memberships |
 
 ---
 
-# 🔑 Key Takeaways
+# Blue Team Perspective
 
-- NTFS Permissions control file and directory access using Security Descriptors, DACLs, SACLs, and ACEs.
-- DACLs determine access (`Allow`/`Deny`), while SACLs define security audit events.
-- Precedence hierarchy dictates that Explicit Deny > Explicit Allow > Inherited Deny > Inherited Allow.
-- Command-line utilities (`icacls`, `takeown`) and PowerShell cmdlets (`Get-Acl`, `Set-Acl`) provide granular control over access lists and file ownership.
-- Monitoring Event IDs 4663 and 4670 enables tracking of file tampering and unauthorized permission changes.
+Blue Team analysts often check file permissions during security investigations.
 
----
+Incorrect permissions can:
 
-# Key Commands
+- Allow attackers to modify important files
+- Give unauthorized users access to sensitive information
+- Increase the risk of malware spreading
 
-| Command / Cmdlet | Purpose | Example |
-|---|---|---|
-| `icacls` | Displays or modifies file/folder ACLs | `icacls C:\Data` |
-| `takeown` | Reclaims file or directory ownership | `takeown /F C:\Folder /A /R` |
-| `Get-Acl` | Gets the ACL for a resource in PowerShell | `Get-Acl C:\Confidential` |
-| `Set-Acl` | Sets the ACL for a resource in PowerShell | `Set-Acl -Path C:\Data -AclObject $acl` |
-| `icacls /grant` | Grants explicit user permissions | `icacls C:\File.txt /grant User:(RX)` |
-| `icacls /remove` | Removes user/group permissions from DACL | `icacls C:\File.txt /remove Users` |
+Reviewing file permissions helps analysts identify security weaknesses and protect critical data.
 
 ---
 
-# Quick Quiz
+# Key Points
 
-1. **Which component of a Security Descriptor specifies which users are allowed or denied access to a file?**
-   - A) System Access Control List (SACL)
-   - B) Discretionary Access Control List (DACL)
-   - C) Relative Identifier (RID)
-   - D) Master File Table ($MFT)
-
-2. **What rule takes top precedence during NTFS access evaluation at the same level?**
-   - A) Inherited Allow
-   - B) Explicit Allow
-   - C) Explicit Deny
-   - D) Inherited Deny
-
-3. **Which standard NTFS permission allows a user to read, write, execute, and delete files, but NOT change permissions or take ownership?**
-   - A) Full Control
-   - B) Modify
-   - C) Read & Execute
-   - D) Write
-
-4. **In `icacls` notation, what does the `(I)` flag indicate?**
-   - A) Inherited from parent container
-   - B) Invalid permission entry
-   - C) Integrity level restriction
-   - D) Interactive user only
-
-5. **Which command-line utility allows an Administrator to forcibly claim file ownership when locked out by DACLs?**
-   - A) `icacls`
-   - B) `takeown`
-   - C) `attrib`
-   - D) `cipher`
-
-6. **What does an explicit Deny ACE on a file do to an inherited Allow ACE?**
-   - A) It is ignored
-   - B) It overrides the inherited Allow ACE
-   - C) It converts into an Allow ACE
-   - D) It causes a system crash
-
-7. **Which Windows Security Event ID logs specific object access attempts (such as reading or writing a file) when SACLs are configured?**
-   - A) Event ID 4624
-   - B) Event ID 4688
-   - C) Event ID 4663
-   - D) Event ID 7045
-
-8. **What do the `(OI)(CI)` flags represent when applying permissions to a folder?**
-   - A) Read-Only and Hidden
-   - B) Object Inherit and Container Inherit (propagates to child files and folders)
-   - C) Owner Identical and Group Identical
-   - D) Operating System Internal
-
-9. **Which PowerShell cmdlet is used to commit modified Access Control Objects back to disk?**
-   - A) `Get-Acl`
-   - B) `Set-Acl`
-   - C) `New-AccessRule`
-   - D) `Grant-Permission`
-
-10. **Why do attackers seek out write permissions on Windows service executables?**
-    - A) To compress system logs
-    - B) To replace legitimate service binaries and achieve privilege escalation to `SYSTEM`
-    - C) To disable network card drivers
-    - D) To bypass BitLocker encryption
+- NTFS permissions control access to files and folders.
+- Different users can have different permission levels.
+- The Security tab allows you to view permissions.
+- Every file has an owner.
+- Files usually inherit permissions from their parent folder.
+- The `icacls` command can display file and folder permissions.
+- Proper permissions improve Windows security.
 
 ---
 
-## Quiz Answers
+# Summary
 
-1. **B** (Discretionary Access Control List (DACL))
-2. **C** (Explicit Deny)
-3. **B** (Modify)
-4. **A** (Inherited from parent container)
-5. **B** (`takeown`)
-6. **B** (It overrides the inherited Allow ACE)
-7. **C** (Event ID 4663)
-8. **B** (Object Inherit and Container Inherit)
-9. **B** (`Set-Acl`)
-10. **B** (To replace legitimate service binaries and achieve privilege escalation to `SYSTEM`)
+In this chapter, you learned:
+
+- What NTFS permissions are
+- Why permissions are important
+- The common permission types
+- How to view permissions in File Explorer
+- What file ownership means
+- How permission inheritance works
+- Basic `icacls` commands
+- Why Blue Teams review file permissions during investigations
+
+In the next chapter, you will learn about **Windows Processes & Services**, including how Windows manages running applications and background services.
 
 ---
 
