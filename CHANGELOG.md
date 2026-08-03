@@ -4,6 +4,51 @@ All notable changes to the **Blue-Team-Handbook** project are documented in this
 
 ---
 
+#  03 August 2026
+
+## Added
+
+### Windows Fundamentals
+- Added **Chapter 10 – Windows Event Viewer & Logging**
+- Added **Chapter 11 – Windows Security Features**
+- Added **Chapter 12 – Windows Registry Fundamentals**
+- Added **Chapter 13 – Software & Package Management**
+- Added **Chapter 14 – PowerShell Scripting Basics**
+- Added **Chapter 15 – Windows Hardening**
+- Added **Chapter 16 – Blue Team Windows Investigation**
+
+### Learning Content
+- Added beginner-friendly explanations for all newly created chapters.
+- Added practical Blue Team perspectives throughout the new chapters.
+- Added learning objectives, key takeaways, command examples, and best practices.
+- Added Mermaid diagrams where appropriate to improve concept visualization.
+- Added "Further Reading" sections with official Microsoft and security references.
+- Added navigation links between chapters for improved learning flow.
+
+---
+
+## Refactored
+
+### Windows Fundamentals Chapters (04–09)
+- Refactored all chapters to maintain a consistent beginner-friendly writing style.
+- Simplified technical explanations without sacrificing accuracy.
+- Standardized chapter structure across all Windows Fundamentals content.
+- Improved readability by reorganizing sections and headings.
+- Enhanced command explanations with practical examples.
+- Updated Blue Team perspectives to better align with real-world SOC workflows.
+- Improved Mermaid diagrams and visual learning elements.
+- Standardized formatting, notes, tips, warnings, and key takeaway sections.
+- Improved chapter consistency with the overall Blue-Team-Handbook documentation standards.
+
+---
+
+## Documentation Improvements
+- Improved Markdown formatting consistency across Windows Fundamentals.
+- Updated internal chapter navigation.
+- Improved overall documentation quality and readability.
+- Continued aligning content with the project's beginner-first learning philosophy.
+---
+
 ## 02 August 2026 — Windows Fundamentals Chapters, Labs & Solutions (Chapters 04–09)
 
 ### 🚀 Overview
