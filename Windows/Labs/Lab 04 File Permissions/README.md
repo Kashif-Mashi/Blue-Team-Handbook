@@ -1,124 +1,158 @@
-# Lab 04 — File Permissions & Access Control Investigation
-
-## Difficulty
-
-🟢 Beginner
-
-**Estimated Time**: 45 Minutes  
-**Prerequisites**: Completion of Chapter 03 (File System) and Chapter 07/Concepts (NTFS Permissions).  
-**Objectives**:
-- Inspect NTFS permissions using `icacls` and `Get-Acl`.
-- Differentiate between explicit permissions and inherited permissions.
-- Modify Discretionary Access Control Lists (DACLs) via command line.
-- Enforce folder access restrictions and test user permissions.
-- Audit owner changes using `takeown` and PowerShell (`Set-Acl`).
-
----
+# Lab 04 — File Permissions & Access Control
 
 ## Scenario
 
-A financial organization suffered a data exposure incident. Sensitive internal reports stored in `C:\Confidential` were accessed by non-authorized users due to inherited permission misconfigurations.
+A severe data exposure incident occurred overnight at a financial organization. Highly sensitive HR payroll documents stored in `C:\Confidential` were accessed and leaked by an unauthorized employee. 
 
-As an Incident Responder and Systems Auditor, you are assigned to inspect current access control lists (ACLs), remove excessive permissions, break permission inheritance on sensitive directories, and grant restricted access exclusively to administrative security groups.
-
----
-
-## Lab Environment
-
-- **Operating System**: Windows 10 / 11 Workstation
-- **User Role**: Local Administrator privileges available
-- **Internet Access**: Enabled
-- **Tools Used**: `icacls.exe`, `takeown.exe`, `Get-Acl`, `Set-Acl`
+As a Systems Auditor and Incident Responder, your job is to investigate the current NTFS Access Control Lists (ACLs) on the breached folder, determine how the unauthorized access occurred due to inherited permission misconfigurations, and re-secure the directory.
 
 ---
 
-## Tasks
+# Mission
 
-### Task 1: Create Lab Test Directory & Sensitive Files
-Create directory `C:\SecureData` and a test file `C:\SecureData\Payroll.txt`.
-
-### Task 2: Inspect Initial File Permissions via CMD
-Run `icacls C:\SecureData\Payroll.txt` and document default inherited permissions.
-
-### Task 3: Inspect Access Control Lists via PowerShell
-Use `Get-Acl C:\SecureData\Payroll.txt | Format-List` to inspect access rules and file owner.
-
-### Task 4: Create a Dedicated Test User Account
-Create local user `TestUser01` with a secure password using `net user`.
-
-### Task 5: Grant Explicit Read Permissions
-Use `icacls` to grant `TestUser01` explicit Read `(R)` access to `C:\SecureData\Payroll.txt`.
-
-### Task 6: Verify Modified DACL Output
-Re-run `icacls C:\SecureData\Payroll.txt` to verify the addition of `TestUser01:(R)`.
-
-### Task 7: Test Access Rights
-Attempt to read `C:\SecureData\Payroll.txt` under the security context of `TestUser01`.
-
-### Task 8: Disable Permission Inheritance on Folder
-Use `icacls C:\SecureData /inheritance:d` to convert inherited permissions into explicit permissions.
-
-### Task 9: Remove Standard Users Group Access
-Use `icacls C:\SecureData /remove Users` to strip access rights from the local `Users` group.
-
-### Task 10: Enforce Full Control for Administrators Only
-Grant `Administrators` group Full Control `(F)` over `C:\SecureData` recursively using `icacls C:\SecureData /grant Administrators:(OI)(CI)F /T`.
-
-### Task 11: Transfer File Ownership via CMD
-Use `takeown /F C:\SecureData\Payroll.txt /A` to transfer file ownership to the local Administrators group.
-
-### Task 12: Verify Ownership Change via PowerShell
-Run `(Get-Acl C:\SecureData\Payroll.txt).Owner` to confirm the new owner identity.
-
-### Task 13: Revoke Individual User Permissions
-Use `icacls C:\SecureData\Payroll.txt /remove TestUser01` to revoke all privileges from `TestUser01`.
-
-### Task 14: Modify File ACLs using PowerShell `Set-Acl`
-Construct a PowerShell script that applies a restrictive Access Rule to `C:\SecureData` using `System.Security.AccessControl.FileSystemAccessRule`.
-
-### Task 15: Clean Up Test Artifacts
-Remove directory `C:\SecureData` and delete account `TestUser01`.
+Use command-line utilities (`icacls` and `takeown`) and PowerShell (`Get-Acl`, `Set-Acl`) to inspect NTFS permissions, identify security flaws, break inheritance on the sensitive directory, and enforce strict, explicit access controls.
 
 ---
 
-## Verification
+# Story
 
-To verify success:
-- Confirm `icacls C:\SecureData` shows inheritance disabled `(Disabled)`.
-- Confirm `Users` group is stripped from access list.
-- Confirm file owner is assigned to `BUILTIN\Administrators`.
+The CISO calls you into an emergency meeting and explains:
 
----
+> *"Someone without clearance got into the `C:\Confidential` drive and leaked the Payroll records. We think the folder was misconfigured when it was created and inherited default permissions that gave the `Users` group access. Find the flaw, prove it, and lock that folder down immediately before anything else is stolen."*
 
-## Blue Team Notes
-
-- **Privilege Escalation via Weak ACLs**: Attackers look for weak directory permissions on system services (e.g. write access to service executables or unquoted service paths) to escalate privileges to `SYSTEM`.
-- **Inheritance Misconfigurations**: Folders created under `C:\` inherit `Users:(RX)` rights by default. Sensitive data must have inheritance disabled and explicit DACLs applied.
+Your mission is to recreate the breach conditions, identify the flawed ACLs, and implement a hardened NTFS baseline.
 
 ---
 
-## Common Errors
+# Learning Objectives
 
-- **Forgetting Object/Container Inherit Flags**: Applying `(F)` without `(OI)(CI)` flags causes subfolders and files to miss permission propagation.
-- **Accidental Lockout**: Removing `SYSTEM` or `Administrators` from DACLs locks out access. Take ownership (`takeown`) to restore access if locked out.
+After completing this lab, you will be able to:
 
----
-
-## MITRE ATT&CK Mapping
-
-- **T1222.001**: File and Directory Permissions Modification: Windows File and Directory Permissions Modification
-- **T1070.004**: Indicator Removal on Host: File Deletion
+* Inspect NTFS permissions using `icacls` and `Get-Acl`.
+* Differentiate between explicit permissions and inherited permissions.
+* Modify Discretionary Access Control Lists (DACLs) via the command line.
+* Enforce folder access restrictions and block permission inheritance.
+* Audit and transfer file ownership using `takeown` and PowerShell.
 
 ---
 
-## Challenge Section
+# Prerequisites
 
-1. Identify all files under `C:\Windows\System32` where `Users` group has Modify `(M)` or Write `(W)` access using `icacls`.
-2. Write a PowerShell script that audits all subdirectories under `C:\` and reports directories with disabled inheritance.
-3. Use `Get-Acl` to output file owner SIDs across all `.exe` files in a given directory.
-4. Modify an ACL to explicitly Deny write access to a user while granting Read access, and test which rule takes precedence.
-5. Restore default inherited permissions on a directory using `icacls /reset`.
+Before starting this lab, ensure you have:
 
+* A working Windows 10 or Windows 11 Workstation.
+* Local Administrator privileges.
+* Completed Chapter 03 (File System) and Chapter 07 (NTFS Permissions).
+
+---
+
+# Clues
+
+> **"Folders created at the root of `C:\` inherit default permissions, often granting the `Users` group read and execute rights. Attackers look for this specific oversight."**
+
+> **"When locking down a folder, you must disable inheritance FIRST, otherwise parent permissions will keep flowing down and overriding your restrictions."**
+
+---
+
+# Your Tasks
+
+Complete the following tasks to investigate and remediate the NTFS access controls.
+
+### Task 1 — Recreate the Incident Environment
+To investigate, you must recreate the scene.
+Open Command Prompt as Administrator. Create the sensitive directory `C:\Confidential` and a test file `C:\Confidential\Payroll.txt`.
+
+---
+
+### Task 2 — Inspect Initial Vulnerabilities
+Run `icacls C:\Confidential\Payroll.txt`. 
+Analyze the output. Are permissions inherited `(I)` from the parent folder? Does the standard `Users` group have Read/Execute `(RX)` access?
+
+---
+
+### Task 3 — The PowerShell Perspective
+Use PowerShell to get a detailed view of the access rules.
+Run `Get-Acl C:\Confidential\Payroll.txt | Format-List`. Note who the current Owner of the file is.
+
+---
+
+### Task 4 — Simulate the Insider Threat
+Create a standard local user account named `SuspectUser` with a secure password using the `net user` command.
+
+---
+
+### Task 5 — Prove Unauthorized Access
+Without changing any permissions yourself, use the `runas` command or switch users to attempt to read `C:\Confidential\Payroll.txt` as `SuspectUser`. 
+Does the user have access? (Yes, due to the inherited `Users` group permission discovered in Task 2).
+
+---
+
+### Task 6 — Stop the Bleeding (Disable Inheritance)
+It's time to lock down the folder. You must break the permission inheritance chain.
+Use `icacls C:\Confidential /inheritance:d` to convert the inherited permissions into explicit permissions so you can safely modify them.
+
+---
+
+### Task 7 — Evict the Unauthorized
+Now that inheritance is disabled, strip access rights from the local `Users` group entirely.
+Use `icacls C:\Confidential /remove Users`.
+
+---
+
+### Task 8 — Enforce Strict Access Controls
+Grant the `Administrators` group Full Control `(F)` over `C:\Confidential` recursively. Ensure you use the proper flags `(OI)(CI)` so the permissions propagate to all files and subfolders inside.
+`icacls C:\Confidential /grant Administrators:(OI)(CI)F /T`
+
+---
+
+### Task 9 — Reclaim File Ownership
+During an incident, malware or rogue admins may change file ownership to lock out responders. You must prove you can take it back.
+Use `takeown /F C:\Confidential\Payroll.txt /A` to transfer file ownership to the local Administrators group.
+
+---
+
+### Task 10 — Verify the Remediation
+Verify your work. Run `icacls C:\Confidential`. 
+The `Users` group should be completely missing from the DACL, and inheritance should be marked as disabled.
+
+---
+
+### Task 11 — Clean up the Environment
+Delete the `C:\Confidential` directory and remove the `SuspectUser` account using `net user SuspectUser /delete`.
+
+---
+
+# Success Criteria
+
+You have successfully completed this lab if you can:
+
+* Read and interpret `icacls` permission outputs, identifying inherited `(I)` vs explicit permissions.
+* Successfully disable NTFS inheritance on a directory.
+* Apply exact `icacls` grants using Object Inherit `(OI)` and Container Inherit `(CI)` flags.
+* Reclaim ownership of a locked file using `takeown`.
+
+---
+
+# 💙 Blue Team Insight
+
+Privilege Escalation via Weak ACLs is a primary tactic for attackers. They hunt for weak directory permissions on system services (e.g., write access to service executables or unquoted service paths). If they can overwrite a binary that runs as `SYSTEM`, they gain complete control of the host.
+Always remember: Folders created manually under `C:\` inherit `Users:(RX)` rights by default. Sensitive data MUST have inheritance disabled and explicit DACLs applied immediately upon creation.
+
+---
+
+# Key Takeaways
+
+After completing this lab, you should be able to:
+
+* Identify security flaws caused by default NTFS inheritance.
+* Manipulate Discretionary Access Control Lists via CLI.
+* Apply strict Access Control baselines during Incident Response.
+
+---
+
+## Need Help?
+
+A complete walkthrough, command explanations, expected outputs, and troubleshooting tips are available in the **Solutions** directory.
 
 ---
 

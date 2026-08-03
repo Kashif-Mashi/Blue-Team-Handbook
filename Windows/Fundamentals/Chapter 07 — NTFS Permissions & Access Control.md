@@ -1,6 +1,8 @@
 # Chapter 07 — NTFS Permissions & Access Control
 
-## Introduction
+---
+
+# 📖 Overview
 
 In modern multi-user operating systems, controlling access to sensitive files, directories, and system resources is a fundamental requirement. The Windows operating system uses the **New Technology File System (NTFS)** to manage file storage, enforce granular security boundaries, and restrict user access through robust authorization mechanisms.
 
@@ -10,9 +12,9 @@ For Blue Team professionals—including SOC Analysts, Incident Responders, and S
 
 ---
 
-## Learning Objectives
+# 🎯 Learning Objectives
 
-Students should be able to:
+After completing this chapter, you will be able to:
 
 - Explain the architecture of NTFS Security Descriptors, DACLs, SACLs, and ACEs.
 - Differentiate between Discretionary Access Control Lists (DACLs) and System Access Control Lists (SACLs).
@@ -24,7 +26,7 @@ Students should be able to:
 
 ---
 
-## Why Blue Teams Care
+# Why Blue Teams Care
 
 Access control is a core pillar of host security and forensic investigation:
 
@@ -35,9 +37,9 @@ Access control is a core pillar of host security and forensic investigation:
 
 ---
 
-## Core Concepts
+# Core Concepts
 
-### 1. Security Descriptors, ACLs, and ACEs
+## 1. Security Descriptors, ACLs, and ACEs
 
 Every NTFS file and folder object carries an invisible security data structure called a **Security Descriptor**.
 
@@ -65,7 +67,7 @@ graph TD
 
 ---
 
-### 2. Standard vs. Special NTFS Permissions
+## 2. Standard vs. Special NTFS Permissions
 
 NTFS categorizes permissions into **Standard Permissions** (easy-to-use bundles) and **Special Permissions** (granular individual rights):
 
@@ -80,7 +82,7 @@ NTFS categorizes permissions into **Standard Permissions** (easy-to-use bundles)
 
 ---
 
-### 3. Permission Inheritance & Evaluation Order
+## 3. Permission Inheritance & Evaluation Order
 
 When a user requests access to a file, Windows evaluates ACEs in the DACL using strict precedence rules:
 
@@ -97,7 +99,7 @@ flowchart TD
     CheckInheritedAllow -->|No| ImplicitDeny["No matching ALLOW ACE (Implicit Deny) -> ACCESS DENIED"]
 ```
 
-#### Key Rules of Access Evaluation:
+### Key Rules of Access Evaluation:
 1. **Explicit permissions override Inherited permissions**. An explicit `Allow` on a file overrides an inherited `Deny` from its parent folder.
 2. **Deny ACEs override Allow ACEs** at the same level of the hierarchy.
 3. **Permissions are Cumulative**: If a user belongs to Group A (`Read`) and Group B (`Write`), their effective permission is `Modify/Read+Write`.
@@ -105,9 +107,9 @@ flowchart TD
 
 ---
 
-## Practical Examples
+# Practical Examples
 
-### Inspecting & Modifying Permissions with `icacls.exe`
+## Inspecting & Modifying Permissions with `icacls.exe`
 
 `icacls.exe` is the native command-line utility for inspecting and managing NTFS access control lists.
 
@@ -128,7 +130,7 @@ icacls C:\Confidential /inheritance:d
 icacls C:\Confidential /reset /T
 ```
 
-#### Permission Notation Legend in `icacls`
+### Permission Notation Legend in `icacls`
 - `(F)`: Full Control
 - `(M)`: Modify
 - `(RX)`: Read & Execute
@@ -140,7 +142,7 @@ icacls C:\Confidential /reset /T
 
 ---
 
-### Managing ACLs via PowerShell (`Get-Acl` & `Set-Acl`)
+## Managing ACLs via PowerShell (`Get-Acl` & `Set-Acl`)
 
 ```powershell
 # Retrieve and view detailed Access Control List
@@ -166,7 +168,7 @@ Set-Acl -Path "C:\Confidential" -AclObject $Acl
 
 ---
 
-### File Ownership & Reclaiming Access (`takeown.exe`)
+## File Ownership & Reclaiming Access (`takeown.exe`)
 
 When permissions are misconfigured or corrupt, even Administrators may be denied access. An Administrator can take ownership of any file, which automatically restores their right to modify the DACL.
 
@@ -180,9 +182,9 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Blue Team Investigation Notes
+# Blue Team Investigation Notes
 
-> **Blue Team Insight: Auditing Object Access (Event ID 4663)**
+> 💙 **Blue Team Note: Auditing Object Access (Event ID 4663)**
 > 
 > To generate audit logs for file access, configure a System Access Control List (SACL) on the targeted file/folder, and ensure **Audit Object Access** is enabled in Local Security Policy (`secpol.msc`).
 > 
@@ -193,7 +195,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Common Mistakes
+# Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
@@ -203,7 +205,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Best Practices
+# Best Practices
 
 1. **Follow the Principle of Least Privilege (PoLP)**: Grant only the minimum permissions necessary for users to perform their job functions.
 2. **Assign Permissions to Groups, Not Users**: Create role-based security groups (e.g. `Finance_Read_Group`) and assign permissions to groups rather than individual user SIDs.
@@ -212,7 +214,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Summary
+# 🔑 Key Takeaways
 
 - NTFS Permissions control file and directory access using Security Descriptors, DACLs, SACLs, and ACEs.
 - DACLs determine access (`Allow`/`Deny`), while SACLs define security audit events.
@@ -222,7 +224,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Key Commands
+# Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
@@ -235,7 +237,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Quick Quiz
+# Quick Quiz
 
 1. **Which component of a Security Descriptor specifies which users are allowed or denied access to a file?**
    - A) System Access Control List (SACL)
@@ -299,7 +301,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-### Quiz Answers
+## Quiz Answers
 
 1. **B** (Discretionary Access Control List (DACL))
 2. **C** (Explicit Deny)
@@ -314,7 +316,7 @@ takeown /F C:\RestrictedFolder /R /A /D Y
 
 ---
 
-## Further Reading
+# Further Reading
 
 - [Microsoft Learn: Access Control Overview](https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/access-control)
 - [Microsoft Documentation: icacls Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/icacls)

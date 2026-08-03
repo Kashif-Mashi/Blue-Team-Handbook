@@ -1,6 +1,8 @@
 # Chapter 09 — Windows Networking Fundamentals
 
-## Introduction
+---
+
+# 📖 Overview
 
 Networking is the nervous system of modern enterprise IT infrastructure. Every web request, authentication exchange, remote administration session, and security log transfer occurs over network sockets using standard networking protocols implemented within the Windows operating system.
 
@@ -10,9 +12,9 @@ For Blue Teams, network monitoring and endpoint socket inspection are critical. 
 
 ---
 
-## Learning Objectives
+# 🎯 Learning Objectives
 
-Students should be able to:
+After completing this chapter, you will be able to:
 
 - Explain the Windows Network Stack architecture, NDIS drivers, and Winsock API.
 - Query and configure IPv4/IPv6 interface properties using `ipconfig`, `netsh`, and PowerShell (`Get-NetIPAddress`, `Get-NetAdapter`).
@@ -26,7 +28,7 @@ Students should be able to:
 
 ---
 
-## Why Blue Teams Care
+# Why Blue Teams Care
 
 Network interfaces are primary attack vectors and indicators of compromise:
 
@@ -37,9 +39,9 @@ Network interfaces are primary attack vectors and indicators of compromise:
 
 ---
 
-## Core Concepts
+# Core Concepts
 
-### 1. Windows Network Stack Architecture
+## 1. Windows Network Stack Architecture
 
 Network traffic flows from applications down through the Winsock API, through protocol drivers (`tcpip.sys`), to the Network Driver Interface Specification (NDIS) layer, and out the physical Network Interface Card (NIC).
 
@@ -55,11 +57,11 @@ graph TD
 
 ---
 
-### 2. Network Sockets & Connection States
+## 2. Network Sockets & Connection States
 
 A network socket is defined by a **5-Tuple**: (Source IP, Source Port, Destination IP, Destination Port, Protocol).
 
-#### Common TCP Socket States:
+### Common TCP Socket States:
 - `LISTENING`: The process is waiting for incoming network connection requests.
 - `ESTABLISHED`: An active, open data connection exists between the host and a remote endpoint.
 - `TIME_WAIT`: Socket closed, waiting to ensure remote host received acknowledgment.
@@ -78,7 +80,7 @@ stateDiagram-v2
 
 ---
 
-### 3. Key Windows Enterprise Management Protocols
+## 3. Key Windows Enterprise Management Protocols
 
 | Protocol | Default Port | Transport | Purpose & Blue Team Risk |
 |---|---|---|---|
@@ -90,9 +92,9 @@ stateDiagram-v2
 
 ---
 
-## Practical Examples
+# Practical Examples
 
-### Interface & Network Discovery
+## Interface & Network Discovery
 
 ```cmd
 :: Display complete IP network configuration
@@ -115,7 +117,7 @@ Get-NetIPAddress -AddressFamily IPv4 | Select-Object InterfaceAlias, IPAddress, 
 
 ---
 
-### Socket & Port Inspection (`netstat` & `Get-NetTCPConnection`)
+## Socket & Port Inspection (`netstat` & `Get-NetTCPConnection`)
 
 ```cmd
 :: List all active connections and listening ports with PID
@@ -135,7 +137,7 @@ Test-NetConnection -ComputerName 192.168.1.1 -Port 445
 
 ---
 
-### DNS Investigation & Troubleshooting
+## DNS Investigation & Troubleshooting
 
 ```cmd
 :: Display local DNS Resolver Cache
@@ -153,13 +155,13 @@ nslookup malicious-domain.com 8.8.8.8
 Resolve-DnsName -Name google.com -Type A
 ```
 
-> **Note**
+> 💙 **Blue Team Note**
 > 
 > The local `hosts` file (`C:\Windows\System32\drivers\etc\hosts`) overrides DNS resolution. Always inspect this file during malware investigations.
 
 ---
 
-### Windows Firewall Configuration (`netsh` & PowerShell)
+## Windows Firewall Configuration (`netsh` & PowerShell)
 
 ```cmd
 :: View status of all Firewall profiles (Domain, Private, Public)
@@ -179,9 +181,9 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Blue Team Investigation Notes
+# Blue Team Investigation Notes
 
-> **Blue Team Insight: Network Connection Logging (Sysmon Event ID 3)**
+> 💙 **Blue Team Note: Network Connection Logging (Sysmon Event ID 3)**
 > 
 > While `netstat` provides a snapshot of current connections, transient network beacons may close before manual inspection.
 > 
@@ -195,7 +197,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Common Mistakes
+# Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
@@ -205,7 +207,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Best Practices
+# Best Practices
 
 1. **Disable Legacy Protocols**: Disable NetBIOS over TCP/IP and LLMNR (Link-Local Multicast Name Resolution) to prevent credential poisoning attacks (e.g. Responder).
 2. **Restrict Administrative Remote Ports**: Block inbound ports 445 (SMB), 3389 (RDP), and 5985 (WinRM) from public networks using Windows Firewall.
@@ -214,7 +216,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Summary
+# 🔑 Key Takeaways
 
 - The Windows network stack routes traffic through Winsock, `tcpip.sys`, NDIS, and physical NICs.
 - Active network connections are defined by 5-tuple sockets and tracked via `netstat -ano` and `Get-NetTCPConnection`.
@@ -224,7 +226,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Key Commands
+# Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
@@ -238,7 +240,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Quick Quiz
+# Quick Quiz
 
 1. **Which command displays all active TCP sockets, listening ports, and associated Process IDs (PIDs)?**
    - A) `ipconfig /all`
@@ -302,7 +304,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-### Quiz Answers
+## Quiz Answers
 
 1. **B** (`netstat -ano`)
 2. **B** (445)
@@ -317,7 +319,7 @@ New-NetFirewallRule -DisplayName "Allow SOC Agent" -Direction Inbound -LocalPort
 
 ---
 
-## Further Reading
+# Further Reading
 
 - [Microsoft Learn: Windows TCP/IP Architecture](https://learn.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-contexts)
 - [Microsoft Documentation: Windows Firewall with Advanced Security](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/)

@@ -1,126 +1,157 @@
 # Lab 05 — Windows Users & Groups Management
 
-## Difficulty
-
-🟢 Beginner
-
-**Estimated Time**: 45 Minutes  
-**Prerequisites**: Completion of Chapter 06 (Windows Users & Groups).  
-**Objectives**:
-- Create and manage local user accounts using CMD and PowerShell.
-- Create local security groups and manage group memberships.
-- Inspect user Security Identifiers (SIDs) and account properties.
-- Audit User Account Control (UAC) token integrity levels.
-- Configure and test local account lockout policies.
-
----
-
 ## Scenario
 
-A company's Internal Security Audit revealed unauthorized user creation on several workstations. To establish a hardened identity baseline, the SOC lead has instructed you to perform an identity audit on workstation `DESKTOP-TRIAGE`.
+A company's Internal Security Audit flagged anomalous administrative activity on workstation `DESKTOP-TRIAGE` over the weekend. The SOC suspects an insider threat—or a remote attacker who gained access—has created a backdoor account to maintain persistence. 
 
-You will audit built-in accounts, configure password and lockout security policies, create controlled service groups, test administrative elevation, and track security event logs associated with identity management.
-
----
-
-## Lab Environment
-
-- **Operating System**: Windows 10 / 11 Workstation
-- **User Role**: Local Administrator privileges available
-- **Internet Access**: Enabled
-- **Tools Used**: `net.exe`, `wmic.exe`, `powershell.exe`, `secpol.msc` / `net accounts`
+As a Tier 1 SOC Analyst, your supervisor has instructed you to perform a rapid identity audit. You must examine the local user database, hunt down the rogue account, audit group memberships to see if the attacker elevated privileges, and review the host's security policies to prevent brute-force attacks in the future.
 
 ---
 
-## Tasks
+# Mission
 
-### Task 1: Audit Local Accounts via CMD
-List all local user accounts on the host using `net user`.
-
-### Task 2: Audit Account Details via PowerShell
-Use `Get-LocalUser | Select-Object Name, Enabled, LastLogon, Description` to inspect user statuses.
-
-### Task 3: Inspect User SIDs & RIDs
-Run `wmic useraccount get name,sid` to extract SIDs for all local accounts. Identify the RID 500 account.
-
-### Task 4: Inspect UAC Integrity Level & Token Privileges
-Open standard CMD and elevated CMD, run `whoami /all` in both, and compare the Integrity Levels and privileges.
-
-### Task 5: Create a New Local User Account
-Create local user account `TempContractor` with password `ComplexP@ss2026!` using `net user`.
-
-### Task 6: Disable Account Expiration / Require Password Change
-Use PowerShell (`Set-LocalUser -Name TempContractor -PasswordNeverExpires $false`) to manage account parameters.
-
-### Task 7: Create a Custom Local Security Group
-Create security group `Tier1AnalystGroup` using `net localgroup Tier1AnalystGroup /add`.
-
-### Task 8: Add User to Security Group
-Add `TempContractor` to `Tier1AnalystGroup` using `net localgroup Tier1AnalystGroup TempContractor /add`.
-
-### Task 9: Verify Group Memberships
-Use `Get-LocalGroupMember -Group "Tier1AnalystGroup"` to verify group membership.
-
-### Task 10: Query Current Account Lockout Policy
-Run `net accounts` to view lockout threshold, duration, and password requirements.
-
-### Task 11: Configure Account Lockout Policy
-Set account lockout threshold to 5 failed attempts using `net accounts /lockoutthreshold:5`.
-
-### Task 12: Set Account Lockout Duration
-Set lockout duration to 30 minutes using `net accounts /lockoutduration:30`.
-
-### Task 13: Disable Built-in Accounts
-Ensure `Guest` account is disabled using `net user Guest /active:no`.
-
-### Task 14: Track Security Events for Account Creation
-Open Event Viewer (`eventvwr.msc`), navigate to `Windows Logs -> Security`, and filter for Event ID **4720** (User Account Created).
-
-### Task 15: Clean Up Lab Artifacts
-Remove user `TempContractor` and group `Tier1AnalystGroup` from the system.
+Use CMD and PowerShell to audit local user accounts, identify built-in vs. custom identities via Security Identifiers (SIDs), expose unauthorized administrative privilege escalation, and harden the system's account lockout policy.
 
 ---
 
-## Verification
+# Story
 
-To verify success:
-- Confirm `TempContractor` SID contains expected host SID format.
-- Confirm `net accounts` shows lockout threshold set to 5.
-- Confirm Event ID 4720 is present in Security log corresponding to account creation.
+Your Lead Analyst messages you:
 
----
+> *"Attackers don't always use malware. Sometimes they just create a new admin account named `BackupAdmin` or `Helpdesk` and walk right through the front door. I need you to pull every user on that box, check their group memberships, and find out if someone planted a backdoor."*
 
-## Blue Team Notes
-
-- **Detecting Rogue Accounts**: Attackers add backdoor accounts during post-exploitation. Monitoring Event ID 4720 allows immediate detection of unexpected account creation.
-- **Group Escalation Monitoring**: Adding users to `Administrators` or `Remote Desktop Users` triggers Event ID 4732. SOC rules should alert whenever non-domain accounts are added to sensitive local groups.
+Your mission is to find the rogue account, figure out if they made themselves a local administrator, and lock down the host's password policies.
 
 ---
 
-## Common Errors
+# Learning Objectives
 
-- **Non-Elevated Privilege Errors**: Commands like `net user /add` or `net accounts` fail with "Access is denied" if executed without administrative privileges.
-- **Weak Passwords**: Creating test users with simple passwords fails if local password complexity policies are enabled.
+After completing this lab, you will be able to:
 
----
-
-## MITRE ATT&CK Mapping
-
-- **T1087.001**: Account Discovery: Local Account
-- **T1069.001**: Permission Groups Discovery: Local Groups
-- **T1136.001**: Create Account: Local Account
-- **T1078.003**: Valid Accounts: Local Accounts
+* Create, audit, and manage local user accounts using CMD and PowerShell.
+* Inspect user Security Identifiers (SIDs) to differentiate built-in accounts from standard users.
+* Audit local security groups and manage group memberships.
+* Configure and test local account lockout and password policies.
+* Track critical security events (Event ID 4720: User Creation) within Windows Event Viewer.
 
 ---
 
-## Challenge Section
+# Prerequisites
 
-1. Write a PowerShell script that exports all local user accounts, their SIDs, and group memberships into an HTML report.
-2. Query Event ID **4732** in the Security Event Log using `Get-WinEvent` to identify who added a user to a security group.
-3. Use PowerShell to check if the built-in Administrator account (RID 500) has been renamed.
-4. Test account lockout by attempting invalid logons against a test account until locked out, then locate Event ID **4740** (Account Lockout).
-5. Compare token privileges returned by `whoami /priv` before and after enabling `SeDebugPrivilege`.
+Before starting this lab, ensure you have:
 
+* A working Windows 10 or Windows 11 Workstation.
+* Local Administrator privileges.
+* Completed Chapter 06 (Windows Users & Groups).
+
+---
+
+# Clues
+
+> **"Adversaries try to blend in. A backdoor account might be named `SysUpdater` or `TempContractor`. Check the creation dates and SIDs."**
+
+> **"Creating an account is only step one. Check the `Administrators` group—if the rogue account is in there, the system is fully compromised."**
+
+---
+
+# Your Tasks
+
+Complete the following tasks to conduct the identity audit.
+
+### Task 1 — Simulate the Compromise
+Before you hunt, you must plant the backdoor. Open Command Prompt as Administrator and simulate the attacker by creating a hidden backdoor account:
+`net user TempContractor ComplexP@ss2026! /add`
+
+Next, simulate the attacker elevating privileges by adding the account to the local Administrators group:
+`net localgroup Administrators TempContractor /add`
+
+---
+
+### Task 2 — Audit Local Accounts (CMD)
+Assume your investigation begins now. List all local user accounts on the host using the simplest CMD tool available: `net user`.
+Do you see the `TempContractor` account?
+
+---
+
+### Task 3 — Audit Account Details (PowerShell)
+CMD is basic. Let's get more detail using PowerShell.
+Use `Get-LocalUser | Select-Object Name, Enabled, LastLogon, Description` to inspect the status of every user on the system.
+
+---
+
+### Task 4 — Inspect SIDs and RIDs
+Attackers can rename accounts, but they cannot change SIDs.
+Run `wmic useraccount get name,sid` to extract SIDs for all local accounts. Identify the SID ending in `-500` (The built-in Administrator account). Compare it to the SID of your rogue `TempContractor` account.
+
+---
+
+### Task 5 — Audit Administrative Privilege Escalation
+You need to know if the rogue account has elevated privileges.
+Run `net localgroup Administrators` or `Get-LocalGroupMember -Group "Administrators"`.
+Is the `TempContractor` account listed? If so, the attacker has full SYSTEM control.
+
+---
+
+### Task 6 — Track the Origin (Event Logs)
+Open **Event Viewer** (`eventvwr.msc`). Navigate to `Windows Logs -> Security`.
+Filter the log for **Event ID 4720** (A user account was created). 
+Can you find the exact time the `TempContractor` account was created, and which user account created it?
+
+---
+
+### Task 7 — Review Password Policies
+You notice the host might be vulnerable to brute force attacks.
+Run `net accounts` to view the current lockout threshold, duration, and password requirements.
+
+---
+
+### Task 8 — Harden the System
+The current lockout policy is weak. Let's harden it.
+1. Set the account lockout threshold to 5 failed attempts: `net accounts /lockoutthreshold:5`
+2. Set the lockout duration to 30 minutes: `net accounts /lockoutduration:30`
+
+Verify your changes by running `net accounts` again.
+
+---
+
+### Task 9 — Remediate the Threat
+The investigation is complete. It's time to eradicate the backdoor.
+Remove the user `TempContractor` from the system entirely.
+`net user TempContractor /delete`
+
+---
+
+# Success Criteria
+
+You have successfully completed this lab if you can:
+
+* Enumerate all users and groups on a Windows host using CLI.
+* Identify the RID 500 built-in Administrator account by its SID.
+* Prove a user has administrative privileges by auditing the local Administrators group.
+* Harden a Windows machine against brute force attacks by configuring the `net accounts` lockout policy.
+* Find evidence of account creation in the Security Event Log.
+
+---
+
+# 💙 Blue Team Insight
+
+Adding backdoor accounts is a classic persistence technique. Monitoring **Event ID 4720 (User Created)** and **Event ID 4732 (Member Added to Local Group)** allows the SOC to detect unexpected account creation instantly. If an alert fires for Event ID 4732 involving the `Administrators` or `Remote Desktop Users` group, incident responders must immediately investigate who initiated the change.
+
+---
+
+# Key Takeaways
+
+After completing this lab, you should be able to:
+
+* Manage Windows identities and group memberships programmatically.
+* Understand the forensic value of SIDs over Usernames.
+* Configure base-level security guardrails (Account Lockout Policies) using native OS tools.
+
+---
+
+## Need Help?
+
+A complete walkthrough, command explanations, expected outputs, and troubleshooting tips are available in the **Solutions** directory.
 
 ---
 

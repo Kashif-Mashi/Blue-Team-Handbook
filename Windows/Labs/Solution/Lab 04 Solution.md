@@ -1,366 +1,197 @@
-# Lab 04 Solution — File Permissions & Access Control Investigation
+# Solution — Lab 04: File Permissions & Access Control
 
-## Solution
+> This solution guide walks you through the HR Data Leak scenario, demonstrating how to inspect NTFS ACLs, break inheritance, and enforce strict directory restrictions using native Windows utilities.
 
 ---
 
-### Task 1: Create Lab Test Directory & Sensitive Files
+# Task 1 — Recreate the Incident Environment
 
-#### Step-by-Step Instructions
-1. Open elevated CMD and execute:
+## Steps
+
+Open Command Prompt as Administrator and set up the test scenario.
+
 ```cmd
-mkdir C:\SecureData
-echo Confidential Payroll Data > C:\SecureData\Payroll.txt
+mkdir C:\Confidential
+echo "Sensitive Payroll Data" > C:\Confidential\Payroll.txt
 ```
 
-#### Expected Output
+### Investigation Note
+By default, any new folder created at the root of the `C:\` drive inherits permissions from the `C:\` drive itself. This is the root cause of many privilege escalation and data leak vulnerabilities in enterprise environments.
+
+---
+
+# Task 2 — Inspect Initial Vulnerabilities
+
+## Steps
+
+Check the permissions applied to the newly created file.
+
 ```cmd
-C:\Windows\System32> mkdir C:\SecureData
-C:\Windows\System32> echo Confidential Payroll Data > C:\SecureData\Payroll.txt
+icacls C:\Confidential\Payroll.txt
 ```
 
-#### Explanation
-Creates the test folder and sensitive payload file for access control testing.
+### Example Output
 
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 2: Inspect Initial File Permissions via CMD
-
-#### Step-by-Step Instructions
-1. Run `icacls C:\SecureData\Payroll.txt`.
-
-#### Expected Output
-```cmd
-C:\SecureData\Payroll.txt NT AUTHORITY\SYSTEM:(I)(F)
-                          BUILTIN\Administrators:(I)(F)
-                          BUILTIN\Users:(I)(RX)
+```
+C:\Confidential\Payroll.txt 
+  BUILTIN\Administrators:(I)(F)
+  NT AUTHORITY\SYSTEM:(I)(F)
+  BUILTIN\Users:(I)(RX)
+  NT AUTHORITY\Authenticated Users:(I)(M)
 ```
 
-#### Explanation
-The `(I)` flag indicates permissions are inherited from parent container `C:\SecureData`. `BUILTIN\Users` has Read & Execute `(RX)` rights by default.
+### Investigation Note
+The `(I)` indicates that these permissions are **Inherited** from the parent container (`C:\Confidential`). Notice that `BUILTIN\Users` has `(RX)` (Read and Execute) access. This means *any* standard user on the machine can read this file. This explains how the HR data was leaked.
 
 ---
 
-### Screenshot
+# Task 3 — The PowerShell Perspective
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Retrieve the detailed Access Control List and owner information via PowerShell.
 
-### Task 3: Inspect Access Control Lists via PowerShell
-
-#### Step-by-Step Instructions
-1. Open PowerShell and run:
 ```powershell
-Get-Acl C:\SecureData\Payroll.txt | Format-List
+Get-Acl C:\Confidential\Payroll.txt | Format-List
 ```
 
-#### Expected Output
-```text
-Path   : Microsoft.PowerShell.Core\FileSystem::C:\SecureData\Payroll.txt
-Owner  : BUILTIN\Administrators
-Group  : WORKSTATION\Domain Users
-Access : NT AUTHORITY\SYSTEM Allow  FullControl
-         BUILTIN\Administrators Allow  FullControl
-         BUILTIN\Users Allow  ReadAndExecute, Synchronize
-```
-
-#### Explanation
-`Get-Acl` extracts owner details and explicit/inherited access control entries (ACEs) in .NET object format.
+### Investigation Note
+`Get-Acl` provides a more programmatic view of the Security Descriptor. You will see the `Owner` property (likely your Administrator account or the `BUILTIN\Administrators` group) and the specific Access Control Entries (ACEs).
 
 ---
 
-### Screenshot
+# Task 4 — Simulate the Insider Threat
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Create a standard, non-administrative user account to test the vulnerability.
 
-### Task 4: Create a Dedicated Test User Account
-
-#### Step-by-Step Instructions
-1. In CMD, execute:
 ```cmd
-net user TestUser01 P@ssword2026! /add
+net user SuspectUser Password123! /add
 ```
 
-#### Expected Output
+### Investigation Note
+Testing your assumptions by creating a standard user is a reliable way to verify NTFS misconfigurations during a live audit.
+
+---
+
+# Task 5 — Prove Unauthorized Access
+
+## Steps
+
+Verify that the `SuspectUser` can read the confidential data. 
+
 ```cmd
-The command completed successfully.
+runas /user:SuspectUser "cmd /k type C:\Confidential\Payroll.txt"
 ```
+*(Enter the password `Password123!` when prompted).*
 
-#### Explanation
-Creates a standard local user identity for verifying DACL boundaries.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
+### Investigation Note
+The command successfully prints "Sensitive Payroll Data" to the screen. You have just proven the vulnerability: a standard user leveraged inherited `Users` group permissions to access data they shouldn't see.
 
 ---
 
-### Task 5: Grant Explicit Read Permissions
+# Task 6 — Stop the Bleeding (Disable Inheritance)
 
-#### Step-by-Step Instructions
-1. Run:
+## Steps
+
+To secure the folder, you must first break the inheritance chain so permissions stop flowing down from `C:\`.
+
 ```cmd
-icacls C:\SecureData\Payroll.txt /grant TestUser01:(R)
+icacls C:\Confidential /inheritance:d
 ```
 
-#### Expected Output
+### Investigation Note
+The `/inheritance:d` flag disables inheritance and copies the currently inherited ACEs and converts them into explicit ACEs. This ensures you don't accidentally lock yourself out of the folder while reconfiguring it.
+
+---
+
+# Task 7 — Evict the Unauthorized
+
+## Steps
+
+Now that permissions are explicit, safely remove the `Users` group.
+
 ```cmd
-processed file: C:\SecureData\Payroll.txt
-Successfully processed 1 files; Failed processing 0 files
+icacls C:\Confidential /remove Users
 ```
 
-#### Explanation
-Adds an explicit Access Control Entry (ACE) granting Read `(R)` permission to `TestUser01`.
+*(You may also want to remove `Authenticated Users` using `icacls C:\Confidential /remove "Authenticated Users"`).*
+
+### Investigation Note
+By removing the broad `Users` group, you immediately cut off access to standard accounts like `SuspectUser`. Only Administrators and SYSTEM remain on the DACL.
 
 ---
 
-### Screenshot
+# Task 8 — Enforce Strict Access Controls
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Ensure the `Administrators` group has explicit, propagating Full Control.
 
-### Task 6: Verify Modified DACL Output
-
-#### Step-by-Step Instructions
-1. Run `icacls C:\SecureData\Payroll.txt`.
-
-#### Expected Output
 ```cmd
-C:\SecureData\Payroll.txt DESKTOP-TRIAGE\TestUser01:(R)
-                          NT AUTHORITY\SYSTEM:(I)(F)
-                          BUILTIN\Administrators:(I)(F)
-                          BUILTIN\Users:(I)(RX)
+icacls C:\Confidential /grant Administrators:(OI)(CI)F /T
 ```
 
-#### Explanation
-Shows `TestUser01:(R)` added as an explicit ACE at the top of the DACL (explicit entries precede inherited ones).
+### Investigation Note
+- `(OI)`: Object Inherit (Files will inherit this permission)
+- `(CI)`: Container Inherit (Subfolders will inherit this permission)
+- `(F)`: Full Control
+- `/T`: Applies the change recursively to all existing files inside the directory.
 
 ---
 
-### Screenshot
+# Task 9 — Reclaim File Ownership
 
-> **Insert Screenshot Here**
+## Steps
 
----
+If an attacker or rogue admin had changed the file owner to lock you out, you can take it back.
 
-### Task 7: Test Access Rights
-
-#### Step-by-Step Instructions
-1. Run PowerShell command as `TestUser01`:
-```powershell
-Get-Content C:\SecureData\Payroll.txt
-```
-
-#### Expected Output
-```text
-Confidential Payroll Data
-```
-
-#### Explanation
-`TestUser01` successfully reads the file content based on explicit Read access.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 8: Disable Permission Inheritance on Folder
-
-#### Step-by-Step Instructions
-1. Run `icacls C:\SecureData /inheritance:d`.
-
-#### Expected Output
 ```cmd
-processed file: C:\SecureData
-Successfully processed 1 files; Failed processing 0 files
+takeown /F C:\Confidential\Payroll.txt /A
 ```
 
-#### Explanation
-`/inheritance:d` disables inheritance and converts all inherited parent ACEs into explicit ACEs on `C:\SecureData`.
+### Investigation Note
+The `/A` flag gives ownership to the local `Administrators` group rather than your specific logged-in user account. A file owner ALWAYS has the implicit right to modify the DACL (change permissions), even if the DACL explicitly denies them access!
 
 ---
 
-### Screenshot
+# Task 10 — Verify the Remediation
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Verify the final, hardened permissions.
 
-### Task 9: Remove Standard Users Group Access
-
-#### Step-by-Step Instructions
-1. Run `icacls C:\SecureData /remove Users`.
-
-#### Expected Output
 ```cmd
-processed file: C:\SecureData
-Successfully processed 1 files; Failed processing 0 files
+icacls C:\Confidential
 ```
 
-#### Explanation
-Strips all ACE entries matching the local `Users` group from the folder DACL.
+### Example Output
+
+```
+C:\Confidential 
+  BUILTIN\Administrators:(OI)(CI)(F)
+  NT AUTHORITY\SYSTEM:(OI)(CI)(F)
+```
+
+### Investigation Note
+The `Users` group is gone. The `(I)` inheritance flag is gone. The folder is now secured with explicit permissions, stopping the data leak immediately.
 
 ---
 
-### Screenshot
+# Task 11 — Clean up the Environment
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Remove the artifacts created during this lab.
 
-### Task 10: Enforce Full Control for Administrators Only
-
-#### Step-by-Step Instructions
-1. Run:
 ```cmd
-icacls C:\SecureData /grant Administrators:(OI)(CI)F /T
+rmdir /S /Q C:\Confidential
+net user SuspectUser /delete
 ```
 
-#### Expected Output
-```cmd
-processed file: C:\SecureData
-processed file: C:\SecureData\Payroll.txt
-Successfully processed 2 files; Failed processing 0 files
-```
-
-#### Explanation
-`(OI)` (Object Inherit) and `(CI)` (Container Inherit) propagate Full Control `(F)` to all current and future child files and subdirectories.
-
 ---
 
-### Screenshot
+# Scenario Conclusion
 
-> **Insert Screenshot Here**
-
----
-
-### Task 11: Transfer File Ownership via CMD
-
-#### Step-by-Step Instructions
-1. Run `takeown /F C:\SecureData\Payroll.txt /A`.
-
-#### Expected Output
-```cmd
-SUCCESS: The file (or folder): "C:\SecureData\Payroll.txt" now owned by the administrators group.
-```
-
-#### Explanation
-`/A` assigns ownership to the local `Administrators` group instead of the individual user running the command.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 12: Verify Ownership Change via PowerShell
-
-#### Step-by-Step Instructions
-1. Run `(Get-Acl C:\SecureData\Payroll.txt).Owner`.
-
-#### Expected Output
-```text
-BUILTIN\Administrators
-```
-
-#### Explanation
-Confirms the owner attribute in the NTFS file header is set to `BUILTIN\Administrators`.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 13: Revoke Individual User Permissions
-
-#### Step-by-Step Instructions
-1. Run `icacls C:\SecureData\Payroll.txt /remove TestUser01`.
-
-#### Expected Output
-```cmd
-processed file: C:\SecureData\Payroll.txt
-Successfully processed 1 files; Failed processing 0 files
-```
-
-#### Explanation
-Removes explicit ACE for `TestUser01`, revoking read access.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 14: Modify File ACLs using PowerShell `Set-Acl`
-
-#### Step-by-Step Instructions
-1. Run script in PowerShell:
-```powershell
-$Acl = Get-Acl "C:\SecureData"
-$Ar = New-Object System.Security.AccessControl.FileSystemAccessRule("SYSTEM","FullControl","ContainerInherit,ObjectInherit","None","Allow")
-$Acl.SetAccessRule($Ar)
-Set-Acl -Path "C:\SecureData" -AclObject $Acl
-```
-
-#### Expected Output
-```text
-Command completes silently. ACL updated.
-```
-
-#### Explanation
-Programmatically constructs a .NET AccessRule object and commits it using `Set-Acl`.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 15: Clean Up Test Artifacts
-
-#### Step-by-Step Instructions
-1. Run in CMD:
-```cmd
-rmdir /s /q C:\SecureData
-net user TestUser01 /delete
-```
-
-#### Expected Output
-```cmd
-The command completed successfully.
-```
-
-#### Explanation
-Removes temporary lab files and test user identity.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
+By understanding how NTFS inherited permissions propagate from root directories, you successfully identified the misconfiguration that caused the data exposure. Using `icacls`, you broke the inheritance chain, evicted the unauthorized users, and re-secured the directory, mitigating the incident.

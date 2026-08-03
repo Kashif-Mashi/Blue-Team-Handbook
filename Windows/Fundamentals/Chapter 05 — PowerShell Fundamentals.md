@@ -1,6 +1,8 @@
 # Chapter 05 — PowerShell Fundamentals
 
-## Introduction
+---
+
+# 📖 Overview
 
 **PowerShell** is an advanced task automation and configuration management framework created by Microsoft. It consists of a powerful command-line shell, a scripting language, and a robust object-oriented management framework built on top of the Microsoft .NET Common Language Runtime (CLR).
 
@@ -10,9 +12,9 @@ PowerShell is ubiquitous in modern Windows enterprises. It is used to manage loc
 
 ---
 
-## Learning Objectives
+# 🎯 Learning Objectives
 
-Students should be able to:
+After completing this chapter, you will be able to:
 
 - Explain the architecture of PowerShell and contrast object-based shells with text-based shells.
 - Utilize the Verb-Noun naming convention to discover and execute cmdlets.
@@ -25,7 +27,7 @@ Students should be able to:
 
 ---
 
-## Why Blue Teams Care
+# Why Blue Teams Care
 
 PowerShell is both a critical administrative tool and a high-priority threat hunting domain:
 
@@ -36,9 +38,9 @@ PowerShell is both a critical administrative tool and a high-priority threat hun
 
 ---
 
-## Core Concepts
+# Core Concepts
 
-### 1. Objects vs. Text
+## 1. Objects vs. Text
 
 In traditional text-based shells (`cmd.exe`), running a process listing command outputs lines of string characters. Extracting a specific Process ID requires manual parsing (e.g., regex or string splitting).
 
@@ -53,7 +55,7 @@ graph TD
     ObjectCollection --> Method1["Method: Kill()"]
 ```
 
-### 2. Cmdlets (Command-lets)
+## 2. Cmdlets (Command-lets)
 
 Cmdlets are small, lightweight built-in commands written in .NET. They follow a mandatory **Verb-Noun** naming structure:
 - **Verb**: Defines the action performed (e.g., `Get`, `Set`, `New`, `Remove`, `Start`, `Stop`, `Invoke`).
@@ -64,7 +66,7 @@ Examples:
 - `Stop-Process`: Terminates a running process.
 - `New-Item`: Creates a file or directory.
 
-### 3. The Help System
+## 3. The Help System
 
 PowerShell provides comprehensive self-documenting features:
 
@@ -84,7 +86,7 @@ Get-Help Get-Process -Examples
 
 ---
 
-## Architecture & Pipeline Workflow
+# Architecture & Pipeline Workflow
 
 PowerShell pipelines pass complete objects from one cmdlet to another.
 
@@ -97,9 +99,9 @@ flowchart LR
 
 ---
 
-## Practical Examples
+# Practical Examples
 
-### Pipeline Filtering & Property Selection
+## Pipeline Filtering & Property Selection
 
 ```powershell
 # Get all running processes, filter where CPU usage exceeds 10 seconds, select specific properties
@@ -109,7 +111,7 @@ Get-Process | Where-Object { $_.CPU -gt 10 } | Select-Object ProcessName, Id, CP
 Get-Process | Get-Member
 ```
 
-#### Output Example: `Get-Process | Select-Object -First 3`
+### Output Example: `Get-Process | Select-Object -First 3`
 ```text
 Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 -------  ------    -----      -----     ------     --  -- -----------
@@ -120,7 +122,7 @@ Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
 
 ---
 
-### Variables, Data Types, & Hash Tables
+## Variables, Data Types, & Hash Tables
 
 ```powershell
 # String and Integer variables
@@ -145,16 +147,16 @@ Write-Host "Alert Severity: $($IncidentData.AlertSeverity)"
 
 ---
 
-### Operators, Conditions, & Loops
+## Operators, Conditions, & Loops
 
-#### Comparison Operators
+### Comparison Operators
 PowerShell uses explicit comparison operators instead of symbols:
 - `-eq` (Equal), `-ne` (Not Equal)
 - `-gt` (Greater Than), `-lt` (Less Than)
 - `-like` (Wildcard match, e.g. `*malware*`)
 - `-match` (Regex match)
 
-#### Conditional Statements & Loops
+### Conditional Statements & Loops
 ```powershell
 # Conditional logic
 $Service = Get-Service -Name "WinDefend"
@@ -173,7 +175,7 @@ foreach ($proc in $Processes) {
 
 ---
 
-### Functions & Modules
+## Functions & Modules
 
 ```powershell
 # Custom Function for Host Reconnaissance
@@ -199,11 +201,11 @@ Get-HostTriage
 
 ---
 
-## PowerShell Execution Policy & Security Features
+# PowerShell Execution Policy & Security Features
 
-### Execution Policy (Myth vs Reality)
+## Execution Policy (Myth vs Reality)
 
-> **Important**
+> ⚠️ **Important**
 > 
 > The PowerShell **Execution Policy is NOT a security boundary**. It is a safety rail designed to prevent users from accidentally executing untrusted scripts.
 > Attackers easily bypass Execution Policies using command line switches: `powershell.exe -ExecutionPolicy Bypass -File script.ps1`.
@@ -218,7 +220,7 @@ Get-HostTriage
 
 ---
 
-### Core Defensive Controls
+## Core Defensive Controls
 
 1. **AMSI (Antimalware Scan Interface)**: An interface allowing applications (like PowerShell) to integrate with the installed antivirus (e.g. Defender). AMSI inspects script buffers in memory before execution.
 2. **Constrained Language Mode (CLM)**: Restricts PowerShell features (blocks direct .NET class calls, COM objects, and unmanaged API invokers). Often paired with AppLocker/WDAC.
@@ -236,9 +238,9 @@ graph TD
 
 ---
 
-## Blue Team Investigation Notes
+# Blue Team Investigation Notes
 
-> **Blue Team Insight: Investigating PowerShell Event Logs**
+> 💙 **Blue Team Note: Investigating PowerShell Event Logs**
 > 
 > When conducting host forensics, analyze the following Event Logs under `Applications and Services Logs -> Microsoft -> Windows -> PowerShell -> Operational`:
 > 
@@ -248,7 +250,7 @@ graph TD
 
 ---
 
-## Common Mistakes
+# Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
@@ -259,7 +261,7 @@ graph TD
 
 ---
 
-## Best Practices
+# Best Practices
 
 1. **Enable Script Block Logging (Event ID 4104)** across all domain endpoints via Group Policy.
 2. **Enforce PowerShell Transcription Logging**: Automatically record all input/output console sessions to a secure central SMB share.
@@ -267,7 +269,7 @@ graph TD
 
 ---
 
-## Summary
+# 🔑 Key Takeaways
 
 - PowerShell is an object-oriented shell built on Microsoft .NET.
 - Cmdlets follow a strict Verb-Noun convention (`Get-Process`, `Set-ExecutionPolicy`).
@@ -277,7 +279,7 @@ graph TD
 
 ---
 
-## Key Commands
+# Key Commands
 
 | Cmdlet | Purpose | Example |
 |---|---|---|
@@ -292,7 +294,7 @@ graph TD
 
 ---
 
-## Quick Quiz
+# Quick Quiz
 
 1. **What primary architectural feature distinguishes PowerShell from CMD?**
    - A) PowerShell only runs on Windows Server
@@ -356,7 +358,7 @@ graph TD
 
 ---
 
-### Quiz Answers
+## Quiz Answers
 
 1. **B** (PowerShell processes .NET Objects rather than plain text strings)
 2. **B** (Verb-Noun)
@@ -371,7 +373,7 @@ graph TD
 
 ---
 
-## Further Reading
+# Further Reading
 
 - [Microsoft Learn: PowerShell Documentation](https://learn.microsoft.com/en-us/powershell/)
 - [Microsoft Learn: About Execution Policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)

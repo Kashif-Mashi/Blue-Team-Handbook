@@ -1,313 +1,153 @@
 # Lab 02 — File System Investigation
+
+## Scenario
+
+A user in the marketing department reports that their computer has been acting strangely after clicking a link in a suspicious email. They mentioned downloading an "invoice," but the file disappeared shortly after.
+
+As a Junior SOC Analyst, your first assignment is to investigate the local Windows file system. Before you can properly hunt for advanced malware, you must understand how Windows organizes data, where payloads are typically staged, and how to uncover hidden files left behind by attackers.
+
 ---
 
-# 🎯 Objectives
+# Mission
+
+Explore the Windows file system, identify critical OS directories, expose hidden files and extensions, and uncover where the suspicious payload might be hiding using both File Explorer and Command Prompt.
+
+---
+
+# Story
+
+Your Shift Lead assigns you the ticket and says:
+
+> *"Attackers love to hide in plain sight. They rely on default Windows settings to conceal their tools. Your job is to strip away those defaults, expose the file system, and find out exactly what this user downloaded."*
+
+Your mission is to explore the system, understand directory structures, and configure the OS to reveal its hidden secrets.
+
+---
+
+# Learning Objectives
 
 After completing this lab, you will be able to:
 
-- Explore the Windows file system using File Explorer.
-- Identify important Windows directories.
-- Differentiate between files and folders.
-- Understand file paths and directory hierarchy.
-- View hidden files and file extensions.
-- Examine file properties and metadata.
-- Use Command Prompt to investigate the file system.
-- Understand basic Blue Team file investigation techniques.
+* Navigate the Windows file system using File Explorer and CMD.
+* Identify the purpose of critical Windows directories.
+* Configure Windows to display hidden files and file extensions.
+* Examine file metadata (Timestamps, Ownership).
+* Understand and investigate Alternate Data Streams (ADS).
+* Apply basic Blue Team file investigation techniques.
 
 ---
 
-# 📖 Scenario
+# Prerequisites
 
-You have joined the Security Operations Center (SOC) as a Tier 1 Analyst.
+Before starting this lab, ensure you have:
 
-A user reports that several unknown files have appeared on their computer. Before beginning a security investigation, you need to understand how Windows organizes files and where important data is stored.
-
-Your task is to explore the Windows file system and collect basic information about files, folders, and metadata.
-
----
-
-# 🛠 Requirements
-
-- Windows 10 or Windows 11
-- Administrator or Standard User Account
-- Command Prompt
-- File Explorer
+* A working Windows 10 or Windows 11 virtual machine.
+* Completed **Lab 01 – Windows Installation**.
+* Basic familiarity with the Windows desktop.
 
 ---
 
-# Lab Tasks
+# Clues
 
-## Task 1 — Explore Windows Drives
+> **"Malware often pretends to be a normal document. If you can't see the extension, you can't trust the file."**
 
-1. Open **File Explorer**.
-2. Select **This PC**.
-3. Identify all available drives.
-
-Record:
-
-| Drive | File System | Purpose |
-|--------|-------------|---------|
-| C: | | |
-| D: | | |
-| Other | | |
+> **"Attackers hide their tools where normal users never look: `AppData`, `ProgramData`, and Alternate Data Streams."**
 
 ---
 
-## Task 2 — Explore Important Windows Directories
+# Your Tasks
 
-Navigate to the following folders:
+Complete the following tasks to investigate the file system.
 
-```text
-C:\Windows
-```
-
-```text
-C:\Users
-```
-
-```text
-C:\Program Files
-```
-
-```text
-C:\Program Files (x86)
-```
-
-```text
-C:\ProgramData
-```
-
-Observe the contents of each directory and identify its purpose.
+### Task 1 — Map the Terrain
+Open **File Explorer** and select **This PC**. Identify all available drives on your system. Record the drive letters and their primary file systems (e.g., NTFS).
 
 ---
 
-## Task 3 — Display Hidden Items
-
-In File Explorer:
-
-View → Show → Hidden Items
-
-Observe which hidden folders become visible.
-
-Examples may include:
-
-- AppData
-- ProgramData
-- Desktop.ini
+### Task 2 — Inspect Critical OS Directories
+Navigate to the root of your primary drive (usually `C:\`). Visit the following directories and determine their primary purpose:
+* `C:\Windows`
+* `C:\Users`
+* `C:\Program Files`
+* `C:\ProgramData` (Note: You may not see this one yet!)
 
 ---
 
-## Task 4 — Show File Extensions
-
-Enable file name extensions.
-
-View → Show → File Name Extensions
-
-Observe the extensions of different files.
-
-Examples:
-
-- .txt
-- .pdf
-- .jpg
-- .exe
-- .zip
+### Task 3 — Expose the Unseen
+Attackers rely on hidden files. Configure File Explorer to display **Hidden Items**.
+*(Hint: Look under the View tab)*
+Once enabled, navigate back to the `C:\` drive. What new directories can you see?
 
 ---
 
-## Task 5 — Investigate File Properties
-
-Create a text file named:
-
-```text
-Investigation.txt
-```
-
-Right-click the file and select **Properties**.
-
-Record the following information:
-
-- File Name
-- File Type
-- File Size
-- Location
-- Created Time
-- Modified Time
-- Accessed Time
+### Task 4 — Unmask the Extensions
+The user claimed they downloaded an "invoice". Configure File Explorer to **Show File Name Extensions**.
+Why is this critical for a SOC analyst when investigating a file named `invoice.pdf.exe`?
 
 ---
 
-## Task 6 — Explore the Directory Structure
-
-Open Command Prompt.
-
-Run:
-
-```cmd
-tree C:\Users /F
-```
-
-Observe how Windows displays folders and files in a hierarchical structure.
+### Task 5 — Extract the Metadata
+Create a text file on your Desktop named `Evidence.txt`. Right-click it and view its **Properties**.
+Record the Created, Modified, and Accessed timestamps. How could an attacker manipulate these?
 
 ---
 
-## Task 7 — Display User Profile
-
-Run:
-
-```cmd
-echo %USERPROFILE%
-```
-
-Example Output:
-
-```text
-C:\Users\John
-```
-
-Record your user profile path.
+### Task 6 — Command Line Reconnaissance
+Open **Command Prompt**. Use the `tree` command to visualize the hierarchical structure of your user profile (`C:\Users\<YourName>`).
+Use the `echo %USERPROFILE%` command to confirm your exact location.
 
 ---
 
-## Task 8 — Identify File Attributes
-
-Navigate to your Desktop in Command Prompt.
-
-Run:
-
-```cmd
-attrib
-```
-
-Observe file attributes.
-
-Common attributes include:
-
-| Attribute | Meaning |
-|-----------|---------|
-| H | Hidden |
-| S | System |
-| R | Read Only |
-| A | Archive |
+### Task 7 — Investigate File Attributes
+In Command Prompt, navigate to your Desktop and run the `attrib` command.
+Identify any files with the `H` (Hidden) or `S` (System) attributes.
 
 ---
 
-## Task 9 — Investigate Drive Information
-
-Run:
-
-```cmd
-fsutil fsinfo drives
-```
-
-Example:
-
-```text
-Drives: C:\ D:\
-```
-
-Record all available drives.
+### Task 8 — Uncover Alternate Data Streams (ADS)
+Attackers sometimes hide malicious code *inside* legitimate files using ADS.
+1. In CMD, create a normal file: `echo "Clean Data" > safe.txt`
+2. Hide a payload inside it: `echo "Malicious Payload" > safe.txt:hidden.txt`
+3. Use the `dir /r` command to reveal the hidden stream.
 
 ---
 
-## Task 10 — Investigate Alternate Data Streams (ADS)
+# Success Criteria
 
-Create a text file.
+You have successfully completed this lab if you can:
 
-```cmd
-echo Hello > test.txt
-```
-
-Create a hidden stream.
-
-```cmd
-echo Secret > test.txt:hidden.txt
-```
-
-View ADS.
-
-```cmd
-dir /r
-```
-
-Observe the hidden stream associated with the file.
-
-> ⚠ **Note:** Alternate Data Streams (ADS) are supported only on NTFS volumes.
+* Explain the purpose of `C:\Windows`, `C:\Users`, and `C:\ProgramData`.
+* Instantly recognize executable files masquerading as documents.
+* Expose hidden files and metadata using File Explorer properties.
+* Navigate and inspect file attributes via Command Prompt.
+* Demonstrate how Alternate Data Streams can conceal data.
 
 ---
 
-# Blue Team Investigation
+# 💙 Blue Team Insight
 
-Imagine a suspicious file named:
-
-```text
-invoice.pdf.exe
-```
-
-Investigate the file by answering the following questions:
-
-- Is the extension visible?
-- What is the actual file type?
-- Where is the file located?
-- Who owns the file?
-- What are its timestamps?
-- Does it contain an Alternate Data Stream?
-- Would you trust this file?
-
-Document your observations.
+Understanding the Windows file system is the foundation of digital forensics.
+During an incident, analysts immediately check specific directories:
+* `C:\Users\<User>\AppData\Local\Temp` (Common malware staging)
+* `C:\ProgramData` (Hidden persistence mechanisms)
+* `C:\Windows\System32` (Legitimate binaries hijacked by attackers)
+If you don't know what *normal* looks like, you will never spot the *abnormal*.
 
 ---
 
-# Expected Learning Outcomes
+# Key Takeaways
 
 After completing this lab, you should be able to:
 
-- Navigate the Windows file system.
-- Identify important Windows directories.
-- Distinguish between files and folders.
-- Display hidden files and extensions.
-- View file metadata.
-- Use Command Prompt for basic file system investigation.
-- Recognize the importance of metadata and ADS during security investigations.
+* Configure Windows for forensic visibility (show extensions, show hidden files).
+* Understand the hierarchical nature of Windows storage.
+* Differentiate between standard file data and metadata/ADS.
 
 ---
 
-# Cleanup
+## Need Help?
 
-Delete any files created during this lab, including:
-
-```text
-Investigation.txt
-```
-
-```text
-test.txt
-```
-
-If you created an Alternate Data Stream, deleting the parent file will also remove the hidden stream.
-
----
-
-# References
-
-- Microsoft Learn — File Systems
-- Microsoft Learn — File Explorer
-- Microsoft Learn — NTFS Technical Documentation
-
----
-
-# ✅ Solution
-
-A complete walkthrough for this lab, including commands, screenshots, expected output, explanations, and investigation notes, is available in the **Solutions** directory.
-
-📂 **Solution Path**
-
-```text
-Solutions/
-└── Lab 02 - File System Investigation.md
-```
-
-> **Tip:** Complete the investigation yourself before reviewing the solution. Comparing your findings with the walkthrough will help reinforce your understanding of the Windows File System and basic Blue Team investigation techniques.
+A complete walkthrough, command explanations, expected outputs, and troubleshooting tips are available in the **Solutions** directory.
 
 ---
 

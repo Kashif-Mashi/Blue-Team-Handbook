@@ -1,6 +1,8 @@
 # Chapter 06 — Windows Users & Groups
 
-## Introduction
+---
+
+# 📖 Overview
 
 The Windows operating system relies on user accounts and security groups to manage identity, authenticate users, and enforce access controls. Every action performed on a Windows machine—whether opening a text file, starting a background service, or connecting over a network—occurs within the security context of a specific user identity.
 
@@ -10,9 +12,9 @@ In this chapter, you will learn about local user accounts, built-in system ident
 
 ---
 
-## Learning Objectives
+# 🎯 Learning Objectives
 
-Students should be able to:
+After completing this chapter, you will be able to:
 
 - Differentiate between local user accounts, domain accounts, and built-in system identities.
 - Identify standard Windows built-in users (Administrator, Guest, DefaultAccount) and service accounts (SYSTEM, Local Service, Network Service).
@@ -26,7 +28,7 @@ Students should be able to:
 
 ---
 
-## Why Blue Teams Care
+# Why Blue Teams Care
 
 Identity management is one of the most targeted attack surfaces in Windows security:
 
@@ -37,9 +39,9 @@ Identity management is one of the most targeted attack surfaces in Windows secur
 
 ---
 
-## Core Concepts
+# Core Concepts
 
-### 1. Account Types in Windows
+## 1. Account Types in Windows
 
 - **Local User Accounts**: Stored on the specific host in the Security Account Manager (SAM) database (`C:\Windows\System32\config\SAM`). Used for standalone host login.
 - **Domain User Accounts**: Stored centrally in Active Directory Domain Services (AD DS). Enables Single Sign-On (SSO) across enterprise endpoints.
@@ -48,7 +50,7 @@ Identity management is one of the most targeted attack surfaces in Windows secur
   - `LOCAL SERVICE` (`NT AUTHORITY\LocalService`): Restricted account used to run non-critical background services with minimal privileges.
   - `NETWORK SERVICE` (`NT AUTHORITY\NetworkService`): Run services that require network access without administrative privileges.
 
-### 2. Built-in Local Users
+## 2. Built-in Local Users
 
 - **Administrator (RID 500)**: Built-in local administrator account. Disabled by default in client Windows versions for security.
 - **Guest (RID 501)**: Built-in guest account for temporary access. Disabled by default.
@@ -56,7 +58,7 @@ Identity management is one of the most targeted attack surfaces in Windows secur
 
 ---
 
-### 3. Security Identifiers (SIDs)
+## 3. Security Identifiers (SIDs)
 
 Every user and group in Windows is uniquely identified by a **Security Identifier (SID)**. SIDs do not change even if the account is renamed.
 
@@ -69,7 +71,7 @@ S-1-5-21-3623811015-3361044348-30300820-1001
 +--------- SID Prefix (S)
 ```
 
-#### Well-Known SIDs & RIDs
+### Well-Known SIDs & RIDs
 - **S-1-5-18**: Local System (`NT AUTHORITY\SYSTEM`)
 - **RID 500**: Built-in Administrator Account (`...-500`)
 - **RID 501**: Built-in Guest Account (`...-501`)
@@ -78,7 +80,7 @@ S-1-5-21-3623811015-3361044348-30300820-1001
 
 ---
 
-### 4. Access Tokens & Integrity Levels
+## 4. Access Tokens & Integrity Levels
 
 When a user logs in, Windows creates an **Access Token** containing:
 - User SID
@@ -94,7 +96,7 @@ graph TD
     TokenData --> AppLaunch[Launch Shell / Processes]
 ```
 
-#### User Account Control (UAC) & Integrity Levels
+### User Account Control (UAC) & Integrity Levels
 Windows uses **User Account Control (UAC)** to prevent unauthorized system modifications:
 
 | Integrity Level | Typical Executables / Context |
@@ -106,9 +108,9 @@ Windows uses **User Account Control (UAC)** to prevent unauthorized system modif
 
 ---
 
-## Practical Examples
+# Practical Examples
 
-### User Enumeration & Management
+## User Enumeration & Management
 
 ```cmd
 :: CMD: List local user accounts
@@ -137,7 +139,7 @@ Disable-LocalUser -Name "DFIR_Tech"
 
 ---
 
-### Group Enumeration & Management
+## Group Enumeration & Management
 
 ```cmd
 :: CMD: List local groups
@@ -160,14 +162,14 @@ Add-LocalGroupMember -Group "Remote Desktop Users" -Member "DFIR_Tech"
 
 ---
 
-### Account Lockout & Password Policy Configuration
+## Account Lockout & Password Policy Configuration
 
 ```cmd
 :: View current password policy and account lockout parameters
 net accounts
 ```
 
-#### Output Example: `net accounts`
+### Output Example: `net accounts`
 ```text
 Force user logoff how long after time expires?:       Never
 Minimum password age (days):                          0
@@ -182,9 +184,9 @@ Computer role:                                        WORKSTATION
 
 ---
 
-## Blue Team Investigation Notes
+# Blue Team Investigation Notes
 
-> **Blue Team Insight: Security Event Log Monitoring for Account Manipulation**
+> 💙 **Blue Team Note: Security Event Log Monitoring for Account Manipulation**
 > 
 > Security Operations Centers monitor the Windows `Security` Log for account tampering event IDs:
 > 
@@ -199,18 +201,18 @@ Computer role:                                        WORKSTATION
 
 ---
 
-## Common Mistakes
+# Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
 | Hardcoding Admin Passwords in Scripts | Cleartext credentials stored in scripts lead to credential exposure. | Use LAPS (Local Administrator Password Solution) or Secret Management. |
-| Leaving Unused Accounts Enabled | Inactive accounts serve as easy targets for password spraying. | Perform routine user audits (`Get-LocalUser | Where-Object Enabled -eq $false`). |
+| Leaving Unused Accounts Enabled | Inactive accounts serve as easy targets for password spraying. | Perform routine user audits (`Get-LocalUser \| Where-Object Enabled -eq $false`). |
 | Disabling UAC completely | Removes integrity level boundaries, allowing silent malware elevation. | Keep UAC enabled at default or "Always Notify" settings. |
 | Misunderstanding SYSTEM vs Administrator | Admin can be restricted by UAC; SYSTEM bypasses UAC boundaries completely. | Audit service contexts and privileges carefully. |
 
 ---
 
-## Best Practices
+# Best Practices
 
 1. **Deploy LAPS (Windows Local Administrator Password Solution)**: Automatically randomize local Administrator passwords on every machine.
 2. **Rename Built-in Administrator Account**: Reduces automated brute-force attacks targeting default names (RID 500 remains, but username changes).
@@ -219,7 +221,7 @@ Computer role:                                        WORKSTATION
 
 ---
 
-## Summary
+# 🔑 Key Takeaways
 
 - Windows identifies identities using Security Identifiers (SIDs) ending in a Relative Identifier (RID).
 - Accounts exist locally (SAM database) or centrally (Active Directory).
@@ -229,7 +231,7 @@ Computer role:                                        WORKSTATION
 
 ---
 
-## Key Commands
+# Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
@@ -244,7 +246,7 @@ Computer role:                                        WORKSTATION
 
 ---
 
-## Quick Quiz
+# Quick Quiz
 
 1. **Which database stores local user account information on a standalone Windows machine?**
    - A) Active Directory
@@ -308,7 +310,7 @@ Computer role:                                        WORKSTATION
 
 ---
 
-### Quiz Answers
+## Quiz Answers
 
 1. **B** (Security Account Manager (SAM))
 2. **A** (500)
@@ -323,7 +325,7 @@ Computer role:                                        WORKSTATION
 
 ---
 
-## Further Reading
+# Further Reading
 
 - [Microsoft Learn: Local Accounts Overview](https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/local-accounts)
 - [Microsoft Documentation: Security Identifiers (SIDs)](https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/security-identifiers)

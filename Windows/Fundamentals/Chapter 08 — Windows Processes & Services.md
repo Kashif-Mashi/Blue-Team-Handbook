@@ -1,6 +1,8 @@
 # Chapter 08 — Windows Processes & Services
 
-## Introduction
+---
+
+# 📖 Overview
 
 A **Process** is an active instance of a running application or operating system task in Microsoft Windows. Everything from system drivers to administrative tools and malware operates as one or more processes within the operating system memory.
 
@@ -10,9 +12,9 @@ For Blue Teams, process and service analysis is at the heart of endpoint threat 
 
 ---
 
-## Learning Objectives
+# 🎯 Learning Objectives
 
-Students should be able to:
+After completing this chapter, you will be able to:
 
 - Explain the architecture of a Windows Process, virtual memory space, threads, and handles.
 - Analyze Parent-Child process relationships (Process Lineage) and track Parent Process IDs (PPID).
@@ -25,7 +27,7 @@ Students should be able to:
 
 ---
 
-## Why Blue Teams Care
+# Why Blue Teams Care
 
 Processes and services represent primary execution and persistence mechanisms:
 
@@ -36,9 +38,9 @@ Processes and services represent primary execution and persistence mechanisms:
 
 ---
 
-## Core Concepts
+# Core Concepts
 
-### 1. Process Components & Lineage
+## 1. Process Components & Lineage
 
 A Windows process consists of:
 - **Private Virtual Address Space**: Isolated memory assigned by the OS.
@@ -58,7 +60,7 @@ graph TD
 
 ---
 
-### 2. Critical Windows System Processes
+## 2. Critical Windows System Processes
 
 To spot malicious activity, Blue Teams must know legitimate system process behaviors:
 
@@ -87,11 +89,11 @@ flowchart TD
 
 ---
 
-### 3. Windows Service Architecture
+## 3. Windows Service Architecture
 
 A Service runs in the background under the control of the Service Control Manager (`services.exe`).
 
-#### Service Startup Types:
+### Service Startup Types:
 - **Automatic**: Starts automatically during OS boot.
 - **Automatic (Delayed Start)**: Starts shortly after boot to optimize boot times.
 - **Manual**: Starts on-demand when called by a user or application.
@@ -99,9 +101,9 @@ A Service runs in the background under the control of the Service Control Manage
 
 ---
 
-## Practical Examples
+# Practical Examples
 
-### Process Enumeration via CLI & PowerShell
+## Process Enumeration via CLI & PowerShell
 
 ```cmd
 :: CMD: Display processes with PID and Memory usage
@@ -124,7 +126,7 @@ Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, 
 
 ---
 
-### Managing Services (`sc.exe` & `Get-Service`)
+## Managing Services (`sc.exe` & `Get-Service`)
 
 ```cmd
 :: View details of a specific service
@@ -151,7 +153,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-### Sysinternals Tools for Deep Triage
+## Sysinternals Tools for Deep Triage
 
 - **Process Explorer (`procexp.exe`)**: Advanced Task Manager showing process trees, loaded DLLs, handle lists, VirusTotal signature checks, and thread stacks.
 - **Process Monitor (`procmon.exe`)**: Captures real-time file system, registry, process, and thread activity.
@@ -159,9 +161,9 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Blue Team Investigation Notes
+# Blue Team Investigation Notes
 
-> **Blue Team Insight: Process Creation Auditing (Event ID 4688 & Sysmon Event ID 1)**
+> 💙 **Blue Team Note: Process Creation Auditing (Event ID 4688 & Sysmon Event ID 1)**
 > 
 > Security Operations Centers analyze process creation logs to identify malicious execution:
 > - **Event ID 4688 (Security Log)**: Captures process creation. Enable "Include command line in process creation events" in GPO to record full arguments.
@@ -170,7 +172,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Common Mistakes
+# Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
@@ -180,7 +182,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Best Practices
+# Best Practices
 
 1. **Enable Command Line Logging**: Ensure GPO Audit Policy logs full process command-line parameters in Event ID 4688.
 2. **Deploy Sysmon Endpoint Agent**: Monitor parent-child relationships, process hashes, and service installations.
@@ -189,7 +191,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Summary
+# 🔑 Key Takeaways
 
 - A Windows Process is an isolated execution environment with virtual memory, threads, handles, and security tokens.
 - Critical processes follow a strict lineage starting from `System` -> `smss.exe` -> `wininit.exe` / `services.exe`.
@@ -199,7 +201,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Key Commands
+# Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
@@ -212,7 +214,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Quick Quiz
+# Quick Quiz
 
 1. **What is the Process ID (PID) assigned to the core Windows Kernel System process?**
    - A) 0
@@ -276,7 +278,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-### Quiz Answers
+## Quiz Answers
 
 1. **B** (4)
 2. **B** (`services.exe`)
@@ -291,7 +293,7 @@ Set-Service -Name "TestService" -StartupType Disabled
 
 ---
 
-## Further Reading
+# Further Reading
 
 - [Microsoft Learn: Processes and Threads](https://learn.microsoft.com/en-us/windows/win32/procthread/processes-and-threads)
 - [Microsoft Learn: Service Applications](https://learn.microsoft.com/en-us/windows/win32/services/services)

@@ -1,16 +1,16 @@
 # Solution — Lab 02: File System Investigation
 
-> This solution demonstrates one possible outcome of the lab. Depending on your Windows version and system configuration, your results may differ slightly.
+> This solution guide walks you through the scenario where a user downloaded a suspicious payload, demonstrating how to properly configure your file system visibility and hunt for the hidden artifacts.
 
 ---
 
-# Task 1 — Explore Windows Drives
+# Task 1 — Map the Terrain
 
 ## Steps
 
 1. Open **File Explorer**.
 2. Select **This PC**.
-3. View the available drives.
+3. View the available drives and note their file systems.
 
 ### Example Result
 
@@ -18,175 +18,75 @@
 
 | Drive | File System | Purpose |
 |--------|-------------|---------|
-| C: | NTFS | Windows Operating System |
+| C: | NTFS | Windows Operating System & Staging Ground |
 | D: | NTFS | Data Storage |
-| E: | exFAT | USB Drive (Optional) |
 
-### Explanation
-
-- Every drive letter represents a mounted volume.
-- Windows is usually installed on the **C:** drive.
-- External storage devices receive the next available drive letter.
+### Investigation Note
+Every drive letter represents a mounted volume. Attackers generally stage their payloads on the `C:` drive, but they can also pivot to connected external or mapped drives.
 
 ---
 
-# Task 2 — Explore Important Windows Directories
+# Task 2 — Inspect Critical OS Directories
 
-Navigate to the following directories.
+Navigate to the following directories on your primary drive (`C:\`).
 
 ![Task 2 — Explore Important Windows Directories](../../Screenshot/Lab-02/task-02.png)
 
-```
-C:\Windows
-```
-
-Purpose:
-
-Stores Windows operating system files.
+- **`C:\Windows`**: Stores the Windows operating system files. Attackers often try to drop payloads here to masquerade as legitimate OS binaries (e.g., `svchost.exe`).
+- **`C:\Users`**: Contains user profiles. If a specific user clicked a malicious link, their `Downloads` or `AppData` folder is ground zero.
+- **`C:\Program Files`**: Stores installed 64-bit applications.
+- **`C:\ProgramData`**: *(You might not see this yet!)* Stores application data shared between all users.
 
 ---
 
-```
-C:\Users
-```
-
-Purpose:
-
-Contains user profiles.
-
-Example:
-
-```
-C:\Users
-
-├── Administrator
-├── Public
-└── John
-```
-
----
-
-```
-C:\Program Files
-```
-
-Purpose:
-
-Stores installed 64-bit applications.
-
----
-
-```
-C:\Program Files (x86)
-```
-
-Purpose:
-
-Stores installed 32-bit applications.
-
----
-
-```
-C:\ProgramData
-```
-
-Purpose:
-
-Stores application data shared between all users.
-
----
-
-# Task 3 — Display Hidden Items
+# Task 3 — Expose the Unseen
 
 ## Steps
 
-File Explorer
-
-→ View
-
-→ Show
-
-→ Hidden Items
+File Explorer → **View** → **Show** → **Hidden Items**
 
 ### Expected Result
 
 ![Task 3 — Display Hidden Items](../../Screenshot/Lab-02/task-03.png)
 
-Hidden folders become visible.
+Hidden folders become visible. On the `C:\` drive, you will now see `ProgramData`. Inside your user profile, you will see `AppData`.
 
-Examples:
-
-```
-AppData
-Desktop.ini
-ProgramData
-```
-
-### Explanation
-
-Windows hides important files to prevent accidental deletion or modification.
+### Investigation Note
+Windows hides important files to prevent accidental deletion. However, attackers know this and intentionally mark their malware directories as "Hidden" so users don't see them. Exposing hidden items is step one of any manual triage.
 
 ---
 
-# Task 4 — Show File Extensions
+# Task 4 — Unmask the Extensions
 
-Enable:
+## Steps
 
-```
-View
-
-↓
-
-Show
-
-↓
-
-File Name Extensions
-```
+File Explorer → **View** → **Show** → **File Name Extensions**
 
 ### Example
 
 ![Task 4 — Show File Extensions](../../Screenshot/Lab-02/task-04.png)
 
-Before
-
+Before:
 ```
-Resume
-```
-
-After
-
-```
-Resume.pdf
+invoice
 ```
 
-### Explanation
-
-Showing extensions helps identify executable files disguised as documents.
-
-Example:
-
+After:
 ```
-Invoice.pdf.exe
+invoice.pdf.exe
 ```
 
-This is actually an executable, not a PDF document.
+### Investigation Note
+The user thought they downloaded a PDF. Because Windows hides known file extensions by default, the `.exe` was hidden, and the user only saw `invoice.pdf`. Showing extensions reveals the true nature of the executable file.
 
 ---
 
-# Task 5 — Investigate File Properties
+# Task 5 — Extract the Metadata
 
-Create:
+## Steps
 
-```
-Investigation.txt
-```
-
-Right-click
-
-↓
-
-Properties
+1. Create a file named `Evidence.txt` on your Desktop.
+2. Right-click the file and select **Properties**.
 
 ### Example
 
@@ -194,311 +94,98 @@ Properties
 
 | Property | Example |
 |-----------|----------|
-| Name | Investigation.txt |
+| Name | Evidence.txt |
 | Type | Text Document |
-| Size | 1 KB |
-| Location | Desktop |
-| Created | Current Date |
-| Modified | Current Date |
-| Accessed | Current Date |
+| Location | C:\Users\Analyst\Desktop |
+| Created | Today's Date |
+| Modified | Today's Date |
+| Accessed | Today's Date |
 
-### Explanation
-
-These values are stored as metadata and are useful during digital forensic investigations.
+### Investigation Note
+These timestamps form the basis of "Timestomping" attacks. Attackers can manipulate these timestamps to make a newly dropped malware file look like it has been on the system for years, blending in with legitimate OS files.
 
 ---
 
-# Task 6 — Explore the Directory Structure
+# Task 6 — Command Line Reconnaissance
 
-Run:
+## Steps
 
-```cmd
-tree C:\Users /F
-```
+1. Open **Command Prompt**.
+2. Run `echo %USERPROFILE%` to see your current home path.
+3. Run `tree C:\Users\<YourName> /F` (replace with your actual username path).
 
 ### Example Output
 
 ![Task 6 — Explore Directory Structure](../../Screenshot/Lab-02/task-06.png)
 
 ```
-C:\Users
-
-├── Public
-
-├── John
-
-│      Desktop
-
-│      Documents
-
-│      Downloads
-
-│      Pictures
-
-│      Videos
-```
-
-### Explanation
-
-The **tree** command displays folders and files in a hierarchical structure.
-
----
-
-# Task 7 — Display User Profile
-
-Run
-
-```cmd
-echo %USERPROFILE%
-```
-
-Example
-
-![Task 7 — Display User Profile](../../Screenshot/Lab-02/task-07.png)
-
-```
 C:\Users\John
+├── Desktop
+│      Evidence.txt
+├── Documents
+├── Downloads
+│      invoice.pdf.exe
 ```
 
-### Explanation
-
-The environment variable `%USERPROFILE%` points to the current user's home directory.
+### Investigation Note
+The `tree` command allows you to rapidly visualize the folder structure and spot anomalous files nested deep inside directories without clicking through the GUI.
 
 ---
 
-# Task 8 — Identify File Attributes
+# Task 7 — Investigate File Attributes
 
-Navigate to the Desktop.
+## Steps
 
-Run
+1. In Command Prompt, navigate to your Desktop: `cd Desktop`
+2. Run the command: `attrib`
 
-```cmd
-attrib
-```
-
-Example
+### Example
 
 ![Task 8 — Identify File Attributes](../../Screenshot/Lab-02/task-08.png)
 
 ```
-A        Resume.pdf
-A        Notes.txt
+A        Evidence.txt
 H        Desktop.ini
 ```
 
-### Common Attributes
-
-| Attribute | Meaning |
-|-----------|----------|
-| H | Hidden |
-| S | System |
-| R | Read Only |
-| A | Archive |
-
-### Explanation
-
-Windows uses file attributes to identify special file properties.
+### Investigation Note
+If an attacker drops a payload and runs `attrib +h +s malware.exe`, it becomes both Hidden (`H`) and a System (`S`) file, making it exceptionally difficult to spot in standard explorer views.
 
 ---
 
-# Task 9 — Investigate Drive Information
+# Task 8 — Uncover Alternate Data Streams (ADS)
 
-Run
+## Steps
 
+1. Create a clean file:
 ```cmd
-fsutil fsinfo drives
+echo "Clean Data" > safe.txt
 ```
 
-Example
-
-![Task 9 — Investigate Drive Information](../../Screenshot/Lab-02/task-09.png)
-
-```
-Drives:
-
-C:\
-
-D:\
-```
-
-### Explanation
-
-This command lists every mounted volume available on the system.
-
----
-
-# Task 10 — Investigate Alternate Data Streams (ADS)
-
-Create a file
-
+2. Create a hidden ADS payload inside it:
 ```cmd
-echo Hello > test.txt
+echo "Malicious Payload" > safe.txt:hidden.txt
 ```
 
-Create an ADS
-
-```cmd
-echo Secret > test.txt:hidden.txt
-```
-
-Display ADS
-
+3. Display the ADS:
 ```cmd
 dir /r
 ```
 
-Example
+### Example
 
 ![Task 10 — Investigate Alternate Data Streams](../../Screenshot/Lab-02/task-10.png)
 
 ```
-test.txt
-
-26 test.txt:hidden.txt:$DATA
+08/02/2026  10:00 AM                13 safe.txt
+                                    20 safe.txt:hidden.txt:$DATA
 ```
 
-### Explanation
-
-Although **test.txt** appears to contain only normal data, an additional hidden stream also exists.
-
-Alternate Data Streams are an NTFS feature that allows multiple streams of data to be associated with a single file.
+### Investigation Note
+Even though `safe.txt` looks like a normal 13-byte text file, it is secretly carrying a hidden payload stream. Blue Team defenders use tools like `dir /r` or Sysinternals `Streams` to detect data smuggled within NTFS Alternate Data Streams.
 
 ---
 
-# Blue Team Investigation
+# Scenario Conclusion
 
-## Suspicious File
-
-```
-invoice.pdf.exe
-```
-
-### Investigation
-
-### Is the extension visible?
-
-Yes.
-
-Actual extension:
-
-```
-.exe
-```
-
-The file is an executable program.
-
----
-
-### What is the actual file type?
-
-Executable Application
-
----
-
-### Where is the file located?
-
-Example
-
-```
-C:\Users\John\Downloads
-```
-
-Downloads is a common location for malicious files.
-
----
-
-### Who owns the file?
-
-Open:
-
-Properties
-
-↓
-
-Security
-
-↓
-
-Advanced
-
-Record the Owner field.
-
-Example
-
-```
-John
-```
-
----
-
-### Check File Metadata
-
-Review
-
-- Created Time
-- Modified Time
-- Accessed Time
-
-Unexpected timestamps may indicate suspicious activity.
-
----
-
-### Check for ADS
-
-Run
-
-```cmd
-dir /r
-```
-
-If additional streams appear, further investigation is recommended.
-
----
-
-### Should the File Be Trusted?
-
-No.
-
-Reasons:
-
-- Double extension
-- Executable file
-- Located in Downloads
-- Unknown source
-
-The file should be scanned with Microsoft Defender or another antivirus solution before opening.
-
----
-
-# Blue Team Summary
-
-During this lab you learned how to:
-
-- Navigate the Windows File System.
-- Identify important Windows directories.
-- Display hidden files.
-- Display file extensions.
-- View metadata.
-- Identify file attributes.
-- Investigate Alternate Data Streams.
-- Examine suspicious files using basic Blue Team techniques.
-
----
-
-# Key Takeaways
-
-- Always display file extensions.
-- Never trust files based only on their icon.
-- Verify metadata before opening unknown files.
-- Downloads and Temp folders are common malware locations.
-- NTFS stores valuable forensic information.
-- Alternate Data Streams can hide malicious data.
-- File metadata is critical during incident response.
-
----
-
-# Conclusion
-
-You have successfully completed **Lab 02 – File System Investigation**.
-
-The knowledge gained in this lab provides the foundation for understanding Windows storage, file management, digital forensics, and Blue Team investigations. These concepts will be used throughout the remaining Windows Fundamentals chapters.
+By unmasking hidden extensions, revealing hidden folders, and understanding Alternate Data Streams, you successfully traced the "invoice" incident back to a deceptive executable and uncovered how attackers exploit the Windows File System's default behaviors to maintain stealth.

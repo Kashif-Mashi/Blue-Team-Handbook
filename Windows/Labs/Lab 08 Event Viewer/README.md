@@ -1,125 +1,180 @@
-# Lab 08 — Windows Event Viewer & Log Analysis
-
-## Difficulty
-
-🟢 Beginner
-
-**Estimated Time**: 45 Minutes  
-**Prerequisites**: Completion of Chapter 10 / Concepts (Windows Event Viewer & Logging).  
-**Objectives**:
-- Navigate Windows Event Viewer (`eventvwr.msc`) and inspect standard log channels.
-- Filter, query, and export Windows Event Logs to `.evtx` and `.csv` formats.
-- Enable Process Command-Line Auditing via Local Security Policy (`secpol.msc`).
-- Query Security, System, and Sysmon event logs using PowerShell `Get-WinEvent`.
-- Analyze critical security Event IDs (4624, 4625, 4688, 4720, 7045, 1102).
-
----
+# Lab 08 — Windows Event Viewer
 
 ## Scenario
 
-A security incident alert was triggered on workstation `WORKSTATION-04`. An unauthorized account logon was reported, followed by suspected command execution and audit log tampering attempts.
+The SOC received an alert from the SIEM: a burst of **47 failed logon attempts** (Event ID 4625) against the `Administrator` account on server `DC-PROD-01` occurred between 02:00 AM and 02:15 AM on Saturday, immediately followed by a **single successful logon** (Event ID 4624). Minutes later, a **new service was installed** (Event ID 7045) and a **new user account was created** (Event ID 4720).
 
-As a SOC Security Analyst, you are tasked with investigating the endpoint's Windows Event Logs, configuring audit policies to capture full command-line parameters, querying logon failures and process executions via PowerShell, and extracting security event indicators for your incident report.
-
----
-
-## Lab Environment
-
-- **Operating System**: Windows 10 / 11 Workstation
-- **User Role**: Local Administrator privileges available
-- **Internet Access**: Enabled
-- **Tools Used**: Event Viewer (`eventvwr.msc`), Local Security Policy (`secpol.msc`), PowerShell (`Get-WinEvent`)
+This pattern is consistent with a brute-force attack followed by post-exploitation persistence. As a Tier 2 SOC Analyst, you must use Event Viewer and PowerShell to reconstruct the attack timeline, identify the attacker's source IP, and determine what persistence mechanisms were deployed.
 
 ---
 
-## Tasks
+# Mission
 
-### Task 1: Launch Event Viewer Interface
-Press `Win + R`, type `eventvwr.msc`, and launch Event Viewer as Administrator.
-
-### Task 2: Explore Standard Windows Logs
-Expand **Windows Logs** and inspect the total record count and log size for `Application`, `Security`, and `System`.
-
-### Task 3: Filter Security Log for Successful Logons
-Apply an Event Viewer filter on the `Security` log for Event ID **4624** (Successful Logon).
-
-### Task 4: Filter Security Log for Failed Logons
-Apply a filter for Event ID **4625** (Failed Logon) and inspect logon types (e.g. Type 2 Interactive, Type 3 Network, Type 10 RemoteDesktop).
-
-### Task 5: Enable Command-Line Auditing via Local Security Policy
-Open `secpol.msc`, navigate to `Local Policies -> Audit Policy`, enable **Audit Process Creation** (Success and Failure), and enable **Include command line in process creation events** under Administrative Templates.
-
-### Task 6: Trigger Test Command Execution
-Open CMD and run `whoami /priv` and `netstat -ano > C:\Users\Public\test.txt` to generate audit events.
-
-### Task 7: Query Process Creation Events via PowerShell
-Open elevated PowerShell and run `Get-WinEvent -LogName "Security" -MaxEvents 10 | Where-Object {$_.Id -eq 4688}`.
-
-### Task 8: Extract Command-Line Arguments via PowerShell
-Execute a PowerShell script using `Get-WinEvent` to extract `ProcessName` and `CommandLine` from Event ID 4688 payloads.
-
-### Task 9: Query System Log for Service Creation
-Query the `System` log for Event ID **7045** using `Get-WinEvent -LogName "System" | Where-Object {$_.Id -eq 7045}`.
-
-### Task 10: Query Application Log for Errors
-Query the `Application` log for `Error` level events occurring within the past 24 hours.
-
-### Task 11: Export Event Log to `.evtx` File
-Export the filtered `Security` log to `C:\Users\Public\SecurityLog_Export.evtx` using `Get-WinEvent` or Event Viewer export options.
-
-### Task 12: Query Sysmon Operational Log (If Installed)
-Query `Microsoft-Windows-Sysmon/Operational` for Event ID **1** (Process Creation) or Event ID **3** (Network Connection).
-
-### Task 13: Detect Audit Log Clearing (Event ID 1102)
-Explain the significance of Event ID **1102** (The audit log was cleared) and test log clearance detection rules.
-
-### Task 14: Convert Event Log Records to CSV
-Export the latest 20 Security events to `C:\Users\Public\Security_Events.csv` using `Export-Csv`.
-
-### Task 15: Clean Up Lab Artifacts
-Remove `C:\Users\Public\test.txt` and exported `.evtx`/`.csv` files.
+Use Event Viewer (`eventvwr.msc`) and PowerShell (`Get-WinEvent`) to parse the Security and System event logs, reconstruct the attacker's kill chain, and identify all indicators of compromise (IOCs).
 
 ---
 
-## Verification
+# Story
 
-To verify success:
-- Confirm Event ID 4688 captures the full command line `whoami /priv` in the Event Data.
-- Confirm `C:\Users\Public\Security_Events.csv` is created and populated with event objects.
-- Confirm `secpol.msc` shows Audit Process Creation set to Success/Failure.
+The incident commander briefs you:
 
----
-
-## Blue Team Notes
-
-- **Command-Line Logging Visibility**: Without enabling "Include command line in process creation events" in GPO/secpol, Event ID 4688 records the binary name but leaves the `CommandLine` field blank, hiding attacker switches (`-EncodedCommand`, `Bypass`).
-- **Log Clearance Indicators**: Event ID 1102 (Security log cleared) or Event ID 104 (System log cleared) indicates active adversary defense evasion. High-severity alerts must trigger immediately upon log clearance.
+> *"Someone brute-forced the admin account on our production DC over the weekend. They got in, they created a backdoor account, and they installed a service. I need you to pull the logs, build the timeline, and tell me: what IP did they come from, what account did they create, and what service did they install. The board is asking questions."*
 
 ---
 
-## Common Errors
+# Learning Objectives
 
-- **Permission Denied on Security Log**: Non-elevated PowerShell windows return "Access is denied" when querying `Security` log channels. Ensure shell is run as Administrator.
-- **Log Overwrite / Small Log Size**: Default log size limits (e.g. 20MB) cause old events to be overwritten quickly on busy hosts.
+After completing this lab, you will be able to:
 
----
-
-## MITRE ATT&CK Mapping
-
-- **T1070.001**: Indicator Removal on Host: Clear Windows Event Logs
-- **T1059.001**: Command and Scripting Interpreter: PowerShell
-- **T1059.003**: Command and Scripting Interpreter: Windows Command Shell
+* Navigate the Windows Event Viewer GUI and filter for specific Event IDs.
+* Use PowerShell `Get-WinEvent` with `FilterHashtable` to query structured event data.
+* Interpret Security Event IDs 4624, 4625, 4720, 4732, and 7045.
+* Extract attacker IOCs (source IP, account names, service paths) from event log properties.
+* Export event logs to `.evtx` files for offline forensic analysis.
 
 ---
 
-## Challenge Section
+# Prerequisites
 
-1. Write an advanced PowerShell XPath filter query to retrieve all Event ID **4625** events where `LogonType` equals 10 (Remote Desktop).
-2. Create a PowerShell script that parses Event ID **4720** (User Account Created) and outputs Creator Username, Target Username, and Time.
-3. Query Event ID **4670** (Permissions on an object were changed) to identify ACL modifications.
-4. Calculate the average number of logon events per hour on the machine using `Group-Object`.
-5. Export Sysmon Event ID **1** records to a JSON file using `ConvertTo-Json`.
+Before starting this lab, ensure you have:
 
+* A working Windows 10 or Windows 11 Workstation.
+* Local Administrator privileges.
+* Completed Chapter 10 (Windows Event Viewer & Logging).
+
+---
+
+# Clues
+
+> **"Event ID 4625 contains the source IP of the failed logon in the `Properties[19]` field. Cross-reference this IP against all successful logons (4624) to confirm the attacker's pivot."**
+
+> **"Event ID 7045 only fires once when a service is FIRST installed. If you see a 7045 at 02:17 AM on a Saturday morning, it was NOT an IT admin."**
+
+---
+
+# Your Tasks
+
+Complete the following tasks to reconstruct the attack timeline.
+
+### Task 1 — Simulate the Attack Evidence
+Open Command Prompt as Administrator. Generate evidence that simulates the attacker's post-exploitation activity:
+
+Create a backdoor account:
+`net user APT_Backdoor P@ssw0rd123! /add`
+
+Add the account to Administrators:
+`net localgroup Administrators APT_Backdoor /add`
+
+Create a persistence service:
+`sc create PersistenceSvc binPath= "C:\Windows\Temp\beacon.exe" start= auto`
+
+---
+
+### Task 2 — Open Event Viewer
+Launch Event Viewer by pressing `Win + R`, typing `eventvwr.msc`, and pressing Enter.
+Navigate to **Windows Logs → Security**.
+
+---
+
+### Task 3 — Hunt for the Brute Force (Event ID 4625)
+In the Security log, click **Filter Current Log** on the right pane. Enter `4625` in the Event ID field.
+How many failed logon attempts do you see? What account was targeted?
+
+---
+
+### Task 4 — Find the Successful Logon (Event ID 4624)
+Clear the filter and create a new one for Event ID `4624`.
+Find the successful logon event that occurred AFTER the failed logon burst. Note:
+- The **Logon Type** (Type 3 = Network, Type 10 = RDP).
+- The **Source Network Address** (this is the attacker's IP).
+- The **Account Name**.
+
+---
+
+### Task 5 — Detect the Backdoor Account (Event ID 4720)
+Filter for Event ID `4720` (A user account was created).
+Find the event showing the creation of `APT_Backdoor`. Note the **Subject** field — this tells you which account created the backdoor.
+
+---
+
+### Task 6 — Detect Privilege Escalation (Event ID 4732)
+Filter for Event ID `4732` (A member was added to a security-enabled local group).
+Find the event showing `APT_Backdoor` being added to the `Administrators` group.
+
+---
+
+### Task 7 — Detect the Persistence Service (Event ID 7045)
+Switch to **Windows Logs → System**.
+Filter for Event ID `7045` (A service was installed in the system).
+Find the `PersistenceSvc` entry. Note the `ImagePath` — this is the malware binary location.
+
+---
+
+### Task 8 — PowerShell Timeline Construction
+Use PowerShell to build a comprehensive attack timeline:
+
+```powershell
+# Get account creation events
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4720} -MaxEvents 5 |
+    Select-Object TimeCreated, @{Name="NewAccount";Expression={$_.Properties[0].Value}}, @{Name="CreatedBy";Expression={$_.Properties[4].Value}}
+
+# Get new service installations
+Get-WinEvent -FilterHashtable @{LogName='System'; Id=7045} -MaxEvents 5 |
+    Select-Object TimeCreated, @{Name="ServiceName";Expression={$_.Properties[0].Value}}, @{Name="ImagePath";Expression={$_.Properties[1].Value}}
+```
+
+---
+
+### Task 9 — Export Evidence
+Export the Security log to a file for your incident report:
+`wevtutil epl Security C:\Evidence\Security_Export.evtx`
+
+---
+
+### Task 10 — Clean Up
+Remove the simulated attack artifacts:
+
+```cmd
+net user APT_Backdoor /delete
+sc delete PersistenceSvc
+```
+
+---
+
+# Success Criteria
+
+You have successfully completed this lab if you can:
+
+* Filter the Security log for specific Event IDs using Event Viewer GUI.
+* Extract the attacker's source IP from Event ID 4624 properties.
+* Identify backdoor account creation via Event ID 4720.
+* Identify persistent service installation via Event ID 7045.
+* Use `Get-WinEvent` with `FilterHashtable` to programmatically query events.
+
+---
+
+# 💙 Blue Team Insight
+
+In a real-world SOC, you would never rely on manually checking Event Viewer. These events would be **forwarded to a SIEM** (Splunk, Elastic, Microsoft Sentinel) where automated detection rules fire alerts. For example:
+- **Brute Force Rule**: Alert when > 10 Event ID 4625 events occur for the same account within 5 minutes.
+- **New Service Rule**: Alert when Event ID 7045 fires outside of maintenance windows.
+- **Account Creation Rule**: Alert when Event ID 4720 fires and the new account is immediately added to `Administrators` (4732).
+
+---
+
+# Key Takeaways
+
+After completing this lab, you should be able to:
+
+* Navigate the Windows Event Viewer and filter by Event ID.
+* Extract critical attacker IOCs from structured event log fields.
+* Construct an incident timeline using PowerShell event queries.
+
+---
+
+## Need Help?
+
+A complete walkthrough, command explanations, expected outputs, and troubleshooting tips are available in the **Solutions** directory.
 
 ---
 

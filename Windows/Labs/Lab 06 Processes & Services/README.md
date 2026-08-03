@@ -1,125 +1,158 @@
-# Lab 06 — Processes & Services Investigation
-
-## Difficulty
-
-🟢 Beginner
-
-**Estimated Time**: 45 Minutes  
-**Prerequisites**: Completion of Chapter 08 (Windows Processes & Services).  
-**Objectives**:
-- Enumerate running processes, Process IDs (PIDs), and Parent Process IDs (PPIDs).
-- Map active Windows services to host `svchost.exe` process instances.
-- Inspect service startup states and create a test service using `sc.exe`.
-- Detect process masquerading and abnormal parent-child relationships.
-- Analyze Process Creation Events (Event ID 4688 / Sysmon Event ID 1) and Service Creation Events (Event ID 7045).
-
----
+# Lab 06 — Windows Processes & Services
 
 ## Scenario
 
-The Security Operations Center (SOC) detected a suspicious background process executing on endpoint `WORKSTATION-02`. An alert suggests an unverified service was created to establish persistence.
+A network monitoring alert triggered on `SRV-APP-01` indicating steady outbound traffic to an unknown IP address over port 4444. The system is also running noticeably slower than usual, and the CPU fans are spinning loudly. The SOC suspects a cryptominer or a persistent backdoor is running on the server.
 
-As an Incident Responder, your objective is to perform process lineage analysis, identify running service instances, inspect service configurations, create and verify a controlled lab service, track service creation event logs, and report your triage findings.
-
----
-
-## Lab Environment
-
-- **Operating System**: Windows 10 / 11 Workstation
-- **User Role**: Local Administrator privileges available
-- **Internet Access**: Enabled
-- **Tools Used**: `tasklist.exe`, `sc.exe`, `wmic.exe`, `powershell.exe`, Event Viewer (`eventvwr.msc`)
+As an Incident Responder, you are tasked with performing live process and service analysis on the endpoint to hunt down the anomalous process, identify any evasion techniques in use, and determine how the malware is persisting on the machine.
 
 ---
 
-## Tasks
+# Mission
 
-### Task 1: Basic Process Enumeration via CMD
-Open an elevated Command Prompt and run `tasklist` to record all active running processes.
-
-### Task 2: Service-to-Process Mapping
-Run `tasklist /svc` and identify all service names hosted under `svchost.exe` instances.
-
-### Task 3: Process Lineage Inspection via WMI
-Execute `wmic process get Name, ProcessId, ParentProcessId, ExecutablePath` to map process parent-child relationships.
-
-### Task 4: High Memory Process Analysis via PowerShell
-Open elevated PowerShell and run `Get-Process | Where-Object {$_.WorkingSet -gt 50MB} | Sort-Object WorkingSet -Descending` to identify heavy memory consumers.
-
-### Task 5: Parent Process Command Line Extraction
-Use PowerShell (`Get-CimInstance Win32_Process`) to extract the full `CommandLine` and `ParentProcessId` for `cmd.exe` or `powershell.exe`.
-
-### Task 6: Audit Service States via `sc.exe`
-Run `sc query` to view all active background services.
-
-### Task 7: Target Service State Detailed Query
-Query the status of the Windows Defender service using `sc query WinDefend`.
-
-### Task 8: Create a Custom Background Test Service
-Create a temporary background service named `TriageAgent` using `sc create TriageAgent binPath= "C:\Windows\System32\notepad.exe" start= auto`.
-
-### Task 9: Query Custom Service Configuration
-Run `sc qc TriageAgent` to view binary path, start type, and account context.
-
-### Task 10: Modify Service Startup Type
-Change the startup type of `TriageAgent` to disabled using `sc config TriageAgent start= disabled`.
-
-### Task 11: Attempt Service Execution
-Attempt to start the service using `net start TriageAgent` and document the expected failure.
-
-### Task 12: Delete Custom Test Service
-Delete `TriageAgent` service using `sc delete TriageAgent`.
-
-### Task 13: Audit Service Installation Event Logs
-Open Event Viewer (`eventvwr.msc`), navigate to `Windows Logs -> System`, and filter for Event ID **7045** (A service was installed in the system).
-
-### Task 14: Inspect Process Creation Audit Logs
-Navigate to `Windows Logs -> Security` and filter for Event ID **4688** (Process Creation) to inspect process launch arguments.
-
-### Task 15: Clean Up Lab Artifacts
-Verify `TriageAgent` is removed from system service listings using `sc query TriageAgent`.
+Use native Windows utilities (`tasklist`, `wmic`, `sc.exe`) alongside Sysinternals `Process Explorer` to hunt down the evasive process, identify process hollowing or masquerading, and trace the parent-child lineage to locate the malicious service.
 
 ---
 
-## Verification
+# Story
 
-To verify success:
-- Confirm `sc qc TriageAgent` displayed `START_TYPE: 4 DISABLED` before deletion.
-- Confirm Event ID 7045 in the System log records the creation of `TriageAgent`.
-- Confirm `sc query TriageAgent` returns `[SC] OpenService FAILED 1060` after deletion.
+You get a ticket marked high severity:
 
----
+> *"Server admin noticed `SRV-APP-01` CPU is pegged at 95%. Endpoint logs show a weird `svchost.exe` process making outbound connections. Find out what it is, where it started from, and shut it down before it spreads."*
 
-## Blue Team Notes
-
-- **Service Persistence Detection**: Event ID 7045 is one of the highest-fidelity indicators for service-based persistence. SOC rules should alert on any new service created with binary paths pointing to `C:\Users\Public`, `C:\Temp`, or `%APPDATA%`.
-- **Process Masquerading**: Attackers often name malicious binaries `svchost.exe` or `lsass.exe`. Legitimate `svchost.exe` instances MUST run out of `C:\Windows\System32\` and have `services.exe` as their parent PID.
+You need to recreate the conditions, find the rogue process hiding in plain sight, and kill the backdoor service.
 
 ---
 
-## Common Errors
+# Learning Objectives
 
-- **Forgetting Space After Equals in `sc`**: Running `sc create SvcName binPath="C:\path"` fails. `sc.exe` REQUIRES a space after equal signs (`binPath= "C:\path"`).
-- **Non-Elevated Prompt**: Service creation commands fail with "Access is denied" if CMD/PowerShell is not launched as Administrator.
+After completing this lab, you will be able to:
 
----
-
-## MITRE ATT&CK Mapping
-
-- **T1569.002**: System Services: Service Execution
-- **T1057**: Process Discovery
-- **T1036.005**: Masquerading: Match Legitimate Name or Location
+* Enumerate running processes and services using native Windows CLI tools.
+* Use Sysinternals Process Explorer to analyze process trees and parent-child relationships.
+* Identify process masquerading and hollowing (e.g., malware hiding as `svchost.exe`).
+* Map a running process to its associated Windows Service.
+* Stop and delete persistent malicious background services.
 
 ---
 
-## Challenge Section
+# Prerequisites
 
-1. Write a PowerShell script that inspects all running `svchost.exe` processes and flags any instance executing outside `C:\Windows\System32`.
-2. Query Event ID **7045** using `Get-WinEvent` and parse out the Service Name and Image Path.
-3. Identify all unquoted service paths on your system using `wmic service get name,displayname,pathname,startmode | findstr /i /v "c:\windows\\" | findstr /i /v """`.
-4. Use `Get-Process` to list processes with no associated file path on disk (potential memory injection indicator).
-5. Compare process listings between `tasklist` and Sysinternals `Process Explorer` to spot hidden processes.
+Before starting this lab, ensure you have:
 
+* A working Windows 10 or Windows 11 Workstation.
+* Local Administrator privileges.
+* Sysinternals Suite downloaded (specifically `procexp.exe`).
+* Completed Chapter 08 (Windows Processes & Services).
+
+---
+
+# Clues
+
+> **"Legitimate `svchost.exe` instances are ALWAYS launched by `services.exe` and ALWAYS reside in `C:\Windows\System32`. If you see an `svchost.exe` launched by `cmd.exe` or running from `C:\Temp`, it's malware."**
+
+> **"Malware creates background services to guarantee it restarts every time the server reboots. You have to kill the process AND delete the service."**
+
+---
+
+# Your Tasks
+
+Complete the following tasks to conduct the process hunt.
+
+### Task 1 — Simulate the Compromise
+You need to plant the backdoor to hunt it. Open Command Prompt as Administrator and simulate a malicious service that masquerades as a legitimate binary.
+Run: 
+`sc create UpdaterSvc binPath= "cmd.exe /c start /B C:\Windows\System32\notepad.exe"`
+Start it:
+`net start UpdaterSvc`
+*(Note: We are using `notepad.exe` to safely simulate the "malware" process).*
+
+---
+
+### Task 2 — The Initial Hunt (CLI)
+You know a process is acting strangely. Use the command line to see what's running.
+Run `tasklist | findstr notepad.exe` to locate the PID of the simulated malware.
+
+---
+
+### Task 3 — Identify the Parent Process
+Malware often has an anomalous parent. Let's trace its lineage using Windows Management Instrumentation (WMI).
+Use `wmic process get processid, parentprocessid, name | findstr <PID>` (replace `<PID>` with the ID you found in Task 2) to find the Parent Process ID (PPID).
+
+---
+
+### Task 4 — Trace the Lineage
+Look up the PPID you just found using `tasklist /fi "PID eq <PPID>"`.
+What process spawned the "malware"? 
+
+---
+
+### Task 5 — Sysinternals Deep Dive
+Command line is great, but GUI is faster for deep triage.
+Launch **Process Explorer** (`procexp.exe`) as Administrator.
+Locate the malicious `notepad.exe` in the process tree. Right-click it and select **Properties**.
+Navigate to the **Image** tab. Note the "Current directory" and "Parent" fields. What do you see?
+
+---
+
+### Task 6 — Link the Process to the Persistence Mechanism
+You need to find out *how* this process survives reboots. The alert mentioned a service.
+In an Administrator Command Prompt, run:
+`tasklist /svc`
+Can you map the running processes to the services hosting them? 
+*(Alternatively, use `Get-WmiObject win32_service | Where-Object {$_.Name -eq 'UpdaterSvc'}` in PowerShell to inspect the service).*
+
+---
+
+### Task 7 — Investigate the Rogue Service
+Now that you suspect a service named `UpdaterSvc` is the persistence mechanism, query its configuration.
+Run `sc query UpdaterSvc` and `sc qc UpdaterSvc`.
+Look at the `BINARY_PATH_NAME`. This reveals the exact command the attacker used to launch the backdoor!
+
+---
+
+### Task 8 — Stop the Bleeding
+First, terminate the active process to stop the immediate threat.
+Run `taskkill /F /PID <PID>` (using the PID of the `notepad.exe` process).
+
+---
+
+### Task 9 — Eradicate the Persistence
+Now, remove the malicious service so it doesn't restart.
+Run `sc delete UpdaterSvc`.
+
+---
+
+# Success Criteria
+
+You have successfully completed this lab if you can:
+
+* Find a specific process ID using `tasklist` and `findstr`.
+* Trace a process back to its parent using `wmic` or Process Explorer.
+* Identify the service configuration and binary path of a persistent threat using `sc qc`.
+* Successfully terminate a running process and delete its associated service.
+
+---
+
+# 💙 Blue Team Insight
+
+Adversaries rely on **Process Masquerading**. They name their malware `svchost.exe`, `lsass.exe`, or `explorer.exe` to blend in. However, they cannot easily fake the **Process Lineage**. A true `svchost.exe` must be spawned by `services.exe`. A true `lsass.exe` must be spawned by `wininit.exe`. If you see `explorer.exe` spawning `svchost.exe`, you are looking at a compromised host.
+
+---
+
+# Key Takeaways
+
+After completing this lab, you should be able to:
+
+* Use CLI and GUI tools to analyze the process tree.
+* Map suspicious processes to the services that launched them.
+* Terminate active threats and eradicate their service-based persistence mechanisms.
+
+---
+
+## Need Help?
+
+A complete walkthrough, command explanations, expected outputs, and troubleshooting tips are available in the **Solutions** directory.
 
 ---
 

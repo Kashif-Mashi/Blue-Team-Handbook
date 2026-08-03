@@ -1,403 +1,206 @@
-# Lab 06 Solution — Processes & Services Investigation
+# Solution — Lab 06: Windows Processes & Services
 
-## Solution
+> This solution guide walks you through the Cryptominer/Backdoor Hunt scenario, demonstrating how to identify rogue processes, trace parent-child lineage, and eradicate service-based persistence.
 
 ---
 
-### Task 1: Basic Process Enumeration via CMD
+# Task 1 — Simulate the Compromise
 
-#### Step-by-Step Instructions
-1. Open Command Prompt as Administrator.
-2. Execute `tasklist`.
+## Steps
 
-#### Expected Output
+Open Command Prompt as Administrator and create the simulated malicious service.
+
 ```cmd
-Image Name                   PID Session Name        Session#    Mem Usage
-========================= ====== ================ ======== ============
-System Idle Process            0 Services                0          8 K
-System                         4 Services                0        156 K
-smss.exe                     412 Services                0      1,024 K
-csrss.exe                    528 Services                0      4,210 K
-wininit.exe                  612 Services                0      3,840 K
-services.exe                 688 Services                0      8,450 K
-lsass.exe                    700 Services                0     14,200 K
-cmd.exe                     4820 Console                 1      5,120 K
+sc create UpdaterSvc binPath= "cmd.exe /c start /B C:\Windows\System32\notepad.exe"
+net start UpdaterSvc
 ```
 
-#### Explanation
-`tasklist` displays image name, PID, session type, and RAM usage for all active processes on the host.
+### Investigation Note
+The `sc create` command registers a new Windows service with the Service Control Manager (SCM). The `binPath=` parameter tells the SCM what binary to execute when the service starts. In this simulation, we're using `notepad.exe` as a safe stand-in for actual malware. In the real world, this would be a cryptominer binary or a reverse shell payload.
 
 ---
 
-### Screenshot
+# Task 2 — The Initial Hunt (CLI)
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Locate the running process.
 
-### Task 2: Service-to-Process Mapping
-
-#### Step-by-Step Instructions
-1. Run `tasklist /svc` in CMD.
-
-#### Expected Output
 ```cmd
-Image Name                   PID Services
-========================= ====== ============================================
-svchost.exe                  812 DcomLaunch, PlugPlay, Power
-svchost.exe                  940 RpcSs, RpcEptMapper
-svchost.exe                 1240 EventLog
-svchost.exe                 1520 WinDefend
+tasklist | findstr notepad
 ```
 
-#### Explanation
-Maps generic `svchost.exe` process instances to specific Windows service names hosted inside each process.
+### Example Output
+
+```
+notepad.exe                  7284 Console                    1     12,340 K
+```
+
+### Investigation Note
+The PID `7284` (your number will differ) is our target. Note this number for the next steps. The `tasklist` command is often the first tool a responder reaches for during live triage.
 
 ---
 
-### Screenshot
+# Task 3 — Identify the Parent Process
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Use WMI to trace who spawned this process.
 
-### Task 3: Process Lineage Inspection via WMI
-
-#### Step-by-Step Instructions
-1. Run in CMD:
 ```cmd
-wmic process get Name, ProcessId, ParentProcessId, ExecutablePath
+wmic process where processid=7284 get name,processid,parentprocessid
 ```
 
-#### Expected Output
-```text
-ExecutablePath                           Name            ParentProcessId  ProcessId
-C:\Windows\System32\smss.exe             smss.exe        4                412
-C:\Windows\System32\wininit.exe          wininit.exe     412              612
-C:\Windows\System32\services.exe         services.exe    612              688
-C:\Windows\System32\cmd.exe              cmd.exe         2140             4820
+### Example Output
+
+```
+Name          ParentProcessId  ProcessId
+notepad.exe   6512             7284
 ```
 
-#### Explanation
-Lineage tracking allows analysts to verify if child processes were spawned by legitimate parent processes (e.g. `services.exe` -> `svchost.exe`).
+### Investigation Note
+The Parent Process ID (PPID) is `6512`. This is the process that launched our "malware." We need to identify what process `6512` is.
 
 ---
 
-### Screenshot
+# Task 4 — Trace the Lineage
 
-> **Insert Screenshot Here**
+## Steps
+
+Look up the parent process.
+
+```cmd
+tasklist /fi "PID eq 6512"
+```
+
+### Example Output
+
+```
+Image Name                     PID Session Name        Session#    Mem Usage
+========================= ======== ================ =========== ============
+cmd.exe                      6512 Services                   0      4,108 K
+```
+
+### Investigation Note
+The parent is `cmd.exe` running in Session `0` (the services session). This is a red flag! Legitimate `notepad.exe` is typically launched by `explorer.exe` (Session 1, the user's desktop). A `notepad.exe` spawned by `cmd.exe` in Session 0 means it was launched by a Windows service — exactly the persistence mechanism the attacker planted.
 
 ---
 
-### Task 4: High Memory Process Analysis via PowerShell
+# Task 5 — Sysinternals Deep Dive
 
-#### Step-by-Step Instructions
-1. Open PowerShell as Administrator.
-2. Run:
+## Steps
+
+1. Launch `procexp.exe` (Process Explorer) as Administrator.
+2. In the process tree, locate `notepad.exe`.
+3. Right-click → **Properties** → **Image** tab.
+
+### Investigation Note
+In the Image tab, observe:
+- **Path**: Should be `C:\Windows\System32\notepad.exe` (the binary itself is legitimate, but the *context* of how it was launched is not).
+- **Parent**: `cmd.exe` — this confirms our CLI findings.
+- **Current directory**: May show `C:\Windows\System32` or the service working directory.
+
+Process Explorer also lets you check the **Verified Signer** to see if a binary is digitally signed by Microsoft. Malware binaries impersonating `svchost.exe` will NOT have a valid Microsoft signature.
+
+---
+
+# Task 6 — Link the Process to the Persistence Mechanism
+
+## Steps
+
+Map running processes to hosted services.
+
+```cmd
+tasklist /svc
+```
+
+Or use PowerShell for more targeted analysis:
+
 ```powershell
-Get-Process | Where-Object {$_.WorkingSet -gt 50MB} | Sort-Object WorkingSet -Descending
+Get-WmiObject win32_service | Where-Object {$_.Name -eq 'UpdaterSvc'} | Select-Object Name, State, StartMode, PathName, ProcessId
 ```
 
-#### Expected Output
-```text
-Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
--------  ------    -----      -----     ------     --  -- -----------
-   1420      92   210400     285000      15.20   3412   1 msedge
-    890      45    98200     125400       5.10   2140   1 explorer
+### Example Output
+
+```
+Name        : UpdaterSvc
+State       : Running
+StartMode   : Auto
+PathName    : cmd.exe /c start /B C:\Windows\System32\notepad.exe
+ProcessId   : 6512
 ```
 
-#### Explanation
-Filters objects based on WorkingSet RAM usage exceeding 50MB and sorts in descending order.
+### Investigation Note
+We have confirmed the link: `UpdaterSvc` is the service responsible for launching the rogue process, and the `PathName` reveals the full attacker command line.
 
 ---
 
-### Screenshot
+# Task 7 — Investigate the Rogue Service
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Query the service configuration.
 
-### Task 5: Parent Process Command Line Extraction
-
-#### Step-by-Step Instructions
-1. Run in PowerShell:
-```powershell
-Get-CimInstance Win32_Process -Filter "Name = 'cmd.exe'" | Select-Object ProcessId, ParentProcessId, CommandLine
-```
-
-#### Expected Output
-```text
-ProcessId ParentProcessId CommandLine
---------- --------------- -----------
-     4820            2140 "C:\Windows\System32\cmd.exe"
-```
-
-#### Explanation
-Queries WMI CIM class `Win32_Process` to extract executable parameters and parent process IDs.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 6: Audit Service States via `sc.exe`
-
-#### Step-by-Step Instructions
-1. Run `sc query` in CMD.
-
-#### Expected Output
 ```cmd
-SERVICE_NAME: Appinfo
-DISPLAY_NAME: Application Information
-        TYPE               : 20  WIN32_SHARE_PROCESS
-        STATE              : 4  RUNNING
-                                (STOPPABLE, NOT_PAUSABLE, ACCEPTS_SHUTDOWN)
-        WIN32_EXIT_CODE    : 0  (0x0)
-        SERVICE_EXIT_CODE  : 0  (0x0)
-        CHECKPOINT         : 0x0
-        WAIT_HINT          : 0x0
+sc query UpdaterSvc
+sc qc UpdaterSvc
 ```
 
-#### Explanation
-`sc query` enumerates active service objects and their operational states.
+### Example Output (`sc qc`)
 
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 7: Target Service State Detailed Query
-
-#### Step-by-Step Instructions
-1. Run `sc query WinDefend`.
-
-#### Expected Output
-```cmd
-SERVICE_NAME: WinDefend
-DISPLAY_NAME: Microsoft Defender Antivirus Service
+```
+[SC] QueryServiceConfig SUCCESS
+SERVICE_NAME: UpdaterSvc
         TYPE               : 10  WIN32_OWN_PROCESS
-        STATE              : 4  RUNNING
+        START_TYPE         : 3   DEMAND_START
+        BINARY_PATH_NAME   : cmd.exe /c start /B C:\Windows\System32\notepad.exe
+        ...
 ```
 
-#### Explanation
-Queries the status of the Windows Defender service to verify system protection state.
+### Investigation Note
+The `BINARY_PATH_NAME` is the smoking gun. No legitimate Windows service would use `cmd.exe /c start /B` as its binary path. This is a clear indicator of a manually planted backdoor service.
 
 ---
 
-### Screenshot
+# Task 8 — Stop the Bleeding
 
-> **Insert Screenshot Here**
+## Steps
 
----
+Terminate the malicious process.
 
-### Task 8: Create a Custom Background Test Service
-
-#### Step-by-Step Instructions
-1. Run in elevated CMD:
 ```cmd
-sc create TriageAgent binPath= "C:\Windows\System32\notepad.exe" start= auto
+taskkill /F /PID 7284
 ```
 
-#### Expected Output
+### Investigation Note
+The `/F` flag forces the termination. Without it, the process might not respond to a graceful shutdown request. Always use `/F` when killing suspected malware.
+
+---
+
+# Task 9 — Eradicate the Persistence
+
+## Steps
+
+Delete the malicious service.
+
 ```cmd
-[SC] CreateService SUCCESS
+sc delete UpdaterSvc
 ```
 
-#### Explanation
-Registers a new background service named `TriageAgent` pointing to `notepad.exe` in the SCM database.
+### Expected Output
 
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 9: Query Custom Service Configuration
-
-#### Step-by-Step Instructions
-1. Run `sc qc TriageAgent`.
-
-#### Expected Output
-```cmd
-SERVICE_NAME: TriageAgent
-        TYPE               : 10  WIN32_OWN_PROCESS
-        START_TYPE         : 2   AUTO_START
-        ERROR_CONTROL      : 1   NORMAL
-        BINARY_PATH_NAME   : C:\Windows\System32\notepad.exe
-        LOAD_ORDER_GROUP   :
-        TAG                : 0
-        DISPLAY_NAME       : TriageAgent
-        DEPENDENCIES       :
-        SERVICE_START_NAME : LocalSystem
 ```
-
-#### Explanation
-`sc qc` (Query Config) displays startup type, binary path, and user execution context (`LocalSystem`).
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 10: Modify Service Startup Type
-
-#### Step-by-Step Instructions
-1. Run `sc config TriageAgent start= disabled`.
-
-#### Expected Output
-```cmd
-[SC] ChangeServiceConfig SUCCESS
-```
-
-#### Explanation
-Reconfigures the service startup parameter to `DISABLED` (Start Type 4).
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 11: Attempt Service Execution
-
-#### Step-by-Step Instructions
-1. Run `net start TriageAgent`.
-
-#### Expected Output
-```cmd
-System error 1058 has occurred.
-
-The service cannot be started, either because it is disabled or because it has no enabled devices associated with it.
-```
-
-#### Explanation
-Confirms that disabled services cannot be started by standard execution requests.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 12: Delete Custom Test Service
-
-#### Step-by-Step Instructions
-1. Run `sc delete TriageAgent`.
-
-#### Expected Output
-```cmd
 [SC] DeleteService SUCCESS
 ```
 
-#### Explanation
-Removes the service entry from the SCM registry database.
+### Investigation Note
+Deleting the service removes the entry from the Service Control Manager. The malware will NOT restart on the next reboot. In a real incident, you would also:
+1. Check for additional persistence (Registry Run keys, Scheduled Tasks).
+2. Collect forensic evidence (memory dump, disk image) before cleanup.
+3. Submit the malware sample to VirusTotal or your internal sandbox.
 
 ---
 
-### Screenshot
+# Scenario Conclusion
 
-> **Insert Screenshot Here**
-
----
-
-### Task 13: Audit Service Installation Event Logs
-
-#### Step-by-Step Instructions
-1. Run in PowerShell:
-```powershell
-Get-WinEvent -LogName "System" | Where-Object {$_.Id -eq 7045} | Select-Object -First 1 | Format-List
-```
-
-#### Expected Output
-```text
-TimeCreated  : 8/2/2026 11:00:15 AM
-ProviderName : Service Control Manager
-Id           : 7045
-Message      : A service was installed in the system.
-
-               Service Name:  TriageAgent
-               Service File Name:  C:\Windows\System32\notepad.exe
-               Service Type:  user mode service
-               Service Start Type:  auto start
-               Account Name:  LocalSystem
-```
-
-#### Explanation
-Event ID 7045 records the installation timestamp, binary file name, and account context of created services.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 14: Inspect Process Creation Audit Logs
-
-#### Step-by-Step Instructions
-1. Run in PowerShell:
-```powershell
-Get-WinEvent -LogName "Security" | Where-Object {$_.Id -eq 4688} | Select-Object -First 1 | Format-List
-```
-
-#### Expected Output
-```text
-TimeCreated  : 8/2/2026 11:02:00 AM
-ProviderName : Microsoft-Windows-Security-Auditing
-Id           : 4688
-Message      : A new process has been created.
-
-               New Process ID:    0x12d4
-               New Process Name:  C:\Windows\System32\sc.exe
-               CommandLine:       sc delete TriageAgent
-```
-
-#### Explanation
-Event ID 4688 captures the process creation and executed command line switches.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
-### Task 15: Clean Up Lab Artifacts
-
-#### Step-by-Step Instructions
-1. Run `sc query TriageAgent`.
-
-#### Expected Output
-```cmd
-[SC] EnumQueryServicesStatus:OpenService FAILED 1060:
-
-The specified service does not exist as an installed service.
-```
-
-#### Explanation
-Verifies complete removal of test service artifacts from the operating system.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
+By tracing the process lineage from `notepad.exe` → `cmd.exe` → `UpdaterSvc`, you successfully identified a service-based persistence mechanism. You terminated the active threat and eradicated the persistence by deleting the malicious service from the SCM. In a production environment, this same workflow applies when hunting real cryptominers, RATs, and backdoor implants.
