@@ -1,410 +1,400 @@
-# Chapter 04 — Command Prompt (CMD)
+# Chapter 04 – Command Prompt (CMD)
+
+## Overview
+
+The Command Prompt (CMD) is a text-based interface that allows users to interact with Windows by typing commands instead of using the graphical interface (GUI). Although Windows provides many graphical tools, CMD is still widely used by system administrators, IT support professionals, and Blue Team analysts to troubleshoot systems, gather information, and perform administrative tasks quickly.
+
+Learning CMD is an important first step because many cybersecurity tools and scripts rely on command-line knowledge.
 
 ---
 
-# 📖 Overview
-
-The **Command Prompt** (commonly referred to as **CMD** or `cmd.exe`) is the default command-line interpreter for the Microsoft Windows operating system. Unlike graphical user interfaces (GUIs) where operations are performed using a mouse, icons, and menus, a command-line interface (CLI) allows users, system administrators, and security professionals to interact with the operating system by typing text-based commands.
-
-Command Prompt has been a core component of Windows for decades. Although modern Windows environments rely heavily on PowerShell for advanced administration and automation, CMD remains universally available on virtually every Windows system—from legacy Windows XP workstations to modern Windows 11 and Windows Server 2022 installations.
-
-For SOC Analysts, Incident Responders, and Threat Hunters, mastering CMD is mandatory. Adversaries frequently leverage CMD to perform living-off-the-land (LotL) reconnaissance, execute malicious scripts, create persistence, and manipulate system configurations without downloading external tools.
-
----
-
-# 🎯 Learning Objectives
+## Learning Objectives
 
 After completing this chapter, you will be able to:
 
-- Explain the architecture, history, and role of Command Prompt within Windows.
-- Distinguish between standard user and elevated (Administrator) CMD execution contexts.
-- Navigate the Windows directory structure using relative and absolute paths.
-- Perform core file management, system enumeration, process control, and network discovery operations.
-- Utilize output redirection (`>`, `>>`, `2>`) and command piping (`|`) to filter and process data.
-- Construct and analyze basic Windows Batch scripts (`.bat` / `.cmd`).
-- Identify common attacker command-line techniques, Living-off-the-Land (LotL) binaries, and associated security event logs.
+- Understand what Command Prompt is
+- Open CMD using different methods
+- Navigate between folders
+- Create, rename, copy, move, and delete files and folders
+- Display basic system information
+- Use common troubleshooting commands
+- Recognize why CMD is useful in Blue Team investigations
 
 ---
 
-# Why Blue Teams Care
+# What is Command Prompt?
 
-Command Prompt is one of the most frequently abused native binaries in Windows environments. Security operations teams analyze CMD activities for several critical reasons:
+Command Prompt, commonly called **CMD**, is the default command-line interpreter in Windows.
 
-1. **Living-off-the-Land (LotL) Execution**: Attackers prefer native tools because they rarely trigger basic security alerts. An attacker who gains initial access will often spawn `cmd.exe` to execute host discovery commands like `whoami`, `net user`, `ipconfig`, and `tasklist`.
-2. **Malware & Stager Invocation**: Malicious documents (macros), phishing attachments, or compromise vectors frequently execute hidden CMD processes (e.g., `cmd.exe /c start /min ...`) to download payload stagers or initiate PowerShell scripts.
-3. **Command Line Audit Logging**: Event logs record exact command arguments executed via CMD (Event ID 4688 with process command-line logging enabled, or Sysmon Event ID 1). Threat hunters analyze these logs to reconstruct adversary behavior.
-4. **Emergency Incident Response**: During live incident response on a compromised host, responders may need to perform fast triage via CLI when graphical interfaces are unavailable, unresponsive, or disabled by ransomware.
+Instead of clicking buttons, users type commands to perform tasks.
 
----
-
-# Core Concepts
-
-## Command Interpreter vs. Shell vs. GUI
-
-- **Graphical User Interface (GUI)**: Uses visual components (`explorer.exe`) such as windows, icons, and buttons. High usability, but slow for repetitive tasks and difficult to log programmatically.
-- **Command Line Interpreter (CLI)**: Accepts text inputs, interprets them, and passes instructions to the underlying Windows API.
-- **Shell**: The user interface for access to an operating system's services. CMD is a command-line shell for Windows.
-
----
-
-## Architecture: `cmd.exe` vs `conhost.exe`
-
-In modern Windows, when you launch Command Prompt:
-1. `cmd.exe` executes as the command interpreter (processing syntax, built-in commands, and scripts).
-2. `conhost.exe` (Console Window Host) or `OpenConsole.exe` / `Windows Terminal` manages the user interface window, buffer, rendering text, and input event handling.
-
-```mermaid
-graph TD
-    UserInput["User Input in Console"] --> Terminal["Windows Terminal / conhost.exe"]
-    Terminal --> CMDProc["cmd.exe Interpreter"]
-    CMDProc --> Builtin["Built-in Commands e.g. dir, cd, set"]
-    CMDProc --> External["External Executables e.g. ping.exe, ipconfig.exe, net.exe"]
-    Builtin --> WinAPI["Windows API Subsystem"]
-    External --> WinAPI
-    WinAPI --> Kernel["Windows Executive / Kernel"]
-```
-
----
-
-## Execution Context: Standard User vs. Elevated (Administrator)
-
-Windows enforces Access Control Lists (ACLs) and User Account Control (UAC). Command Prompt inherits the security context of the user who launched it:
-
-- **Standard User CMD**: Operates with restricted privileges (Medium Integrity Level). Cannot modify system files (`C:\Windows`), alter global registry keys (`HKLM`), stop core services, or modify user accounts.
-- **Elevated CMD (Run as Administrator)**: Operates with administrative privileges (High Integrity Level). Allows system modifications, driver management, network configuration, and service manipulation.
-
-> 💙 **Blue Team Note**
-> 
-> Attackers aim to elevate `cmd.exe` from Medium Integrity to High/System Integrity. SOC Analysts monitor for privilege escalation markers where standard processes launch elevated `cmd.exe` instances via UAC bypass techniques.
-
----
-
-# Practical Examples
-
-## File & Directory Navigation
-
-| Command | Description | Example Syntax |
-|---|---|---|
-| `cd` | Display or change current directory | `cd C:\Users\Public` |
-| `dir` | List files and subdirectories | `dir /a /o:d` |
-| `mkdir` / `md` | Create a new directory | `mkdir C:\Triage` |
-| `rmdir` / `rd` | Remove a directory | `rmdir /s /q C:\TempDir` |
-
-### Output Example: `dir`
-```cmd
-C:\Users\Analyst> dir C:\Windows\System32\drivers\etc
-
- Directory of C:\Windows\System32\drivers\etc
-
-08/02/2026  10:00 AM    <DIR>          .
-08/02/2026  10:00 AM    <DIR>          ..
-05/10/2025  12:00 PM             824 hosts
-05/10/2025  12:00 PM             368 lmhosts.sam
-05/10/2025  12:00 PM             407 networks
-05/10/2025  12:00 PM             798 protocol
-05/10/2025  12:00 PM          1,163 services
-               5 File(s)          3,560 bytes
-               2 Dir(s)  45,210,112,000 bytes free
-```
-
----
-
-## System Enumeration Commands
+For example:
 
 ```cmd
-:: Display detailed system configuration information
-systeminfo
-
-:: Display host computer name
-hostname
-
-:: Display Windows operating system version
-ver
-
-:: Display current logged-in user and security privileges
-whoami /all
+dir
 ```
 
-> 💙 **Blue Team Note**
-> 
-> Running `whoami /all` returns the current user's SID, group memberships, and assigned privileges (e.g., `SeDebugPrivilege`, `SeImpersonatePrivilege`). Adversaries run `whoami /all` immediately after gaining initial access to check if privilege escalation is needed.
+shows the contents of the current folder.
 
 ---
 
-## Process Enumeration & Control
+## Why Learn CMD?
 
-```cmd
-:: List all running processes with PID and Memory usage
-tasklist
+CMD is useful because it allows you to:
 
-:: List processes with services hosted in each process
-tasklist /svc
+- Manage files and folders
+- View system information
+- Troubleshoot Windows problems
+- Run administrative commands
+- Execute scripts
+- Perform tasks faster than using the GUI
 
-:: Terminate a process by Process ID (PID) forcefully
-taskkill /PID 4820 /F
-
-:: Terminate a process by executable name
-taskkill /IM malicious.exe /F
-```
+Many cybersecurity tools also launch CMD automatically while performing investigations.
 
 ---
 
-## Network Discovery Commands
-
-```cmd
-:: Display IP addresses, subnet mask, and default gateway
-ipconfig /all
-
-:: Display active network connections and listening ports with associated PIDs
-netstat -ano
-
-:: Test IP connectivity to a remote host
-ping 192.168.1.1
-
-:: Trace route to target host
-tracert 8.8.8.8
-
-:: Query DNS records
-nslookup domain.com
-
-:: Display Address Resolution Protocol (ARP) cache table
-arp -a
-```
+## CMD Workflow
 
 ```mermaid
 flowchart LR
-    Attacker["Adversary Host"] -->|1. Execution| CMD["cmd.exe"]
-    CMD -->|2. Network Recon| Netstat["netstat -ano"]
-    CMD -->|3. Account Recon| NetUser["net user /domain"]
-    CMD -->|4. Output Log| File["C:\Users\Public\recon.txt"]
+
+User --> CMD
+
+CMD --> Windows
+
+Windows --> Output
+
+Output --> User
 ```
 
 ---
 
-## User & Group Management Commands
+# Opening Command Prompt
+
+You can open CMD in several ways.
+
+### Method 1
+
+Press
+
+```
+Windows + R
+```
+
+Type
+
+```
+cmd
+```
+
+Press **Enter**.
+
+---
+
+### Method 2
+
+Open the **Start Menu**
+
+Search for
+
+```
+Command Prompt
+```
+
+Click the application.
+
+---
+
+### Method 3
+
+Open Windows Terminal
+
+Choose
+
+```
+Command Prompt
+```
+
+---
+
+> **Tip**
+>
+> Right-click **Command Prompt** and select **Run as administrator** when administrative privileges are required.
+
+---
+
+# Understanding the CMD Window
+
+A typical prompt looks like this:
 
 ```cmd
-:: List all local user accounts on the machine
-net user
-
-:: Display detailed information for a specific user account
-net user Administrator
-
-:: Create a new local user account
-net user JohnDoe P@ssword123! /add
-
-:: Add user to local Administrators group
-net localgroup Administrators JohnDoe /add
-
-:: List members of the local Administrators group
-net localgroup Administrators
+C:\Users\Student>
 ```
+
+This is called the **Command Prompt**.
+
+It shows your current working directory.
 
 ---
 
-## Environment Variables, Redirection, & Pipes
+# Navigating Folders
 
-### Environment Variables
-Environment variables store system settings and dynamic paths:
-- `%SYSTEMROOT%`: Usually `C:\Windows`
-- `%USERPROFILE%`: Usually `C:\Users\<Username>`
-- `%TEMP%`: Path to temporary directory
+CMD uses commands to move between directories.
+
+## Display Current Folder
 
 ```cmd
-echo %USERPROFILE%
-set
+cd
 ```
 
-### Output Redirection & Piping
-- `>`: Overwrite file with command output.
-- `>>`: Append command output to file.
-- `2>`: Redirect error stream.
-- `|`: Pass output of left command as input to right command.
+---
+
+## List Files and Folders
 
 ```cmd
-:: Redirect systeminfo to a text file
-systeminfo > C:\Users\Public\sysinfo.txt
+dir
+```
 
-:: Append netstat output to existing file
-netstat -ano >> C:\Users\Public\sysinfo.txt
+Example output:
 
-:: Find lines containing "ESTABLISHED" connections
-netstat -ano | findstr "ESTABLISHED"
+```text
+Documents
+Downloads
+Pictures
+Desktop
 ```
 
 ---
 
-## Windows Batch Scripts (`.bat` / `.cmd`)
-
-Batch scripts store sequential CMD commands executed automatically.
+## Change Directory
 
 ```cmd
-@echo off
-:: Triage Collector Script
-echo [+] Collecting System Information...
-hostname > C:\Triage\summary.txt
-whoami /all >> C:\Triage\summary.txt
-
-echo [+] Collecting Active Connections...
-netstat -ano | findstr /i "ESTABLISHED" >> C:\Triage\summary.txt
-
-echo [+] Collection Complete.
+cd Documents
 ```
 
-> ⚠️ **Warning**
-> 
-> Attackers often drop obfuscated batch scripts in `%TEMP%` or `C:\Users\Public` to execute persistence mechanisms or launch hidden downloads.
+---
+
+## Go Back One Folder
+
+```cmd
+cd ..
+```
 
 ---
 
-# Blue Team Investigation Notes
+## Change Drive
 
-> 💙 **Blue Team Note: Detecting Suspicious `cmd.exe` Flags**
-> 
-> Adversaries execute commands non-interactively using specific switches:
-> - `cmd.exe /c`: Carries out the command specified by string and then terminates.
-> - `cmd.exe /k`: Carries out command and remains open.
-> - `cmd.exe /q`: Turns echo off.
-> - `cmd.exe /v:on`: Enables delayed environment variable expansion (used in obfuscation).
-> 
-> Example suspicious parent-child process relationship:
-> `WINWORD.EXE` -> `cmd.exe /c powershell.exe -ExecutionPolicy Bypass -enc ...`
+```cmd
+D:
+```
 
 ---
 
-# Common Mistakes
+## Navigation Diagram
 
-| Mistake | Consequence | How to Avoid |
-|---|---|---|
-| Running admin commands in standard CMD | Command fails with "Access is denied" error. | Right-click CMD and select **Run as administrator**. |
-| Using single `>` instead of `>>` | Existing log data is accidentally overwritten. | Double-check redirection operators (`>` overwrites, `>>` appends). |
-| Forgetting quotes around paths with spaces | CMD interprets space as argument separator (`cd C:\Program Files` fails). | Enclose paths with spaces in double quotes: `cd "C:\Program Files"`. |
-| Assuming CMD is PowerShell | Running PowerShell cmdlets like `Get-Process` in CMD returns error. | Use CMD equivalent (`tasklist`) or type `powershell` to launch PowerShell. |
+```mermaid
+flowchart TD
+
+C --> Users
+
+Users --> Student
+
+Student --> Documents
+
+Student --> Downloads
+
+Student --> Desktop
+```
 
 ---
 
-# Best Practices
+# File Management
 
-1. **Enable Command Line Process Auditing**: Configure Group Policy (`Computer Configuration -> Administrative Templates -> System -> Audit Process Creation -> Include command line in process creation events`) to populate Event ID 4688 with full arguments.
-2. **Deploy Sysmon**: Use Sysmon Event ID 1 (Process Creation) to monitor parent-child process pairs (e.g., MS Office launching CMD).
-3. **Restrict CMD Access for Standard Users**: Use Software Restriction Policies or AppLocker/WDAC to block non-administrative execution of `cmd.exe` on high-risk workstations where command line usage is unnecessary.
+CMD allows basic file management.
+
+## Create Folder
+
+```cmd
+mkdir Reports
+```
+
+---
+
+## Remove Empty Folder
+
+```cmd
+rmdir Reports
+```
+
+---
+
+## Create File
+
+```cmd
+type nul > notes.txt
+```
+
+---
+
+## Copy File
+
+```cmd
+copy notes.txt Backup\
+```
+
+---
+
+## Move File
+
+```cmd
+move notes.txt Documents\
+```
+
+---
+
+## Rename File
+
+```cmd
+ren notes.txt report.txt
+```
+
+---
+
+## Delete File
+
+```cmd
+del report.txt
+```
+
+---
+
+> **Warning**
+>
+> Files deleted using `del` do **not** go to the Recycle Bin.
+
+---
+
+# Viewing System Information
+
+CMD can quickly display useful information.
+
+## Current User
+
+```cmd
+whoami
+```
+
+---
+
+## Computer Information
+
+```cmd
+systeminfo
+```
+
+Displays:
+
+- Windows version
+- Computer name
+- RAM
+- Processor
+- Installation date
+
+---
+
+## Hostname
+
+```cmd
+hostname
+```
+
+Displays the computer name.
+
+---
+
+## IP Address
+
+```cmd
+ipconfig
+```
+
+Displays network configuration.
+
+---
+
+## Active Network Connections
+
+```cmd
+netstat
+```
+
+Shows current network connections.
+
+---
+
+# Essential CMD Commands
+
+| Command | Purpose |
+|----------|---------|
+| dir | List files |
+| cd | Change directory |
+| mkdir | Create folder |
+| rmdir | Remove folder |
+| copy | Copy files |
+| move | Move files |
+| ren | Rename files |
+| del | Delete files |
+| cls | Clear screen |
+| whoami | Show current user |
+| hostname | Display computer name |
+| systeminfo | Display system information |
+| ipconfig | Display IP configuration |
+| netstat | View network connections |
+| help | Show available commands |
+
+---
+
+# Blue Team Perspective
+
+Blue Team analysts frequently use CMD during investigations.
+
+Some examples include:
+
+- Checking the logged-in user with `whoami`
+- Viewing system information using `systeminfo`
+- Checking network settings with `ipconfig`
+- Viewing active network connections with `netstat`
+- Navigating folders to locate suspicious files
+
+Although many advanced investigations use PowerShell and EDR tools, CMD remains an important skill because it is available on every Windows computer.
+
+---
+
+# Key Points
+
+- CMD is Windows' built-in command-line interface.
+- Commands are typed instead of using the mouse.
+- `cd` changes directories.
+- `dir` lists files and folders.
+- File management commands help organize files.
+- System information commands provide useful troubleshooting details.
+- Blue Team analysts often use CMD during investigations.
 
 ---
 
 # Summary
 
-- Command Prompt (`cmd.exe`) is the legacy command interpreter built into Microsoft Windows.
-- It operates in two privilege contexts: Standard User (Medium Integrity) and Administrator (High Integrity).
-- Essential operations include navigation (`cd`, `dir`), process management (`tasklist`, `taskkill`), system discovery (`systeminfo`, `whoami`), user management (`net user`), and networking (`ipconfig`, `netstat`).
-- Output can be redirected using `>`, `>>`, and piped into commands like `findstr`.
-- Blue teams monitor `cmd.exe` execution because attackers rely on it heavily for Living-off-the-Land (LotL) tactics.
+In this chapter you learned:
 
----
+- What CMD is
+- How to open Command Prompt
+- Basic navigation
+- Managing files and folders
+- Viewing system information
+- Essential beginner commands
+- How CMD supports Blue Team investigations
 
-# 🔑 Key Takeaways
-
-- **LotL Techniques**: Attackers heavily rely on CMD for Living-off-the-Land techniques to avoid detection.
-- **Context Matters**: Running as Administrator versus Standard User drastically changes what CMD can access and manipulate.
-- **Logging is Crucial**: Process Command Line logging (Event ID 4688 or Sysmon Event ID 1) is vital for detecting malicious CMD usage.
-- **Piping and Redirection**: Mastering operators like `>`, `>>`, and `|` is essential for both attack simulation and defensive triage.
-
----
-
-# Key Commands
-
-| Command | Purpose | Example |
-|---|---|---|
-| `whoami` | Displays current user and privilege tokens | `whoami /priv` |
-| `systeminfo` | Displays host OS, hotfixes, and hardware attributes | `systeminfo` |
-| `tasklist` | Displays active processes and PIDs | `tasklist /svc` |
-| `taskkill` | Terminates process by PID or Name | `taskkill /PID 1234 /F` |
-| `netstat` | Displays network connections and listening ports | `netstat -ano` |
-| `net user` | Queries or modifies user accounts | `net user Administrator` |
-| `net localgroup` | Queries or modifies local security groups | `net localgroup Administrators` |
-| `findstr` | Searches for text strings inside output/files | `netstat -ano \| findstr 443` |
-| `ipconfig` | Displays IP network configuration | `ipconfig /all` |
-| `sfc` | System File Checker (scans system integrity) | `sfc /scannow` |
-
----
-
-# Quick Quiz
-
-1. **Which process is responsible for command-line syntax parsing in Command Prompt?**
-   - A) `explorer.exe`
-   - B) `cmd.exe`
-   - C) `conhost.exe`
-   - D) `svchost.exe`
-
-2. **What is the outcome of using the `>` operator in CMD?**
-   - A) Appends output to an existing file
-   - B) Overwrites the target file with command output
-   - C) Sends input to a network socket
-   - D) Pipes output to PowerShell
-
-3. **Which command displays active network connections along with the associated Process ID (PID)?**
-   - A) `ipconfig /all`
-   - B) `netstat -ano`
-   - C) `tasklist /svc`
-   - D) `route print`
-
-4. **Which `cmd.exe` switch carries out a specified command string and immediately terminates?**
-   - A) `/k`
-   - B) `/r`
-   - C) `/c`
-   - D) `/q`
-
-5. **Which command lists all members belonging to the local Administrators group?**
-   - A) `net user Administrators`
-   - B) `net localgroup Administrators`
-   - C) `whoami /groups`
-   - D) `tasklist /admin`
-
-6. **Which command is used to forcefully terminate a process with PID 2048?**
-   - A) `taskkill /PID 2048 /F`
-   - B) `stop-process -id 2048`
-   - C) `del /PID 2048`
-   - D) `net stop 2048`
-
-7. **What information does the `whoami /all` command provide?**
-   - A) Domain controllers and network shares
-   - B) Current user SID, group memberships, and assigned privileges
-   - C) Operating system build and installation date
-   - D) Password hash of the logged-in user
-
-8. **Which environment variable stores the path to the Windows system directory (e.g., `C:\Windows`)?**
-   - A) `%USERPROFILE%`
-   - B) `%APPDATA%`
-   - C) `%SYSTEMROOT%`
-   - D) `%TEMP%`
-
-9. **Which tool / event source records process creation events including full command-line arguments in Windows?**
-   - A) Event ID 4688 / Sysmon Event ID 1
-   - B) Event ID 4624 / Sysmon Event ID 3
-   - C) Event ID 1102 / Sysmon Event ID 10
-   - D) Event ID 7045 / Sysmon Event ID 12
-
-10. **Which command searches for the specific term "ESTABLISHED" in text output?**
-    - A) `grep "ESTABLISHED"`
-    - B) `findstr "ESTABLISHED"`
-    - C) `select-string "ESTABLISHED"`
-    - D) `search "ESTABLISHED"`
-
----
-
-## Quiz Answers
-
-1. **B** (`cmd.exe`)
-2. **B** (Overwrites the target file with command output)
-3. **B** (`netstat -ano`)
-4. **C** (`/c`)
-5. **B** (`net localgroup Administrators`)
-6. **A** (`taskkill /PID 2048 /F`)
-7. **B** (Current user SID, group memberships, and assigned privileges)
-8. **C** (`%SYSTEMROOT%`)
-9. **A** (Event ID 4688 / Sysmon Event ID 1)
-10. **B** (`findstr "ESTABLISHED"`)
-
----
+The next chapter introduces **PowerShell**, a more powerful command-line environment used by administrators and security professionals.
 
 # Further Reading
 
