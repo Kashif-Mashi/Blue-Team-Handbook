@@ -1,280 +1,179 @@
 # Chapter 12 — Windows Registry Fundamentals
 
----
+## Introduction
 
-# 📖 Overview
+Windows needs somewhere to store all its settings — screen resolution, installed programs, which app opens a `.pdf` file, security policies, and thousands of other small preferences. Instead of scattering this information across countless separate files, Windows keeps almost all of it in one large, structured database called the **Registry**.
 
-The **Windows Registry** is a hierarchical database that stores low-level settings for the operating system, installed applications, hardware drivers, and user preferences. It is the central nervous system of Windows configuration — virtually every aspect of system behavior, from boot-time driver loading to desktop wallpaper, is controlled by registry values.
+Think of the Registry as a giant filing cabinet full of folders and settings, organized in a tree structure much like File Explorer. Windows reads from it constantly, and so does almost every program installed on the system.
 
-For Blue Teams, the registry is one of the most critical forensic artifacts. Attackers abuse registry keys to establish persistence (Run keys, services), disable security features (tamper with Defender), store encoded payloads, and modify system behavior. Understanding how to navigate, query, and monitor the registry is essential for threat hunting and incident response.
-
----
-
-# 🎯 Learning Objectives
-
-After completing this chapter, you will be able to:
-
-- Explain the Windows Registry architecture: hives, keys, subkeys, values, and data types.
-- Navigate the registry using `regedit.exe`, `reg.exe`, and PowerShell (`Get-ItemProperty`, `Set-ItemProperty`).
-- Identify critical registry hive files and their on-disk locations.
-- Locate common persistence mechanisms in the registry (Run, RunOnce, Services, Scheduled Tasks).
-- Monitor registry modifications using Sysmon Event ID 13.
-- Analyze registry artifacts for forensic investigations.
+For a Blue Team beginner, the Registry matters for two reasons: it is a rich source of forensic evidence (it records what programs have run, what USB drives were plugged in, and more), and it is one of the most common places attackers hide **persistence** — a way for their malware to automatically start again after a reboot.
 
 ---
 
-# Why Blue Teams Care
+## Learning Objectives
 
-1. **Persistence via Registry Run Keys**: Attackers write malware paths to `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` so their payload executes every time the user logs on.
-2. **Security Feature Tampering**: Malware disables UAC (`EnableLUA = 0`), Defender (`DisableAntiSpyware = 1`), and the firewall via registry modifications.
-3. **Forensic Evidence**: The registry contains timestamps (last write time), recently accessed files (MRU lists), USB device history, network connection history, and user activity traces.
-4. **Service & Driver Configuration**: Every Windows service binary path is stored in `HKLM\SYSTEM\CurrentControlSet\Services`. Attackers modify these to redirect service execution to malware.
+Students should be able to:
+
+- Describe the Registry's tree structure of hives, keys, and values.
+- Identify the five root hives and explain what each one stores.
+- Navigate the Registry using the Registry Editor (`regedit`) and the command line.
+- Read and modify Registry values using `reg.exe` and PowerShell.
+- Identify common Registry locations used by malware for persistence.
+- Explain why unauthorized Registry changes are treated as a security concern.
 
 ---
 
-# Core Concepts
+## Why Blue Teams Care
 
-## 1. Registry Architecture
+1. **A Favorite Persistence Spot.** Malware frequently adds itself to a small set of well-known Registry locations so that it restarts every time the computer boots or a user logs in. Knowing these locations lets an analyst spot an infection quickly.
+2. **A Forensic Timeline.** The Registry records details like which programs were recently opened, which USB devices were connected, and what network settings have been used — all useful during an investigation.
+3. **A Target for Tampering.** Many security settings (like UAC and Windows Defender, covered in Chapter 11) are ultimately stored as Registry values. Checking these values is a fast way to confirm whether a protection has been secretly disabled.
+
+---
+
+## Core Concepts
+
+### 1. Registry Structure: Hives, Keys, and Values
+
+The Registry is organized like a folder tree:
+
+- A **Hive** is one of the top-level "root folders." There are five of them, described below.
+- A **Key** is like a folder inside a hive. Keys can contain more keys (subkeys) or values.
+- A **Value** is the actual setting — it has a name, a data type, and the data itself.
 
 ```mermaid
 graph TD
-    Registry["Windows Registry"] --> HKLM["HKEY_LOCAL_MACHINE (HKLM)<br>System-wide settings"]
-    Registry --> HKCU["HKEY_CURRENT_USER (HKCU)<br>Current user settings"]
-    Registry --> HKU["HKEY_USERS (HKU)<br>All user profiles"]
-    Registry --> HKCR["HKEY_CLASSES_ROOT (HKCR)<br>File associations & COM objects"]
-    Registry --> HKCC["HKEY_CURRENT_CONFIG (HKCC)<br>Current hardware profile"]
-    
-    HKLM --> SAM["SAM<br>Security Account Manager"]
-    HKLM --> SECURITY["SECURITY<br>LSA Policies & Secrets"]
-    HKLM --> SOFTWARE["SOFTWARE<br>Application settings"]
-    HKLM --> SYSTEM["SYSTEM<br>Boot config, services, drivers"]
+    Hive[Hive: HKEY_LOCAL_MACHINE] --> Key1[Key: SOFTWARE]
+    Key1 --> Key2[Subkey: Microsoft]
+    Key2 --> Key3[Subkey: Windows]
+    Key3 --> Value1["Value: DevicePath (String)"]
 ```
 
-### Root Hives
+### 2. The Five Root Hives
 
-| Hive | Abbreviation | Purpose |
+| Hive | Short Name | Stores |
 |---|---|---|
-| `HKEY_LOCAL_MACHINE` | HKLM | System-wide hardware, software, and security settings. |
-| `HKEY_CURRENT_USER` | HKCU | Settings for the currently logged-in user. |
-| `HKEY_USERS` | HKU | Profile settings for ALL user accounts on the system. |
-| `HKEY_CLASSES_ROOT` | HKCR | File extension associations and COM class registrations. |
-| `HKEY_CURRENT_CONFIG` | HKCC | Current hardware profile configuration. |
+| `HKEY_LOCAL_MACHINE` | `HKLM` | System-wide settings that apply to every user on the computer |
+| `HKEY_CURRENT_USER` | `HKCU` | Settings for the user who is currently logged in |
+| `HKEY_USERS` | `HKU` | Settings for every user profile on the computer, including ones not currently logged in |
+| `HKEY_CLASSES_ROOT` | `HKCR` | File-type associations and program registration (e.g., what opens a `.pdf`) |
+| `HKEY_CURRENT_CONFIG` | `HKCC` | Information about the current hardware configuration |
 
-### On-Disk Hive Files
+> **Note**
+>
+> As a beginner, you'll spend most of your time in `HKLM` and `HKCU` — these two hives contain almost everything relevant to security investigations.
 
-Registry hives are stored as binary files:
+### 3. Common Registry Data Types
 
-| Hive | File Location |
+| Data Type | Short Name | Example |
+|---|---|---|
+| String | `REG_SZ` | A folder path or a program name |
+| Binary | `REG_BINARY` | Raw binary data, not human-readable directly |
+| DWORD | `REG_DWORD` | A small number, often used as an on/off switch (`0` or `1`) |
+| Multi-String | `REG_MULTI_SZ` | A list of several text values stored together |
+
+### 4. Registry Locations Every Beginner Should Know
+
+| Key | Why It Matters |
 |---|---|
-| SAM | `C:\Windows\System32\config\SAM` |
-| SECURITY | `C:\Windows\System32\config\SECURITY` |
-| SOFTWARE | `C:\Windows\System32\config\SOFTWARE` |
-| SYSTEM | `C:\Windows\System32\config\SYSTEM` |
-| NTUSER.DAT | `C:\Users\<username>\NTUSER.DAT` (per-user HKCU) |
+| `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run` | Programs listed here automatically start every time **any** user logs in — a classic persistence location |
+| `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run` | Same idea, but only for the currently logged-in user |
+| `HKLM\SYSTEM\CurrentControlSet\Services` | Lists every installed Windows service, including malicious ones disguised as legitimate services |
+| `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System` | Stores security policy values, including the UAC setting (`EnableLUA`) covered in Chapter 11 |
 
 ---
 
-## 2. Registry Value Data Types
+## Practical Examples
 
-| Type | Name | Description |
-|---|---|---|
-| `REG_SZ` | String | A fixed-length text string. |
-| `REG_EXPAND_SZ` | Expandable String | A string containing environment variable references (e.g., `%SystemRoot%`). |
-| `REG_DWORD` | 32-bit Integer | A 4-byte numeric value. |
-| `REG_QWORD` | 64-bit Integer | An 8-byte numeric value. |
-| `REG_BINARY` | Binary | Raw binary data. |
-| `REG_MULTI_SZ` | Multi-String | An array of null-terminated strings. |
+You can browse the Registry visually using the built-in **Registry Editor** (type `regedit` into the Start menu), or read the same information from the command line — which is faster and easier to include in a report.
 
----
-
-## 3. Critical Registry Locations for Blue Teams
-
-### Persistence Keys (Autorun)
-
-| Key Path | Scope | Description |
-|---|---|---|
-| `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` | Current User | Programs that execute at user logon. |
-| `HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce` | Current User | Programs that execute once then are deleted. |
-| `HKLM\Software\Microsoft\Windows\CurrentVersion\Run` | All Users | System-wide autorun programs. |
-| `HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce` | All Users | System-wide one-time execution. |
-| `HKLM\SYSTEM\CurrentControlSet\Services` | System | All registered Windows services and drivers. |
-
-### Security Configuration Keys
-
-| Key Path | Purpose |
-|---|---|
-| `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System` | UAC settings (`EnableLUA`, `ConsentPromptBehaviorAdmin`). |
-| `HKLM\SOFTWARE\Policies\Microsoft\Windows Defender` | Defender group policy overrides. |
-| `HKLM\SOFTWARE\Microsoft\Windows Defender\Exclusions\Paths` | Defender exclusion paths. |
-
-### Forensic Artifact Keys
-
-| Key Path | Purpose |
-|---|---|
-| `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs` | Recently opened documents. |
-| `HKLM\SYSTEM\CurrentControlSet\Enum\USBSTOR` | USB device connection history. |
-| `HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces` | Network interface configuration history. |
-
----
-
-# Practical Examples
-
-## Navigating the Registry (GUI)
-
-1. Press `Win + R` → type `regedit` → press Enter.
-2. Navigate the tree structure in the left pane.
-3. Right-click a key to export it as a `.reg` file for backup.
-
-## Command-Line Registry Operations (`reg.exe`)
+### Reading Registry Values with `reg.exe`
 
 ```cmd
-:: Query a specific key
-reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
+:: List everything set to auto-start for the current user
+reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
 
-:: Query a specific value
+:: Read a single value (the UAC setting from Chapter 11)
 reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA
-
-:: Add a new registry value (simulating persistence)
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "MalwareTest" /t REG_SZ /d "C:\Temp\malware.exe"
-
-:: Delete a registry value
-reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "MalwareTest" /f
-
-:: Export a registry key to a .reg file
-reg export "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" C:\Evidence\run_key_export.reg
 ```
 
-## PowerShell Registry Operations
+### Reading and Writing Values with PowerShell
 
 ```powershell
-# Query the Run key
-Get-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+# Read all auto-start entries for the current user
+Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
 
-# Query a specific value
+# Read a specific value
 (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System").EnableLUA
 
-# Create a new value (simulating persistence)
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "MalwareTest" -Value "C:\Temp\malware.exe"
+# Create a new value (useful in a lab to practice safely — never do this on a production machine)
+New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "LabTestEntry" -Value "C:\Windows\System32\notepad.exe" -PropertyType String
 
-# Remove a value
-Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "MalwareTest"
-
-# List all registered services
-Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\*" | Select-Object PSChildName, ImagePath, Start
+# Remove the value again
+Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" -Name "LabTestEntry"
 ```
 
 ---
 
-# Blue Team Investigation Notes
+## Blue Team Investigation Notes
 
-> 💙 **Blue Team Note: Registry Persistence Hunting**
-> 
-> The following registry locations should be checked during EVERY incident response engagement:
-> 1. `HKCU\...\Run` and `HKLM\...\Run` — Autorun entries.
-> 2. `HKLM\SYSTEM\CurrentControlSet\Services` — Look for services with suspicious `ImagePath` values.
-> 3. `HKCU\...\RunOnce` — One-time execution entries that delete themselves after running.
-> 4. `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Shell` — Should ONLY be `explorer.exe`.
-> 5. `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit` — Should ONLY be `C:\Windows\system32\userinit.exe,`.
-> 
-> Sysmon **Event ID 13** (RegistryEvent - Value Set) logs all registry value modifications, making it invaluable for detecting persistence establishment in real-time.
+> **Blue Team Insight: Checking Autorun Locations**
+>
+> When investigating a possibly infected computer, checking the Run keys is one of the fastest ways to find malware that's set to restart itself:
+>
+> - Compare entries in `HKLM...\Run` and `HKCU...\Run` against a known-good baseline of that machine.
+> - Be suspicious of entries pointing to unusual folders like `%TEMP%` or `%APPDATA%`, rather than `C:\Program Files`.
+> - Check whether a listed program actually exists on disk and whether it's digitally signed by a legitimate publisher.
 
 ---
 
-# Common Mistakes
+## Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
-| Editing the registry without backup | Incorrect edits can prevent Windows from booting. | Always export the key to a `.reg` file before modifying. |
-| Only checking HKCU Run keys | Missing system-wide persistence in HKLM. | Check both HKCU and HKLM Run/RunOnce keys. |
-| Ignoring service ImagePath values | Attackers modify service paths to point to malware. | Audit `HKLM\SYSTEM\CurrentControlSet\Services\*` for suspicious paths. |
+| Editing the Registry without a backup | A mistaken change can make Windows unstable or fail to start | Export the affected key first (`reg export`) before making changes |
+| Assuming every Run-key entry is malicious | Many legitimate programs (like antivirus software) also use these keys | Compare entries against a known-good baseline before assuming infection |
+| Confusing `HKLM` and `HKCU` scope | Removing a value from the wrong hive may not actually stop the malware | Check both hives — malware may use either one depending on its permissions |
 
 ---
 
-# Best Practices
+## Best Practices
 
-1. **Deploy Sysmon Event ID 13**: Log all registry value modifications across the enterprise.
-2. **Baseline Registry Snapshots**: Use tools like Autoruns to take a baseline of autorun entries and compare periodically.
-3. **Restrict Registry Permissions**: Apply restrictive DACLs to sensitive keys like `Services` and `Run`.
-4. **Monitor for Security Tampering**: Alert on modifications to `EnableLUA`, `DisableAntiSpyware`, and Defender exclusion paths.
-
----
-
-# 🔑 Key Takeaways
-
-- The Windows Registry is a hierarchical database stored in hive files (`SAM`, `SECURITY`, `SOFTWARE`, `SYSTEM`, `NTUSER.DAT`).
-- Attackers abuse `Run`, `RunOnce`, and `Services` registry keys for persistence.
-- Security settings (UAC, Defender) are controlled via registry values that attackers can tamper with.
-- Registry forensic artifacts reveal USB history, recent documents, and network connection history.
-- Sysmon Event ID 13 provides real-time monitoring of registry modifications.
+1. **Always back up a key before editing it**, using `reg export "<KeyPath>" backup.reg`.
+2. **Build a baseline** of what a clean, known-good machine's Run keys look like, so unusual entries stand out later.
+3. **Use PowerShell or `reg.exe` for repeatable checks** rather than manually clicking through the Registry Editor during an investigation.
+4. **Treat unexpected changes to security policy keys** (like `EnableLUA`) as an immediate red flag.
 
 ---
 
-# Key Commands
+## Summary
+
+- The Registry is a structured database of hives, keys, and values that stores nearly all of Windows' configuration.
+- The five root hives are `HKLM`, `HKCU`, `HKU`, `HKCR`, and `HKCC` — beginners will mostly work with `HKLM` and `HKCU`.
+- The `Run` keys are a classic malware persistence location, since anything listed there restarts automatically.
+- Both `reg.exe` and PowerShell can read and modify Registry values from the command line.
+- Security settings covered elsewhere in this handbook, like UAC, are ultimately stored as Registry values.
+
+The next chapter covers how software is installed, tracked, and removed on Windows — including how to spot unauthorized or unexpected software during an investigation.
+
+---
+
+## Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
-| `regedit` | Opens Registry Editor GUI | `regedit` |
-| `reg query` | Queries a registry key/value | `reg query HKCU\...\Run` |
-| `reg add` | Creates or modifies a registry value | `reg add HKCU\...\Run /v Name /d Value` |
-| `reg delete` | Deletes a registry value | `reg delete HKCU\...\Run /v Name /f` |
-| `reg export` | Exports a key to a `.reg` file | `reg export HKCU\...\Run C:\backup.reg` |
-| `Get-ItemProperty` | Reads registry values via PowerShell | `Get-ItemProperty HKCU:\...\Run` |
-
+| `reg query` | Reads Registry keys or values | `reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"` |
+| `reg export` | Backs up a key to a `.reg` file | `reg export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" backup.reg` |
+| `Get-ItemProperty` | Reads Registry values in PowerShell | `Get-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"` |
+| `New-ItemProperty` | Creates a new Registry value in PowerShell | `New-ItemProperty -Path "HKCU:\...\Run" -Name "Test" -Value "notepad.exe" -PropertyType String` |
+| `Remove-ItemProperty` | Deletes a Registry value in PowerShell | `Remove-ItemProperty -Path "HKCU:\...\Run" -Name "Test"` |
 ---
 
-# Quick Quiz
+## Further Reading
 
-1. **Which registry hive contains system-wide hardware, software, and security settings?**
-   - A) HKCU
-   - B) HKLM
-   - C) HKCR
-   - D) HKCC
-
-2. **Which registry key is commonly abused by malware to persist across user logons?**
-   - A) `HKCU\...\Run`
-   - B) `HKLM\...\Fonts`
-   - C) `HKCR\...\Shell`
-   - D) `HKCC\...\Display`
-
-3. **Where is the per-user registry hive stored on disk?**
-   - A) `C:\Windows\System32\config\HKCU`
-   - B) `C:\Users\<username>\NTUSER.DAT`
-   - C) `C:\Windows\System32\NTUSER.DAT`
-   - D) `C:\ProgramData\Registry.dat`
-
-4. **Which Sysmon Event ID logs registry value modifications?**
-   - A) Event ID 1
-   - B) Event ID 3
-   - C) Event ID 13
-   - D) Event ID 22
-
-5. **What registry value controls whether User Account Control (UAC) is enabled?**
-   - A) `EnableUAC`
-   - B) `EnableLUA`
-   - C) `UACLevel`
-   - D) `AdminApprovalMode`
-
----
-
-## Quiz Answers
-
-1. **B** (HKLM)
-2. **A** (`HKCU\...\Run`)
-3. **B** (`C:\Users\<username>\NTUSER.DAT`)
-4. **C** (Event ID 13)
-5. **B** (`EnableLUA`)
-
----
-
-# Further Reading
-
-- [Microsoft Learn: Windows Registry](https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry)
-- [SANS: Windows Registry Forensics](https://www.sans.org/blog/windows-registry-forensics/)
-- [MITRE ATT&CK: Registry Run Keys (T1547.001)](https://attack.mitre.org/techniques/T1547/001/)
-- [Sysinternals Autoruns](https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns)
-
----
-
+- [Microsoft Learn: Windows Registry Overview](https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry)
+- [Microsoft Learn: Structure of the Registry](https://learn.microsoft.com/en-us/windows/win32/sysinfo/structure-of-the-registry)
+- [MITRE ATT&CK: Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder (T1547.001)](https://attack.mitre.org/techniques/T1547/001/)
 # Next Chapter
 
 ➡ **[Chapter 13 — Software & Package Management](./Chapter%2013%20%E2%80%94%20Software%20%26%20Package%20Management.md)**

@@ -1,224 +1,182 @@
 # Chapter 13 — Software & Package Management
 
----
+## Introduction
 
-# 📖 Overview
+Every program on a Windows computer had to get there somehow — downloaded and installed by a user, pushed out by an IT department, or in some cases, quietly installed by malware without anyone noticing. Knowing what software is supposed to be on a machine, and how to check what's actually installed, is a basic skill every Blue Team beginner needs.
 
-Managing installed software on Windows endpoints is a critical operational and security function. Every application installed on a system expands the attack surface — outdated browsers, unpatched Java runtimes, and vulnerable PDF readers are among the most commonly exploited entry points for malware.
-
-Windows provides multiple mechanisms for installing, querying, updating, and removing software, ranging from the traditional Control Panel to modern PowerShell cmdlets and package managers like `winget`.
-
-For Blue Teams, software inventory and patch management are essential. Knowing exactly what is installed, at what version, and whether it is vulnerable directly supports vulnerability management, compliance auditing, and incident response.
+This chapter covers how software gets installed on Windows, how to list what's currently installed using the command line, and how to remove it — all skills that come up constantly during both routine administration and security investigations.
 
 ---
 
-# 🎯 Learning Objectives
+## Learning Objectives
 
-After completing this chapter, you will be able to:
+Students should be able to:
 
-- Query installed software using Control Panel, `wmic`, PowerShell (`Get-Package`, `Get-WmiObject`), and the registry.
-- Understand MSI installer architecture and Windows Installer service.
-- Use `winget` (Windows Package Manager) to search, install, and update packages from the command line.
-- Identify vulnerable software versions and correlate them with known CVEs.
-- Audit installed software for compliance with organizational baselines.
-- Uninstall software silently using command-line tools.
-
----
-
-# Why Blue Teams Care
-
-1. **Vulnerability Exploitation**: Attackers target known vulnerabilities in outdated software (e.g., CVE-2023-21716 in Microsoft Word, Log4Shell in Java applications). Knowing installed software versions allows rapid vulnerability assessment.
-2. **Shadow IT Detection**: Unauthorized applications (torrent clients, remote access tools, cryptocurrency miners) installed by users violate security policies and introduce risk.
-3. **Incident Scoping**: During incident response, the installed software list reveals potential attack vectors — was the vulnerable version of Adobe Reader installed when the phishing PDF was opened?
-4. **Patch Compliance**: Compliance frameworks require documented evidence that critical patches have been applied within defined SLAs.
+- Describe the common ways software is installed on Windows.
+- List installed software using PowerShell and the command line.
+- Explain what `winget` is and how it's used to install and manage software.
+- Uninstall software from the command line.
+- Explain why an unexpected or unknown program in a software list is worth investigating.
 
 ---
 
-# Core Concepts
+## Why Blue Teams Care
 
-## 1. Windows Software Installation Methods
+1. **Unwanted Software Is a Red Flag.** Malware often installs itself the same way legitimate software does — it just doesn't ask permission first. Comparing an installed-software list against what's expected on a machine can reveal unauthorized programs.
+2. **Old Software Is a Risk.** Outdated versions of common software (browsers, PDF readers, Java) often contain known vulnerabilities. Being able to quickly list installed software and their versions supports vulnerability management.
+3. **Evidence for Investigations.** When investigating an incident, knowing exactly what was installed — and when — helps build a timeline of what happened on the machine.
+
+---
+
+## Core Concepts
+
+### 1. How Software Gets Installed on Windows
 
 | Method | Description |
 |---|---|
-| **MSI (Windows Installer)** | Standardized installer packages (`.msi`) managed by the Windows Installer service (`msiserver`). |
-| **EXE Installers** | Custom setup executables. No standardized uninstall mechanism. |
-| **MSIX / AppX** | Modern Windows 10/11 package format for UWP and desktop apps. |
-| **Microsoft Store** | Curated app store with automatic updates. |
-| **winget** | Command-line package manager (similar to `apt` on Linux). |
-| **Chocolatey** | Community-driven Windows package manager. |
+| **MSI Installer** | A structured, database-driven installer format (`.msi`) commonly used by business and enterprise software |
+| **EXE Installer** | A traditional executable setup file (`.exe`) — the most common format for everyday downloads |
+| **Microsoft Store** | Sandboxed apps installed and updated through the built-in Store app |
+| **Windows Package Manager (`winget`)** | A command-line tool for installing and updating software directly from a curated catalog |
 
----
+### 2. Listing Installed Software
 
-## 2. Querying Installed Software
+There are several ways to check what's installed, and it's worth knowing more than one — because malware sometimes hides itself from the slower, more obvious methods.
 
-### Using WMIC (Legacy)
-
-```cmd
-:: List all installed programs
-wmic product get name, version, vendor
-
-:: Find a specific application
-wmic product where "name like '%%Java%%'" get name, version
-```
-
-### Using PowerShell
+**Using PowerShell (fast, but only shows installer-registered software):**
 
 ```powershell
-# Query installed packages (modern method)
-Get-Package | Select-Object Name, Version, ProviderName
-
-# Query via WMI (comprehensive but slow)
-Get-WmiObject Win32_Product | Select-Object Name, Version, Vendor
-
-# Query from the Uninstall registry key (fastest method)
+# Read the Uninstall registry key directly — usually the fastest method
 Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" |
     Select-Object DisplayName, DisplayVersion, Publisher, InstallDate |
-    Sort-Object DisplayName
+    Where-Object { $_.DisplayName }
 ```
 
-> 💙 **Blue Team Note**: `Get-WmiObject Win32_Product` triggers a consistency check on every installed MSI package, which can be slow and may even trigger repairs. For speed, query the **Uninstall registry key** instead.
+**Using `winget` (only shows software winget knows how to manage):**
 
-### Using winget
-
-```cmd
-:: List all installed software
+```powershell
+# List software winget can see and manage
 winget list
+```
 
-:: Search for a package
-winget search firefox
+**Using WMI (thorough, but noticeably slower):**
 
-:: Install a package
-winget install Mozilla.Firefox
+```powershell
+# A comprehensive but slower query of installed software
+Get-CimInstance -ClassName Win32_Product | Select-Object Name, Version, Vendor
+```
 
-:: Upgrade all outdated packages
+> **Note**
+>
+> No single command shows 100% of installed software — that's exactly why analysts learn more than one method. A program that hides from one list may still show up in another.
+
+### 3. Using `winget` to Install and Update Software
+
+`winget` is Microsoft's official command-line package manager. It lets you search for, install, update, and remove software without opening a browser.
+
+```powershell
+# Search the winget catalog for a package
+winget search "notepad++"
+
+# Install a package
+winget install Notepad++.Notepad++
+
+# Update all installed packages that winget manages
 winget upgrade --all
 ```
 
----
+### 4. Uninstalling Software
 
-## 3. Uninstalling Software
+```powershell
+# Uninstall a package using winget
+winget uninstall Notepad++.Notepad++
+```
 
 ```cmd
-:: Uninstall via WMIC (silent, no reboot)
-wmic product where "name='VulnerableApp'" call uninstall /nointeractive
-
-:: Uninstall via MSI (silent)
-msiexec /x {PRODUCT-GUID} /qn
-
-:: Uninstall via winget
-winget uninstall "AppName"
-```
-
-```powershell
-# Uninstall via PowerShell
-Get-Package -Name "VulnerableApp" | Uninstall-Package -Force
+:: List installed programs from CMD (legacy method, works on older systems too)
+wmic product get name,version
 ```
 
 ---
 
-# Practical Examples
+## Practical Examples
 
-## Software Vulnerability Audit
+### A Simple Software Inventory Check
 
 ```powershell
-# Find all installed software and check for old versions
+# Export a snapshot of installed software to a file for later comparison
 Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" |
-    Where-Object {$_.DisplayName -like "*Java*" -or $_.DisplayName -like "*Adobe*" -or $_.DisplayName -like "*Flash*"} |
-    Select-Object DisplayName, DisplayVersion, Publisher
+    Select-Object DisplayName, DisplayVersion, Publisher, InstallDate |
+    Where-Object { $_.DisplayName } |
+    Export-Csv -Path "$env:USERPROFILE\Desktop\software_inventory.csv" -NoTypeInformation
 ```
 
----
-
-# Blue Team Investigation Notes
-
-> 💙 **Blue Team Note: Hunting Unauthorized Software**
-> 
-> During an investigation, compare the installed software list against the organization's **approved software baseline**. Flag:
-> - Remote access tools (AnyDesk, TeamViewer) not approved by IT.
-> - Hacking tools (Mimikatz, PsExec) installed by attackers.
-> - Cryptocurrency mining software.
-> - Outdated software with known CVEs.
+Saving a snapshot like this lets you compare software lists over time, or compare a suspicious machine against a known-good baseline.
 
 ---
 
-# Common Mistakes
+## Blue Team Investigation Notes
+
+> **Blue Team Insight: Spotting Unauthorized Software**
+>
+> When reviewing a software inventory, look for:
+>
+> - **Unfamiliar publisher names**, especially generic or misspelled ones that try to imitate a real company.
+> - **Installation dates that don't match any approved change**, such as software that appeared overnight with no ticket or record.
+> - **Software installed in unusual locations**, like a user's temp or downloads folder instead of `C:\Program Files`.
+> - Remember that `Get-CimInstance Win32_Product` only reliably reports software installed via MSI — it can miss EXE-based installers, so cross-check with the registry method above.
+
+---
+
+## Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
-| Using only `wmic product` for queries | Slow, triggers MSI consistency checks. | Use the registry Uninstall key for speed. |
-| Not checking both 32-bit and 64-bit registries | Missing 32-bit software on 64-bit OS. | Also check `HKLM:\SOFTWARE\Wow6432Node\...\Uninstall\*`. |
-| Ignoring user-installed software | Per-user installs are in `HKCU`, not `HKLM`. | Query `HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*` too. |
+| Relying on only one listing method | Some installed software (especially malware) won't show up in every method | Check the registry, `winget`, and WMI methods together |
+| Assuming `Win32_Product` shows everything | This query only reliably reports MSI-installed software | Prefer the Uninstall registry key for a fuller picture |
+| Treating every unfamiliar name as malicious | Many legitimate utilities have unfamiliar or generic-sounding names | Verify publisher, install date, and file location before concluding anything |
 
 ---
 
-# Best Practices
+## Best Practices
 
-1. **Maintain a Software Baseline**: Document approved software and versions for each endpoint role.
-2. **Automate Patch Management**: Use WSUS, SCCM, Intune, or winget to automate updates.
-3. **Audit Regularly**: Schedule monthly software audits to detect unauthorized installations.
-4. **Block Unapproved Software**: Use Application Control policies (AppLocker, WDAC) to prevent unauthorized executables.
-
----
-
-# 🔑 Key Takeaways
-
-- Windows software can be queried via WMIC, PowerShell, the registry Uninstall key, or `winget list`.
-- The registry Uninstall key is the fastest and safest method for software inventory.
-- `winget` provides a modern, Linux-like package management experience on Windows.
-- Software auditing is critical for vulnerability management and compliance.
-- Unauthorized software (remote access tools, hacking tools) must be flagged during incident response.
+1. **Keep a baseline software inventory** for reference machines so unusual entries stand out quickly.
+2. **Check more than one listing method** rather than trusting a single command.
+3. **Use `winget upgrade --all`** regularly to reduce the number of outdated, vulnerable applications on a machine.
+4. **Record install dates and publishers** whenever reviewing software, since both are useful clues during an investigation.
 
 ---
 
-# Key Commands
+## Summary
+
+- Windows software commonly arrives through MSI installers, EXE installers, the Microsoft Store, or `winget`.
+- PowerShell can list installed software by reading the Uninstall registry key, using `winget list`, or querying WMI — each method has gaps, so it's best to use more than one.
+- `winget` is Microsoft's command-line package manager for searching, installing, updating, and removing software.
+- Comparing an installed-software list against a known-good baseline is a simple but effective way to spot unauthorized programs.
+
+The next chapter builds on the command-line skills from this and earlier chapters to introduce basic PowerShell scripting.
+
+---
+
+## Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
-| `winget list` | Lists all installed software | `winget list` |
-| `winget install` | Installs a package | `winget install Mozilla.Firefox` |
-| `winget upgrade --all` | Updates all outdated packages | `winget upgrade --all` |
-| `Get-Package` | PowerShell software query | `Get-Package` |
-| `wmic product get` | WMI software query (legacy) | `wmic product get name, version` |
+| `Get-ItemProperty` | Lists installed software from the Uninstall registry key | `Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"` |
+| `winget list` | Lists software winget can manage | `winget list` |
+| `winget search` | Searches the winget catalog | `winget search "notepad++"` |
+| `winget install` | Installs a package | `winget install Notepad++.Notepad++` |
+| `winget upgrade --all` | Updates all winget-managed software | `winget upgrade --all` |
+| `winget uninstall` | Removes a package | `winget uninstall Notepad++.Notepad++` |
+| `Get-CimInstance Win32_Product` | Lists MSI-installed software (slower) | `Get-CimInstance -ClassName Win32_Product` |
 
 ---
 
-# Quick Quiz
+## Further Reading
 
-1. **Which method is fastest for querying installed software on Windows?**
-   - A) `wmic product get name`
-   - B) Querying the Uninstall registry key
-   - C) `Get-WmiObject Win32_Product`
-   - D) Control Panel
-
-2. **What command-line tool provides Linux-like package management on Windows?**
-   - A) `apt`
-   - B) `yum`
-   - C) `winget`
-   - D) `pip`
-
-3. **Why should Blue Teams audit installed software during incident response?**
-   - A) To check wallpaper settings
-   - B) To identify vulnerable applications and unauthorized tools
-   - C) To count total disk space usage
-   - D) To update the screensaver
-
----
-
-## Quiz Answers
-
-1. **B** (Querying the Uninstall registry key)
-2. **C** (`winget`)
-3. **B** (To identify vulnerable applications and unauthorized tools)
-
----
-
-# Further Reading
-
-- [Microsoft Learn: winget Documentation](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
-- [Microsoft Learn: Windows Installer](https://learn.microsoft.com/en-us/windows/win32/msi/windows-installer-portal)
+- [Microsoft Learn: Windows Package Manager (winget)](https://learn.microsoft.com/en-us/windows/package-manager/winget/)
+- [Microsoft Learn: Get-CimInstance](https://learn.microsoft.com/en-us/powershell/module/cimcmdlets/get-ciminstance)
 - [MITRE ATT&CK: Software Discovery (T1518)](https://attack.mitre.org/techniques/T1518/)
-
----
 
 # Next Chapter
 

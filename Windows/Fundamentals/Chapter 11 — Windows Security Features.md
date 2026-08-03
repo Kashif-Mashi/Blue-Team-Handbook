@@ -1,285 +1,182 @@
 # Chapter 11 — Windows Security Features
 
----
+## Introduction
 
-# 📖 Overview
+Windows ships with a layered set of built-in security controls that protect an endpoint before, during, and after an attack. These controls span every layer of the operating system — from the boot chain and kernel, to the antimalware engine, to the reputation checks that run when a user downloads or opens a file.
 
-Microsoft Windows includes a comprehensive suite of built-in security features designed to protect endpoints from malware, unauthorized access, data theft, and exploitation. These features operate across multiple defense layers — from kernel-level protections and boot integrity to user-facing controls like Windows Defender and BitLocker.
+For a SOC Analyst or Incident Responder, these features are not just "settings." They are the first evidence source and the first line of defense on any Windows host. Knowing whether Windows Defender is running, whether the firewall is enabled, and whether UAC has been tampered with is often the fastest way to tell whether a host has already been compromised.
 
-For Blue Teams, understanding these native security features is essential. They form the first line of defense on every Windows endpoint, and their proper configuration (or misconfiguration) directly impacts the organization's security posture.
-
----
-
-# 🎯 Learning Objectives
-
-After completing this chapter, you will be able to:
-
-- Explain the role and architecture of Windows Defender Antivirus, including real-time protection, cloud-delivered protection, and controlled folder access.
-- Describe User Account Control (UAC) integrity levels and how they prevent unauthorized privilege escalation.
-- Understand BitLocker Drive Encryption, TPM integration, and recovery key management.
-- Configure Windows Defender Firewall profiles and create granular inbound/outbound rules.
-- Describe Windows Secure Boot, UEFI, and Trusted Platform Module (TPM) boot integrity chain.
-- Explain Credential Guard, Device Guard, and Attack Surface Reduction (ASR) rules.
-- Audit security feature status using PowerShell and command-line tools.
+This chapter introduces the core native Windows security features — Windows Defender, Windows Defender Firewall, SmartScreen, User Account Control (UAC), BitLocker, and the Windows Security app — and explains how each one is audited and interpreted from a Blue Team perspective.
 
 ---
 
-# Why Blue Teams Care
+## Learning Objectives
 
-1. **Baseline Security Validation**: Before performing any investigation, responders must verify that endpoint security features are actually enabled. Attackers routinely disable Windows Defender, turn off the firewall, or lower UAC settings.
-2. **Defense-in-Depth**: No single feature prevents all attacks. BitLocker protects data at rest, Defender catches known malware, UAC limits privilege escalation, and Credential Guard prevents credential dumping — together they form a layered defense.
-3. **Compliance Requirements**: Enterprise compliance frameworks (CIS Benchmarks, NIST 800-171, PCI-DSS) mandate specific configurations for Defender, BitLocker, and firewall policies.
+Students should be able to:
+
+- Explain the role of Windows Defender Antivirus, including real-time protection and cloud-delivered protection.
+- Describe how Windows Defender Firewall profiles (Domain, Private, Public) control inbound and outbound traffic.
+- Explain how SmartScreen uses reputation data to warn users about untrusted apps and downloads.
+- Describe how User Account Control (UAC) prevents silent privilege escalation.
+- Explain how BitLocker protects data at rest using drive encryption.
+- Use the Windows Security app and PowerShell to check the overall security status of an endpoint.
 
 ---
 
-# Core Concepts
+## Why Blue Teams Care
 
-## 1. Windows Defender Antivirus
+1. **Attackers Disable Defenses First**: A common post-exploitation step is turning off Windows Defender, disabling the firewall, or lowering UAC. Checking the state of these features is a quick indicator of compromise.
+2. **Defense-in-Depth**: No single feature stops every attack. Defender catches known malware, the firewall limits network exposure, SmartScreen warns about untrusted files, UAC limits privilege escalation, and BitLocker protects stolen drives — together they reduce risk at different stages of an attack.
+3. **Baseline for Every Investigation**: Before analyzing logs or processes, responders should confirm the endpoint's security posture. A disabled control is itself a finding.
 
-Windows Defender is the built-in anti-malware engine that provides:
+---
 
-- **Real-Time Protection (RTP)**: Scans files on access, download, and execution.
-- **Cloud-Delivered Protection**: Submits suspicious samples to Microsoft's cloud analysis backend for rapid verdict.
-- **Behavior Monitoring**: Detects malicious behavior patterns even for unknown (zero-day) malware.
-- **Controlled Folder Access**: Prevents ransomware from encrypting files in protected folders (Documents, Desktop, etc.).
+## Core Concepts
+
+### 1. Windows Defender Antivirus
+
+Windows Defender Antivirus is the built-in anti-malware engine included with Windows. It provides:
+
+- **Real-Time Protection**: Scans files as they are accessed, downloaded, or executed.
+- **Cloud-Delivered Protection**: Sends suspicious file metadata to Microsoft's cloud service for a fast verdict on new or unknown threats.
+- **Tamper Protection**: Blocks changes to Defender settings made outside the Windows Security app, including changes attempted by malware.
+
+### 2. Windows Defender Firewall
+
+The firewall filters inbound and outbound network traffic based on rules, and applies a different rule set depending on the network profile:
+
+| Profile | Applies To | Default Behavior |
+|---|---|---|
+| **Domain** | Host is joined to an Active Directory domain network | Inbound blocked unless allowed; outbound allowed |
+| **Private** | Trusted home or work network | Inbound blocked unless allowed; outbound allowed |
+| **Public** | Untrusted network (coffee shop, airport, hotel) | Most restrictive profile |
+
+### 3. SmartScreen
+
+SmartScreen is a reputation-based filtering service. It checks downloaded files and visited websites against Microsoft's reputation data and warns the user before running unrecognized or low-reputation applications. It does not scan file contents the way an antivirus engine does — it evaluates trust based on publisher signature and download prevalence.
+
+### 4. User Account Control (UAC)
+
+UAC prevents applications from silently making system-level changes. Even an administrator account runs most processes with a standard-user token; an explicit consent prompt is required before a process is granted an elevated (administrator) token.
+
+```mermaid
+flowchart LR
+    A[User Logs In as Admin] --> B[Standard Token Issued by Default]
+    B --> C{Elevation Requested?}
+    C -->|Yes, User Consents| D[Elevated Admin Token Granted]
+    C -->|No| E[Process Runs with Standard Token]
+```
+
+### 5. BitLocker Drive Encryption
+
+BitLocker encrypts an entire volume so that data cannot be read without the correct key. On systems with a Trusted Platform Module (TPM), BitLocker ties the encryption key to the integrity of the boot process — if the boot chain is altered, the key is not released automatically and a recovery key is required instead.
+
+### 6. Windows Security App
+
+Windows Security is the central dashboard that reports the combined status of Defender, the firewall, SmartScreen (under App & Browser Control), account protection, and device security (including TPM and Secure Boot status) in one place.
+
+---
+
+## Practical Examples
+
+### Checking Defender Status
 
 ```powershell
-# Check Defender status
+# Check core Defender protection status
 Get-MpComputerStatus | Select-Object AntivirusEnabled, RealTimeProtectionEnabled, AntispywareEnabled
 
 # Run a quick scan
 Start-MpScan -ScanType QuickScan
 
-# Run a full system scan
-Start-MpScan -ScanType FullScan
-
-# Update signature definitions
-Update-MpSignature
-
-# View Defender threat history
+# View recent threat detections
 Get-MpThreatDetection
 ```
 
----
+### Checking Firewall Profiles
 
-## 2. User Account Control (UAC)
+```powershell
+# View status of all three firewall profiles
+Get-NetFirewallProfile | Select-Object Name, Enabled
 
-UAC prevents applications from making unauthorized system changes by requiring explicit administrator approval. When enabled, even administrator accounts operate with standard-user tokens unless elevation is explicitly requested.
+# List firewall rules that are currently enabled
+Get-NetFirewallRule -Enabled True | Select-Object DisplayName, Direction, Action
+```
 
-### UAC Integrity Levels
-
-| Level | Description | Example |
-|---|---|---|
-| **Low** | Sandboxed, minimal privileges. | Internet Explorer Protected Mode. |
-| **Medium** | Standard user privileges. Default for all non-elevated processes. | `explorer.exe`, `notepad.exe`. |
-| **High** | Administrative privileges. Granted after UAC consent prompt. | Elevated `cmd.exe`, `regedit.exe`. |
-| **System** | Highest OS privilege. Reserved for system services. | `lsass.exe`, `services.exe`. |
+### Checking UAC Configuration
 
 ```cmd
-:: Check current integrity level and privileges
-whoami /groups
-whoami /priv
+:: Check the current UAC registry setting (1 = enabled)
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA
 ```
 
-> 💙 **Blue Team Note**: If UAC is disabled or set to "Never notify," attackers can silently elevate privileges without any user interaction. Always verify UAC is set to at least the default level.
-
----
-
-## 3. BitLocker Drive Encryption
-
-BitLocker encrypts entire disk volumes to protect data at rest. Even if an attacker steals the physical hard drive, they cannot read the data without the encryption key.
-
-- **TPM Integration**: BitLocker stores encryption keys in the Trusted Platform Module (TPM) chip, which releases keys only if the boot process integrity is verified.
-- **Recovery Key**: A 48-digit numeric key used to unlock the drive if the TPM is unavailable or boot integrity fails.
+### Checking BitLocker Status
 
 ```powershell
-# Check BitLocker status on all drives
-Get-BitLockerVolume
-
-# Check BitLocker status on C: drive
-manage-bde -status C:
-
-# Enable BitLocker on C: drive with TPM
-Enable-BitLocker -MountPoint "C:" -TpmProtector
-```
-
----
-
-## 4. Windows Defender Firewall
-
-The Windows Defender Firewall operates with three profiles:
-
-| Profile | When Active | Default |
-|---|---|---|
-| **Domain** | Machine is joined to an Active Directory domain. | Inbound blocked, Outbound allowed. |
-| **Private** | Connected to a trusted home/work network. | Inbound blocked, Outbound allowed. |
-| **Public** | Connected to an untrusted network (coffee shop, hotel). | Most restrictive. |
-
-```powershell
-# View firewall profile status
-Get-NetFirewallProfile | Select-Object Name, Enabled
-
-# Disable firewall (DANGEROUS — for testing only)
-Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
-
-# Create a rule to block inbound RDP from all sources
-New-NetFirewallRule -DisplayName "Block RDP" -Direction Inbound -LocalPort 3389 -Protocol TCP -Action Block
-```
-
----
-
-## 5. Secure Boot & TPM
-
-- **Secure Boot**: A UEFI feature that verifies the digital signature of the bootloader and kernel before allowing execution. Prevents bootkits and rootkits.
-- **Trusted Platform Module (TPM)**: A hardware security chip that stores encryption keys, measures boot integrity, and provides hardware-based random number generation.
-
-```powershell
-# Check Secure Boot status
-Confirm-SecureBootUEFI
-
-# Check TPM status
-Get-Tpm
-```
-
----
-
-## 6. Advanced Security Features
-
-| Feature | Purpose |
-|---|---|
-| **Credential Guard** | Uses virtualization-based security (VBS) to isolate LSASS credential storage from the OS kernel, preventing tools like Mimikatz from dumping passwords. |
-| **Attack Surface Reduction (ASR)** | GPO-configurable rules that block common attack vectors (e.g., Office macros spawning child processes, credential stealing from LSASS). |
-| **Windows Sandbox** | An isolated, disposable desktop environment for safely testing suspicious files. |
-| **SmartScreen** | Reputation-based filtering for downloaded files and visited URLs. |
-
----
-
-# Practical Examples
-
-## Auditing Security Features via PowerShell
-
-```powershell
-# Full security posture check
-Write-Host "=== Windows Defender ===" -ForegroundColor Cyan
-Get-MpComputerStatus | Select-Object AntivirusEnabled, RealTimeProtectionEnabled, AntispywareEnabled
-
-Write-Host "`n=== Firewall Status ===" -ForegroundColor Cyan
-Get-NetFirewallProfile | Select-Object Name, Enabled
-
-Write-Host "`n=== BitLocker Status ===" -ForegroundColor Cyan
+# Check BitLocker protection status for all volumes
 Get-BitLockerVolume | Select-Object MountPoint, VolumeStatus, ProtectionStatus
-
-Write-Host "`n=== Secure Boot ===" -ForegroundColor Cyan
-Confirm-SecureBootUEFI
-
-Write-Host "`n=== UAC Setting ===" -ForegroundColor Cyan
-(Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System).EnableLUA
 ```
 
 ---
 
-# Blue Team Investigation Notes
+## Blue Team Investigation Notes
 
-> 💙 **Blue Team Note: First Responder Security Check**
-> 
-> During every incident response engagement, the FIRST thing you should do is verify the security posture of the compromised host:
-> 1. Is Windows Defender running? (`Get-MpComputerStatus`)
-> 2. Is the Firewall enabled? (`Get-NetFirewallProfile`)
-> 3. Is UAC enabled? (Registry `EnableLUA` = 1)
-> 4. Has Defender detected anything? (`Get-MpThreatDetection`)
-> 
-> If any of these are disabled, the attacker likely turned them off during post-exploitation.
+> **Blue Team Insight: Rapid Security Posture Check**
+>
+> When triaging a potentially compromised host, quickly confirm:
+>
+> - Is `Get-MpComputerStatus` reporting `RealTimeProtectionEnabled : True`? If not, an attacker may have disabled it post-exploitation.
+> - Are all three firewall profiles `Enabled : True`? A disabled Public profile on a laptop is a common red flag.
+> - Does `EnableLUA` still equal `1`? A value of `0` means UAC has been turned off.
+> - Is `Get-MpThreatDetection` empty even though other indicators suggest infection? This can mean Defender was blinded before the threat executed.
 
 ---
 
-# Common Mistakes
+## Common Mistakes
 
 | Mistake | Consequence | How to Avoid |
 |---|---|---|
-| Disabling UAC | Malware silently elevates to admin without consent. | Keep UAC at default or higher setting. |
-| Excluding entire drives from Defender | Malware in excluded paths runs undetected. | Use narrow, specific exclusions only. |
-| Not backing up BitLocker recovery keys | Drive is permanently inaccessible after hardware changes. | Store recovery keys in Active Directory or Azure AD. |
+| Assuming Defender is active without checking | Missing an already-disabled control during triage | Always run `Get-MpComputerStatus` at the start of an investigation |
+| Treating SmartScreen as a full antivirus scan | Malicious files with good reputation data can still slip through | Treat SmartScreen as a reputation filter, not a malware scanner |
+| Losing a BitLocker recovery key | Permanent loss of access to an encrypted drive | Escrow recovery keys to Active Directory or Microsoft Entra ID |
+| Disabling UAC to "avoid prompts" | Removes a barrier against silent privilege escalation | Keep UAC at its default notification level |
 
 ---
 
-# Best Practices
+## Best Practices
 
-1. **Enable Tamper Protection**: Prevents malware from disabling Defender programmatically.
-2. **Enable Controlled Folder Access**: Protects Documents, Desktop, and Pictures from ransomware encryption.
-3. **Deploy ASR Rules**: Block Office macro child processes, credential stealing, and untrusted USB executables.
-4. **Enforce BitLocker via GPO**: Require BitLocker on all organizational endpoints with recovery keys escrowed to AD.
-5. **Set UAC to Maximum**: "Always notify" ensures every elevation attempt requires explicit consent.
-
----
-
-# 🔑 Key Takeaways
-
-- Windows Defender provides real-time antimalware protection, cloud analysis, and controlled folder access.
-- UAC enforces integrity levels that prevent unauthorized privilege escalation.
-- BitLocker encrypts drives at rest using TPM-backed encryption keys.
-- Windows Defender Firewall operates across Domain, Private, and Public profiles.
-- Secure Boot and TPM protect the boot chain integrity against rootkits.
-- Credential Guard uses virtualization to prevent credential dumping (Mimikatz).
+1. **Enable Tamper Protection** on Windows Defender so its settings cannot be changed outside the Windows Security app.
+2. **Keep all three Firewall profiles enabled**, especially the Public profile on portable devices.
+3. **Leave SmartScreen enabled** for both apps and Microsoft Edge to warn users before running untrusted files.
+4. **Keep UAC at the default "Notify me only" level or higher.**
+5. **Enforce BitLocker** on all endpoints that store sensitive data, with recovery keys escrowed centrally.
 
 ---
 
-# Key Commands
+## Summary
+
+- Windows Defender provides real-time and cloud-based malware protection.
+- Windows Defender Firewall applies different rule sets depending on the Domain, Private, or Public network profile.
+- SmartScreen filters files and sites using reputation data rather than content scanning.
+- UAC prevents processes from silently gaining administrator privileges.
+- BitLocker protects data at rest by encrypting entire volumes, often backed by a TPM.
+- The Windows Security app centralizes the status of all these features for quick review.
+
+The next chapter looks at the Windows Registry and how it is used both for system configuration and as a target for persistence techniques.
+
+---
+
+## Key Commands
 
 | Command / Cmdlet | Purpose | Example |
 |---|---|---|
-| `Get-MpComputerStatus` | Checks Defender status | `Get-MpComputerStatus` |
+| `Get-MpComputerStatus` | Checks Windows Defender status | `Get-MpComputerStatus` |
 | `Start-MpScan` | Runs a Defender scan | `Start-MpScan -ScanType QuickScan` |
+| `Get-MpThreatDetection` | Lists recent Defender threat detections | `Get-MpThreatDetection` |
+| `Get-NetFirewallProfile` | Shows firewall profile status | `Get-NetFirewallProfile` |
+| `Get-NetFirewallRule` | Lists firewall rules | `Get-NetFirewallRule -Enabled True` |
 | `Get-BitLockerVolume` | Checks BitLocker encryption status | `Get-BitLockerVolume` |
-| `Get-NetFirewallProfile` | Displays firewall profile status | `Get-NetFirewallProfile` |
-| `Confirm-SecureBootUEFI` | Checks Secure Boot status | `Confirm-SecureBootUEFI` |
-| `whoami /groups` | Displays current integrity level | `whoami /groups` |
-
+| `reg query` | Reads a registry value (e.g. UAC setting) | `reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA` |
 ---
-
-# Quick Quiz
-
-1. **Which Windows Defender feature prevents ransomware from encrypting files in protected folders?**
-   - A) Real-Time Protection
-   - B) Controlled Folder Access
-   - C) Cloud-Delivered Protection
-   - D) SmartScreen
-
-2. **What UAC integrity level do standard non-elevated processes run at?**
-   - A) Low
-   - B) Medium
-   - C) High
-   - D) System
-
-3. **Which hardware component stores BitLocker encryption keys and verifies boot integrity?**
-   - A) BIOS
-   - B) GPU
-   - C) TPM (Trusted Platform Module)
-   - D) NIC
-
-4. **Which security feature uses virtualization-based security to protect LSASS from credential dumping?**
-   - A) BitLocker
-   - B) Credential Guard
-   - C) SmartScreen
-   - D) UAC
-
-5. **What is the registry value that indicates UAC is enabled?**
-   - A) `EnableUAC = 1`
-   - B) `EnableLUA = 1`
-   - C) `UACEnabled = True`
-   - D) `SecurityLevel = High`
-
----
-
-## Quiz Answers
-
-1. **B** (Controlled Folder Access)
-2. **B** (Medium)
-3. **C** (TPM)
-4. **B** (Credential Guard)
-5. **B** (`EnableLUA = 1`)
-
----
-
 # Further Reading
 
 - [Microsoft Learn: Windows Defender Antivirus](https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-antivirus-windows)
