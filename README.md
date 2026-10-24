@@ -125,6 +125,14 @@ Blue-Team-Handbook/
 │   ├── Resources/                       # External references and documentation
 │   └── README.md
 │
+├── System-and-Network-Administrator/    # Systems & Network Administration foundations
+│   ├── 03-Linux-Fundamentals/           # Enterprise RHEL, CLI, permissions, init
+│   ├── 04-Networking/                   # Packet capture (tcpdump) & regex filtering
+│   ├── 05-Disk-Management/              # MBR vs GPT partitioning, RAID, LVM
+│   ├── 06-Remote-File-Management/       # PuTTY & WinSCP administration
+│   ├── cheatsheets/                     # Command & operational reference cards
+│   └── README.md
+│
 ├── Security-Operations/                 # Security operations and home lab guides
 │   ├── Kali Linux Guide/
 │   ├── Ubuntu Server Guide/
@@ -134,6 +142,7 @@ Blue-Team-Handbook/
 ├── assets/                              # Diagrams, banners, and visual assets
 │   ├── banner.png
 │   ├── Learning-Roadmap.svg
+│   ├── System and Network Administrator Banner.png
 │   └── Wazuh-Security-Framework.svg
 │
 ├── CHANGELOG.md
@@ -216,6 +225,31 @@ The majority of enterprise environments run Windows. This module covers Windows 
 - Group Policy and security hardening
 
 📁 [Security Operations →](Security-Operations/)
+
+</details>
+
+<details>
+<summary><strong>🖥️ System & Network Administration (SNA) Foundations</strong></summary>
+<br>
+
+Foundational enterprise server administration, networking utilities, disk architecture, and operational cheatsheets tailored for systems and network administrators.
+
+**Topics covered:**
+- System & Network Administrator roles, operational lifecycles, and certification roadmaps (RHCSA, CCNA)
+- Enterprise Red Hat Enterprise Linux (RHEL) architecture and RHEL 6 SysVinit compatibility
+- Core command-line operations, standard streams (`stdin`, `stdout`, `stderr`), pipes, and text filtering
+- Filesystem Hierarchy Standard (FHS), permissions, ownership, and umask calculation
+- User and group account administration, password aging, and sudo privilege delegation
+- System boot stages (BIOS/MBR/GRUB/Kernel) and service control (`service`, `chkconfig`, `systemctl`)
+- Terminal text editors (Vim modal workflows and Nano)
+- Network packet inspection and BPF filtering with `tcpdump`
+- Regular expressions (BRE/ERE) for log analysis and pattern extraction
+- Storage partitioning: MBR vs. GPT architecture and the 2.2TB barrier
+- Fault-tolerant RAID levels and dynamic Logical Volume Management (LVM)
+- Remote server management from Windows clients using PuTTY (SSH) and WinSCP (SFTP)
+- 9 dedicated quick-reference cheatsheets
+
+📁 [SNA Module & Cheatsheets →](System-and-Network-Administrator/README.md)
 
 </details>
 
