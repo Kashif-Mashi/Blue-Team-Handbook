@@ -88,16 +88,16 @@ Each drive maintains its own isolated root folder (`C:\`, `D:\`). To access file
 
 ```mermaid
 graph LR
-    subgraph Windows Storage Model
-        C["C:\ (OS Disk)"] --> C1["Windows/"]
+    subgraph WinModel["Windows Storage Model"]
+        C["Drive C: (OS Disk)"] --> C1["Windows/"]
         C --> C2["Program Files/"]
         C --> C3["Users/"]
-        D["D:\ (Data Disk)"] --> D1["Backups/"]
+        D["Drive D: (Data Disk)"] --> D1["Backups/"]
         D --> D2["Projects/"]
-        E["E:\ (USB Flash)"] --> E1["Reports/"]
+        E["Drive E: (USB Flash)"] --> E1["Reports/"]
     end
 
-    subgraph Linux Unified Tree Model
+    subgraph LinuxModel["Linux Unified Tree Model"]
         LROOT["/ (Single Root)"] --> LB1["etc/ (Config)"]
         LROOT --> LB2["home/ (Users)"]
         LROOT --> LB3["mnt/ (Data Disk Mount)"]
@@ -150,12 +150,12 @@ graph TD
     classDef userC fill:#ef4444,stroke:#b91c1c,color:#fff;
     classDef homeC fill:#10b981,stroke:#047857,color:#fff;
 
-    RDIR["1. Root Directory<br/><b>/</b><br/>Top-level filesystem container"]:::rootC
-    RUSR["2. Root User<br/><b>UID 0</b><br/>Superuser account with full authority"]:::userC
-    RHOM["3. Root Home Directory<br/><b>/root</b><br/>Personal home folder of UID 0"]:::homeC
+    RDIR["1. Root Directory: /<br/>Top-level filesystem container"]:::rootC
+    RUSR["2. Root User: UID 0<br/>Superuser account with full authority"]:::userC
+    RHOM["3. Root Home Directory: /root<br/>Personal home folder of UID 0"]:::homeC
 
-    RDIR -->|Contains| RHOM
-    RUSR -->|Logs into & owns| RHOM
+    RDIR -->|"Contains"| RHOM
+    RUSR -->|"Logs into and owns"| RHOM
 ```
 
 | Term | Technical Definition | Key Characteristics |

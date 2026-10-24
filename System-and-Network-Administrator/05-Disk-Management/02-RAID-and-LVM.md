@@ -78,8 +78,8 @@ Enterprise system administration solves these challenges using two complementary
 ```mermaid
 flowchart TD
     WRITE["Incoming Operating System Write Request<br/>Data: 'Hello World'"] --> CONTROLLER["RAID 1 Mirroring Controller"]
-    CONTROLLER -->|Writes Copy 1| DISK_A["Physical Disk A (/dev/sda)<br/>Contains: 'Hello World'"]
-    CONTROLLER -->|Writes Copy 2| DISK_B["Physical Disk B (/dev/sdb)<br/>Contains: 'Hello World'"]
+    CONTROLLER -->|"Writes Copy 1"| DISK_A["Physical Disk A (/dev/sda)<br/>Contains: Hello World"]
+    CONTROLLER -->|"Writes Copy 2"| DISK_B["Physical Disk B (/dev/sdb)<br/>Contains: Hello World"]
 
     style WRITE fill:#0f172a,stroke:#38bdf8,color:#fff
     style CONTROLLER fill:#1e293b,stroke:#f59e0b,color:#fff

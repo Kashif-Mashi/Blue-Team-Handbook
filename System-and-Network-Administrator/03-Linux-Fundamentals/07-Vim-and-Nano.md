@@ -34,10 +34,10 @@ To manage enterprise Linux, you must master text editors that run entirely insid
 
 ```mermaid
 flowchart LR
-    ADMIN["System Administrator<br/>(Remote Laptop)"] -->|SSH Port 22<br/>Character Terminal| SERVER["Headless Enterprise Server<br/>(No GUI, No Mouse)"]
+    ADMIN["System Administrator<br/>(Remote Laptop)"] -->|"SSH Port 22 (Terminal)"| SERVER["Headless Enterprise Server<br/>(No GUI, No Mouse)"]
     SERVER --> EDITORS{"Terminal Text Editors"}
-    EDITORS --> NANO["GNU Nano<br/>• Modeless, intuitive<br/>• On-screen cheat shortcuts<br/>• Ideal for quick minor fixes"]
-    EDITORS --> VIM["Vim (Vi IMproved)<br/>• Modal architecture<br/>• Installed on 100% of Unix/Linux<br/>• High-speed navigation & regex"]
+    EDITORS --> NANO["GNU Nano<br/>- Modeless, intuitive<br/>- On-screen cheat shortcuts<br/>- Ideal for quick minor fixes"]
+    EDITORS --> VIM["Vim (Vi IMproved)<br/>- Modal architecture<br/>- Installed on 100% of Unix/Linux<br/>- High-speed navigation and regex"]
 
     style ADMIN fill:#1e293b,stroke:#38bdf8,color:#fff
     style SERVER fill:#0f172a,stroke:#f59e0b,color:#fff
@@ -139,8 +139,8 @@ flowchart TD
     NORMAL -->|"Press 'v' or 'V'"| VISUAL
     VISUAL -->|"Press 'Escape'"| NORMAL
 
-    NORMAL -->|"Press ':' (Colon)"| EX
-    EX -->|"Press 'Enter' or 'Escape'"| NORMAL
+    NORMAL -->|"Press Colon (:)"| EX
+    EX -->|"Press Enter or Escape"| NORMAL
 
     style VimModes fill:#0f172a,stroke:#38bdf8,color:#fff
     style NORMAL fill:#1e293b,stroke:#38bdf8,color:#fff
@@ -288,8 +288,8 @@ Swap file already exists!
 flowchart TD
     CRASH["SSH Session Disconnects or Crashes<br/>Vim leaves hidden .filename.swp file on disk"] --> REOPEN["Administrator reopens file in Vim<br/>Vim detects existing swap file and displays E325 Warning"]
     REOPEN --> CHOICE{"Is another administrator actively editing?"}
-    CHOICE -->|YES| QUIT["Press [Q] to Quit!<br/>Do not overwrite colleague's active session."]
-    CHOICE -->|NO (It was my dropped session)| RECOVER["Step 1: Press [R] to Recover unsaved buffer in memory<br/>Step 2: Inspect changes & Save file with :wq<br/>Step 3: Manually delete the swap file: rm .filename.swp"]
+    CHOICE -->|"YES"| QUIT["Press Q to Quit<br/>Do not overwrite colleague active session"]
+    CHOICE -->|"NO - Dropped Session"| RECOVER["Step 1: Press R to Recover unsaved buffer in memory<br/>Step 2: Inspect changes and Save file with :wq<br/>Step 3: Manually delete the swap file: rm .filename.swp"]
 
     style CRASH fill:#1e293b,stroke:#f43f5e,color:#fff
     style REOPEN fill:#0f172a,stroke:#38bdf8,color:#fff

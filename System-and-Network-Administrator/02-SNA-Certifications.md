@@ -42,7 +42,7 @@ flowchart LR
         C4["HR Resume Filtering Alignment"]
     end
 
-    Academic <-->|Combined for Career Excellence| Certification
+    Academic <-->|"Combined for Career Excellence"| Certification
 
     style Academic fill:#0f172a,stroke:#38bdf8,color:#fff
     style Certification fill:#0f172a,stroke:#f59e0b,color:#fff
@@ -133,8 +133,8 @@ Students frequently ask: *"Should I take CompTIA Network+ or Cisco CCNA?"*
 ```mermaid
 flowchart TD
     Q{"What is your current networking comfort level?"}
-    Q -->|Complete Beginner<br/>Needs conceptual foundation| NET["Start with CompTIA Network+<br/>• Broad conceptual foundation<br/>• Vendor-neutral protocols<br/>• Build networking confidence"]
-    Q -->|Comfortable with IP basics<br/>Wants enterprise routing/switching| CCNA["Start directly with Cisco CCNA<br/>• Deep enterprise command-line mastery<br/>• OSPF, VLANs, ACLs, STP<br/>• Highly demanded by enterprise NOCs"]
+    Q -->|"Complete Beginner - Needs conceptual foundation"| NET["Start with CompTIA Network+<br/>• Broad conceptual foundation<br/>• Vendor-neutral protocols<br/>• Build networking confidence"]
+    Q -->|"Comfortable with IP basics - Wants enterprise routing and switching"| CCNA["Start directly with Cisco CCNA<br/>• Deep enterprise command-line mastery<br/>• OSPF, VLANs, ACLs, STP<br/>• Highly demanded by enterprise NOCs"]
 
     style Q fill:#0f172a,stroke:#38bdf8,color:#fff
     style NET fill:#1e293b,stroke:#818cf8,color:#fff

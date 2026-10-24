@@ -21,9 +21,9 @@ This curriculum organizes foundational university study notes, practical command
 flowchart TD
     subgraph Core["SNA Operational Domains"]
         direction TB
-        SYS["System Administration<br/>• Operating System Architecture (RHEL)<br/>• Identity Management & sudo Delegation<br/>• Filesystem Hierarchy & Inode Mechanics<br/>• System Initialization (SysVinit & systemd)"]
-        NET["Network Administration<br/>• Packet Analysis with tcpdump<br/>• Protocol Inspection & BPF Filtering<br/>• String Parsing & Regular Expressions<br/>• Remote SSH & SFTP Management"]
-        OPS["Infrastructure & Security Operations<br/>• Storage Architectures (MBR vs. GPT)<br/>• Hardware Redundancy (RAID 0, 1, 5, 6, 10)<br/>• Dynamic Storage Pools (LVM)<br/>• Enterprise Security Hardening (SELinux)"]
+        SYS["System Administration<br/>- Operating System Architecture (RHEL)<br/>- Identity Management and sudo Delegation<br/>- Filesystem Hierarchy and Inode Mechanics<br/>- System Initialization (SysVinit and systemd)"]
+        NET["Network Administration<br/>- Packet Analysis with tcpdump<br/>- Protocol Inspection and BPF Filtering<br/>- String Parsing and Regular Expressions<br/>- Remote SSH and SFTP Management"]
+        OPS["Infrastructure and Security Operations<br/>- Storage Architectures (MBR vs. GPT)<br/>- Hardware Redundancy (RAID 0, 1, 5, 6, 10)<br/>- Dynamic Storage Pools (LVM)<br/>- Enterprise Security Hardening (SELinux)"]
     end
 
     SYS <--> NET
@@ -102,11 +102,11 @@ To build a solid operational and theoretical foundation, work through the chapte
 
 ```mermaid
 flowchart LR
-    S1["1. Foundations<br/>(Intro & Certs)"] --> S2["2. Linux Core<br/>(RHEL, CLI, Files)"]
-    S2 --> S3["3. Access & Boot<br/>(Perms, Users, Init, Editors)"]
-    S3 --> S4["4. Networking<br/>(Tcpdump & Regex)"]
-    S4 --> S5["5. Storage<br/>(MBR/GPT & LVM)"]
-    S5 --> S6["6. Remote Admin<br/>(PuTTY & WinSCP)"]
+    S1["1. Foundations<br/>(Intro and Certs)"] --> S2["2. Linux Core<br/>(RHEL, CLI, Files)"]
+    S2 --> S3["3. Access and Boot<br/>(Perms, Users, Init, Editors)"]
+    S3 --> S4["4. Networking<br/>(Tcpdump and Regex)"]
+    S4 --> S5["5. Storage<br/>(MBR/GPT and LVM)"]
+    S5 --> S6["6. Remote Admin<br/>(PuTTY and WinSCP)"]
 
     style S1 fill:#1e293b,stroke:#0ea5e9,color:#fff
     style S2 fill:#1e293b,stroke:#3b82f6,color:#fff

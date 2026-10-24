@@ -30,7 +30,7 @@ Linux does not use drive letters. Instead, Linux organizes every file, folder, p
 flowchart TD
     ROOT["/ (The Filesystem Root)"]
     
-    ROOT --> BIN["/bin -> /usr/bin<br/>(Essential user binaries)"]
+    ROOT --> BIN["/bin (symlink to /usr/bin)<br/>(Essential user binaries)"]
     ROOT --> BOOT["/boot<br/>(Kernel, GRUB2, initramfs)"]
     ROOT --> DEV["/dev<br/>(Device nodes: sda, nvme, null)"]
     ROOT --> ETC["/etc<br/>(Host configuration files)"]
@@ -39,7 +39,7 @@ flowchart TD
     ROOT --> PROC["/proc<br/>(Virtual RAM kernel process metrics)"]
     ROOT --> SYS["/sys<br/>(Virtual RAM hardware device state)"]
     ROOT --> VAR["/var<br/>(Variable data: logs, spools, databases)"]
-    ROOT --> USR["/usr<br/>(Installed software & libraries)"]
+    ROOT --> USR["/usr<br/>(Installed software and libraries)"]
     ROOT --> OPT["/opt<br/>(Third-party enterprise applications)"]
     ROOT --> TMP["/tmp<br/>(Temporary files)"]
 
@@ -270,8 +270,8 @@ In the Unix and Linux world, **archiving** and **compression** are distinct oper
 
 ```mermaid
 flowchart LR
-    FILES["Multiple Files & Directories<br/>(scripts/, configs/, data.txt)"] -->|tar (Archive)| TAR["Single Archive Container<br/>backup.tar<br/>(Original size preserved)"]
-    TAR -->|gzip (Compression)| TARGZ["Compressed Tarball<br/>backup.tar.gz<br/>(Significantly smaller size)"]
+    FILES["Multiple Files and Directories<br/>(scripts, configs, data.txt)"] -->|"tar (Archive)"| TAR["Single Archive Container<br/>backup.tar<br/>(Original size preserved)"]
+    TAR -->|"gzip (Compression)"| TARGZ["Compressed Tarball<br/>backup.tar.gz<br/>(Significantly smaller size)"]
 
     style FILES fill:#1e293b,stroke:#94a3b8,color:#fff
     style TAR fill:#1e293b,stroke:#38bdf8,color:#fff

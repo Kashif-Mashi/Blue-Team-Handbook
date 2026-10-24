@@ -36,7 +36,7 @@ A **Regular Expression (Regex)** is a formalized, mathematical syntax used to de
 ```mermaid
 flowchart LR
     STREAM["Raw Text Stream<br/>(/var/log/secure, tcpdump, configs)"] --> ENGINE["Regex Matching Engine<br/>(grep -E, sed, awk)"]
-    PATTERN["Target Regex Pattern<br/>(e.g., ^Failed password for .* from ([0-9.]+) )"] --> ENGINE
+    PATTERN["Target Regex Pattern<br/>Example: Match Failed password from IP"] --> ENGINE
     ENGINE --> MATCH["Filtered Matching Output<br/>(Only exact matching lines emitted)"]
 
     style STREAM fill:#1e293b,stroke:#94a3b8,color:#fff
@@ -183,7 +183,7 @@ flowchart TD
         STAR["* (Star)<br/>0 or More Times<br/>(Optional, unlimited)"]
         PLUS["+ (Plus - ERE)<br/>1 or More Times<br/>(Mandatory at least once)"]
         QMARK["? (Question Mark - ERE)<br/>0 or 1 Time<br/>(Strictly optional)"]
-        RANGE["{m,n} (Braces - ERE)<br/>Custom Range<br/>(e.g., {2,4} = 2 to 4 times)"]
+        RANGE["Interval Range (Braces - ERE)<br/>Custom Range<br/>Example: m to n times"]
     end
 
     style Quantifiers fill:#0f172a,stroke:#38bdf8,color:#fff

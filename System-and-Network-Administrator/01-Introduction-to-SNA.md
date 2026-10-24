@@ -118,12 +118,12 @@ flowchart TD
         SEC["Security Operations / Blue Team<br/>Monitors authentication logs for brute-force attacks or malware"]
     end
 
-    USER -->|Submits Support Ticket| HELP
-    HELP -->|Cannot reach default gateway| NET
-    HELP -->|Gateway reachable, but port 443 refused| SYS
-    SYS <-->|Coordinates open ports & firewall rules| NET
-    SYS -.->|Reports anomalous failed root logins| SEC
-    NET -.->|Reports volumetric DDoS traffic spike| SEC
+    USER -->|"Submits Support Ticket"| HELP
+    HELP -->|"Cannot reach default gateway"| NET
+    HELP -->|"Gateway reachable, but port 443 refused"| SYS
+    SYS <-->|"Coordinates open ports and firewall rules"| NET
+    SYS -.->|"Reports anomalous failed root logins"| SEC
+    NET -.->|"Reports volumetric DDoS traffic spike"| SEC
 
     style Interaction fill:#0f172a,stroke:#38bdf8,color:#fff
     style USER fill:#1e293b,stroke:#94a3b8,color:#fff
@@ -458,9 +458,9 @@ flowchart TD
     A["Step 1: Identify the Problem<br/>(Gather symptoms, user reports, scope of impact)"] --> B["Step 2: Establish a Theory of Probable Cause<br/>(Question the obvious: link state, recent changes)"]
     B --> C["Step 3: Test the Theory to Determine Cause<br/>(Inspect logs, execute non-destructive diagnostics)"]
     C --> D{"Theory Confirmed?"}
-    D -->|No| E["Establish New Theory or Escalate"]
+    D -->|"No"| E["Establish New Theory or Escalate"]
     E --> C
-    D -->|Yes| F["Step 4: Establish a Plan of Action & Implement Change<br/>(Verify authorization, backup configuration first)"]
+    D -->|"Yes"| F["Step 4: Establish a Plan of Action and Implement Change<br/>(Verify authorization, backup configuration first)"]
     F --> G["Step 5: Verify Full System Functionality<br/>(Test from client side, monitor system metrics)"]
     G --> H["Step 6: Document Findings, Actions, and Outcomes<br/>(Update internal knowledge base and close ticket)"]
 

@@ -80,17 +80,17 @@ Both protocols transmit all data, usernames, and passwords in **unencrypted plai
 
 ```mermaid
 flowchart TD
-    subgraph Cleartext["Vulnerable Legacy Protocols (Telnet / FTP)"]
+    subgraph Cleartext["Vulnerable Legacy Protocols (Telnet and FTP)"]
         direction LR
-        USER1["User Laptop"] -->|Sends Password: 'MySecretPassword123'| NET1["Local Network Switch"]
-        SNIFFER["Attacker with tcpdump / Wireshark<br/>(Sniffs raw packets on wire)"] -.->|Intercepts Plain Text Password!| NET1
+        USER1["User Laptop"] -->|"Sends Plaintext Password"| NET1["Local Network Switch"]
+        SNIFFER["Attacker with tcpdump or Wireshark<br/>(Sniffs raw packets on wire)"] -.->|"Intercepts Plaintext Password"| NET1
         NET1 --> SERVER1["Legacy Server"]
     end
 
-    subgraph Encrypted["Secure Enterprise Standard (SSH / SFTP)"]
+    subgraph Encrypted["Secure Enterprise Standard (SSH and SFTP)"]
         direction LR
-        USER2["User Laptop"] -->|Sends Ciphertext: 'a8f93...bc01'| NET2["Local Network Switch"]
-        ATTACKER["Attacker with tcpdump<br/>(Sniffs encrypted gibberish)"] -.->|Cannot Decrypt AES Payload!| NET2
+        USER2["User Laptop"] -->|"Sends Encrypted Ciphertext"| NET2["Local Network Switch"]
+        ATTACKER["Attacker with tcpdump<br/>(Sniffs encrypted traffic)"] -.->|"Cannot Decrypt AES Payload"| NET2
         NET2 --> SERVER2["Linux OpenSSH Server"]
     end
 
@@ -191,7 +191,7 @@ flowchart LR
         PUBLIC["Public Key (.pub)<br/>• Copied onto remote server<br/>• Appended to ~/.ssh/authorized_keys<br/>• World-sharable cryptographic lock"]
     end
 
-    PRIVATE <-->|Cryptographic Challenge Handshake| PUBLIC
+    PRIVATE <-->|"Cryptographic Challenge Handshake"| PUBLIC
 
     style WindowsClient fill:#0f172a,stroke:#38bdf8,color:#fff
     style RemoteServer fill:#0f172a,stroke:#10b981,color:#fff

@@ -309,14 +309,14 @@ What happens when an administrator forgets the root password, or an error in `/e
 
 ```mermaid
 flowchart TD
-    R1["1. Reboot Server & Enter GRUB2 Menu"] --> R2["2. Press 'e' on the active kernel line to edit"]
+    R1["1. Reboot Server and Enter GRUB2 Menu"] --> R2["2. Press 'e' on the active kernel line to edit"]
     R2 --> R3["3. Locate line starting with 'linux' and append 'rd.break' at the end"]
     R3 --> R4["4. Press Ctrl + X to boot into emergency initramfs prompt"]
-    R4 --> R5["5. Remount root filesystem read-write:<br/>mount -o remount,rw /sysroot"]
-    R5 --> R6["6. Chroot into the real system:<br/>chroot /sysroot"]
+    R5["5. Remount root filesystem read-write:<br/>mount -o remount,rw /sysroot"] --> R6["6. Chroot into the real system:<br/>chroot /sysroot"]
+    R4 --> R5
     R6 --> R7["7. Reset root password:<br/>passwd root"]
     R7 --> R8["8. Force SELinux filesystem relabeling:<br/>touch /.autorelabel"]
-    R8 --> R9["9. Exit and reboot:<br/>exit -> exit"]
+    R8 --> R9["9. Exit and reboot:<br/>Type exit twice to reboot"]
 
     style R1 fill:#1e293b,stroke:#38bdf8,color:#fff
     style R2 fill:#1e293b,stroke:#818cf8,color:#fff

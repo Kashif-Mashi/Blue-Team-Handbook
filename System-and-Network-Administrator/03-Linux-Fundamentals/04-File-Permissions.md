@@ -402,8 +402,8 @@ As a professional System Administrator or Blue Team security analyst, you must u
 flowchart TD
     ATTACKER["External Attacker / Malicious Web Request"] --> WEB["Exploits Web Application Bug<br/>(Runs as unprivileged user 'apache')"]
     WEB --> PERM{"Directory Permissions?"}
-    PERM -->|Configured 755/750| BLOCKED["Kernel Blocks Modification<br/>Web server process CANNOT overwrite scripts or binaries.<br/>Attack Contained!"]
-    PERM -->|Configured 777| OWNED["Kernel Permits Everything!<br/>Attacker overwrites production scripts, injects webshell,<br/>deletes backups, and compromises entire server!"]
+    PERM -->|"Configured 755 or 750"| BLOCKED["Kernel Blocks Modification<br/>Web server process CANNOT overwrite scripts or binaries.<br/>Attack Contained"]
+    PERM -->|"Configured 777"| OWNED["Kernel Permits Everything<br/>Attacker overwrites production scripts, injects webshell,<br/>deletes backups, and compromises entire server"]
 
     style ATTACKER fill:#1e293b,stroke:#f43f5e,color:#fff
     style WEB fill:#1e293b,stroke:#f59e0b,color:#fff

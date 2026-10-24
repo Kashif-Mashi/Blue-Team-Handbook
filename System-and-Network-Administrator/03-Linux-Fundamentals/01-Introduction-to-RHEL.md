@@ -92,9 +92,9 @@ flowchart LR
         ROCKY["Rocky Linux / AlmaLinux<br/>• 100% bug-for-bug compatible<br/>• Free open-source community rebuilds<br/>• Ideal for student homelabs"]
     end
 
-    FEDORA -->|Code stabilized every 3 years| STREAM
-    STREAM -->|Tested & packaged into production| RHEL
-    RHEL -.->|Built from RHEL source code| ROCKY
+    FEDORA -->|"Code stabilized every 3 years"| STREAM
+    STREAM -->|"Tested and packaged into production"| RHEL
+    RHEL -.->|"Built from RHEL source code"| ROCKY
 
     style Upstream fill:#0f172a,stroke:#38bdf8,color:#fff
     style Midstream fill:#0f172a,stroke:#818cf8,color:#fff
@@ -263,8 +263,8 @@ flowchart TD
         STANDARD["Standard Unprivileged Users (UID >= 1000)<br/>• Confined to own home directory (/home/username)<br/>• Cannot modify system files (/etc, /boot, /usr)<br/>• Cannot stop services or alter network interfaces"]
     end
 
-    ROOT -->|Dangerous to log in directly| SUDO
-    SUDO -->|Controlled elevation| STANDARD
+    ROOT -->|"Dangerous to log in directly"| SUDO
+    SUDO -->|"Controlled elevation"| STANDARD
 
     style Users fill:#0f172a,stroke:#38bdf8,color:#fff
     style ROOT fill:#1e293b,stroke:#f43f5e,color:#fff

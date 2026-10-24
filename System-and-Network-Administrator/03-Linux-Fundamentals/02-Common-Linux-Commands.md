@@ -69,9 +69,9 @@ Whenever a program runs in Linux, the operating system kernel automatically open
 
 ```mermaid
 flowchart LR
-    KEYBOARD["Keyboard / Input Device"] -->|STDIN (FD 0)| PROC["Running Process / Command<br/>(e.g., grep, sort, cat)"]
-    PROC -->|STDOUT (FD 1)| SCREEN["Screen / Output Display<br/>(Normal program output)"]
-    PROC -->|STDERR (FD 2)| ERROR["Screen / Error Display<br/>(Diagnostic & error messages)"]
+    KEYBOARD["Keyboard / Input Device"] -->|"STDIN (FD 0)"| PROC["Running Process / Command<br/>(e.g., grep, sort, cat)"]
+    PROC -->|"STDOUT (FD 1)"| SCREEN["Screen / Output Display<br/>(Normal program output)"]
+    PROC -->|"STDERR (FD 2)"| ERROR["Screen / Error Display<br/>(Diagnostic and error messages)"]
 
     style KEYBOARD fill:#1e293b,stroke:#94a3b8,color:#fff
     style PROC fill:#0f172a,stroke:#38bdf8,color:#fff
@@ -122,8 +122,8 @@ The **pipe operator (`|`)** connects the **STDOUT** of one command directly into
 
 ```mermaid
 flowchart LR
-    A["cat /etc/passwd<br/>(Outputs entire user list)"] -->|Pipe \| | B["grep '/bin/bash'<br/>(Filters users with bash shells)"]
-    B -->|Pipe \| | C["wc -l<br/>(Counts number of lines)"]
+    A["cat /etc/passwd<br/>(Outputs entire user list)"] -->|"Pipeline (|)"| B["grep '/bin/bash'<br/>(Filters users with bash shells)"]
+    B -->|"Pipeline (|)"| C["wc -l<br/>(Counts number of lines)"]
     C --> SCREEN["Terminal Screen<br/>(Prints final integer count)"]
 
     style A fill:#1e293b,stroke:#38bdf8,color:#fff
