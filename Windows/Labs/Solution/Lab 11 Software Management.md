@@ -28,12 +28,6 @@ Reads the registry Uninstall key, one of the fastest and most complete methods f
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 2: List Installed Software via winget
 
 #### Step-by-Step Instructions
@@ -52,12 +46,6 @@ Microsoft Edge          Microsoft.Edge              124.0.2478.51
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 3: Search for a Package
 
 #### Step-by-Step Instructions
@@ -72,12 +60,6 @@ Notepad++    Notepad++.Notepad++      8.6.6       winget
 
 #### Explanation
 Confirms the exact package ID (`Notepad++.Notepad++`) needed for installation in the next task.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -99,12 +81,6 @@ Installs the package directly from the command line without needing a browser.
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 5: Confirm the Installation
 
 #### Step-by-Step Instructions
@@ -119,12 +95,6 @@ Notepad++    Notepad++.Notepad++      8.6.6
 
 #### Explanation
 Confirms the package now appears in the installed software list.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -145,12 +115,6 @@ Updates any winget-managed software that has a newer version available; output w
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 7: Uninstall the Test Package
 
 #### Step-by-Step Instructions
@@ -164,12 +128,6 @@ Successfully uninstalled
 
 #### Explanation
 Removes the test package, returning the machine to its original state.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -192,12 +150,6 @@ Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" |
 
 #### Explanation
 Creates a reusable snapshot of installed software that can be compared against a future snapshot to detect changes.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 

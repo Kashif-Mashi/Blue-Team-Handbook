@@ -22,12 +22,6 @@ Establishes the current user, hostname, and how long the system has been running
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 2: Account & Access Review
 
 #### Step-by-Step Instructions
@@ -53,12 +47,6 @@ The Guest account being enabled is a deviation from baseline (Chapter 15). `svc_
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 3: Process & Service Review
 
 #### Step-by-Step Instructions
@@ -75,12 +63,6 @@ explorer    3204   45.1
 
 #### Explanation
 `updtr32` is an unfamiliar process name consuming a disproportionate amount of CPU compared to normal system processes.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -106,12 +88,6 @@ Process ID `4820` (`updtr32`) is connected to an external address on port `4444`
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 5: Log Review
 
 #### Step-by-Step Instructions
@@ -133,12 +109,6 @@ No failed logons or unusual logon activity found — nothing notable at this sta
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 6: Security Feature & Registry Review
 
 #### Step-by-Step Instructions
@@ -157,12 +127,6 @@ UpdaterSvc : C:\Users\jdoe\AppData\Local\Temp\updtr32.exe
 
 #### Explanation
 Defender's real-time protection has been disabled, and an autorun entry points directly to the same `updtr32.exe` process identified in Task 3, running from a temp folder — a classic persistence pattern.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -188,12 +152,6 @@ A program named "System Updater" with no publisher information and an install da
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 8: Compare Against Baseline
 
 #### Step-by-Step Instructions
@@ -206,12 +164,6 @@ A program named "System Updater" with no publisher information and an install da
 
 #### Explanation
 Multiple deviations from baseline were found together: Guest enabled, an unknown admin account, Defender disabled, a persistence entry, and unapproved software — all pointing the same direction.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -252,12 +204,6 @@ Compromise is confirmed based on multiple independent, corroborating indicators:
 - Disable the `svc_temp` account and reset credentials for `jdoe`.
 - Re-enable Windows Defender real-time protection organization-wide and audit other machines for the same indicators.
 - Review how `updtr32.exe` was initially delivered to the machine.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 

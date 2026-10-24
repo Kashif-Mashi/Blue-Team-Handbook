@@ -22,12 +22,6 @@ Confirms whether the built-in Guest account is currently active — it should no
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 2: Disable the Guest Account
 
 #### Step-by-Step Instructions
@@ -43,12 +37,6 @@ Guest   False
 
 #### Explanation
 Disabling unused accounts follows the principle of least privilege from Chapter 15.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -71,12 +59,6 @@ Any service on this list that isn't recognized or expected on this machine shoul
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 4: Check Windows Update History
 
 #### Step-by-Step Instructions
@@ -91,12 +73,6 @@ WORKSTATION09 Security Update  KB5037771   6/11/2026 12:00:00 AM
 
 #### Explanation
 An `InstalledOn` date far in the past would indicate the machine hasn't been patched recently — a hardening gap.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -124,12 +100,6 @@ Confirms the Chapter 11 security baseline is still intact before the machine is 
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 6: Check Administrators Group Membership
 
 #### Step-by-Step Instructions
@@ -145,12 +115,6 @@ User        WORKSTATION09\ITAdmin        Local
 
 #### Explanation
 Any account in this list that isn't an expected IT or system account should be flagged and investigated.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -186,12 +150,6 @@ Combines the earlier tasks into one repeatable script, following the same patter
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 8: Run the Script and Document Findings
 
 #### Step-by-Step Instructions
@@ -218,12 +176,6 @@ Guest   False
 
 #### Explanation
 Documenting findings — even ones that pass — creates a record that this machine was properly reviewed before redeployment.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 

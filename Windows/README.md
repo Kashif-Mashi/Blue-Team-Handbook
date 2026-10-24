@@ -73,8 +73,7 @@ Windows/
 ├── Solutions/
 ├── Cheat-Sheets/
 ├── Commands/
-├── Resources/
-└── Screenshots/
+└── Resources/
 ```
 
 ---
@@ -202,12 +201,6 @@ Additional learning resources including:
 - Windows Security Documentation
 - PowerShell Documentation
 - Blue Team References
-
----
-
-## 📸 Screenshots
-
-Every lab includes screenshots to help learners verify their progress and compare expected results.
 
 ---
 

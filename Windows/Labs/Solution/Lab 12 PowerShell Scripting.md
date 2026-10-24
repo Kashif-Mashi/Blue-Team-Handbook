@@ -26,12 +26,6 @@ The comment documents the script's purpose; `$computerName` stores a reusable va
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 2: Run the Script
 
 #### Step-by-Step Instructions
@@ -45,12 +39,6 @@ Hello from WORKSTATION-07!
 
 #### Explanation
 The `.\` prefix tells PowerShell to run the script from the current folder.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -79,12 +67,6 @@ The `param()` block lets whoever runs the script customize its behavior without 
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 4: Define a Function
 
 #### Step-by-Step Instructions
@@ -107,12 +89,6 @@ Defining a function doesn't run it — it just makes it available to call later,
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 5: Call the Function
 
 #### Step-by-Step Instructions
@@ -131,12 +107,6 @@ AntivirusEnabled RealTimeProtectionEnabled
 
 #### Explanation
 Calling the function by name executes the code inside it.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -165,12 +135,6 @@ The `if`/`else` block prints a different message depending on the actual firewal
 
 ---
 
-### Screenshot
-
-> **Insert Screenshot Here**
-
----
-
 ### Task 7: Add a foreach Loop
 
 #### Step-by-Step Instructions
@@ -195,12 +159,6 @@ mpssvc     Running
 
 #### Explanation
 The loop repeats the same `Get-Service` check once for each entry in the list, avoiding repeated code.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 
@@ -264,12 +222,6 @@ mpssvc     Running
 
 #### Explanation
 Running without `-Detailed` skips the threat detection section entirely; running with `-Detailed` adds it, demonstrating how a switch parameter changes script behavior.
-
----
-
-### Screenshot
-
-> **Insert Screenshot Here**
 
 ---
 

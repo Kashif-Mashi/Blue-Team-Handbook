@@ -14,8 +14,6 @@
 
 ### Example Result
 
-![Task 1 — Explore Windows Drives](../../Screenshot/Lab-02/task-01.png)
-
 | Drive | File System | Purpose |
 |--------|-------------|---------|
 | C: | NTFS | Windows Operating System & Staging Ground |
@@ -29,8 +27,6 @@ Every drive letter represents a mounted volume. Attackers generally stage their 
 # Task 2 — Inspect Critical OS Directories
 
 Navigate to the following directories on your primary drive (`C:\`).
-
-![Task 2 — Explore Important Windows Directories](../../Screenshot/Lab-02/task-02.png)
 
 - **`C:\Windows`**: Stores the Windows operating system files. Attackers often try to drop payloads here to masquerade as legitimate OS binaries (e.g., `svchost.exe`).
 - **`C:\Users`**: Contains user profiles. If a specific user clicked a malicious link, their `Downloads` or `AppData` folder is ground zero.
@@ -47,8 +43,6 @@ File Explorer → **View** → **Show** → **Hidden Items**
 
 ### Expected Result
 
-![Task 3 — Display Hidden Items](../../Screenshot/Lab-02/task-03.png)
-
 Hidden folders become visible. On the `C:\` drive, you will now see `ProgramData`. Inside your user profile, you will see `AppData`.
 
 ### Investigation Note
@@ -63,8 +57,6 @@ Windows hides important files to prevent accidental deletion. However, attackers
 File Explorer → **View** → **Show** → **File Name Extensions**
 
 ### Example
-
-![Task 4 — Show File Extensions](../../Screenshot/Lab-02/task-04.png)
 
 Before:
 ```
@@ -90,8 +82,6 @@ The user thought they downloaded a PDF. Because Windows hides known file extensi
 
 ### Example
 
-![Task 5 — Investigate File Properties](../../Screenshot/Lab-02/task-05.png)
-
 | Property | Example |
 |-----------|----------|
 | Name | Evidence.txt |
@@ -116,8 +106,6 @@ These timestamps form the basis of "Timestomping" attacks. Attackers can manipul
 
 ### Example Output
 
-![Task 6 — Explore Directory Structure](../../Screenshot/Lab-02/task-06.png)
-
 ```
 C:\Users\John
 ├── Desktop
@@ -140,8 +128,6 @@ The `tree` command allows you to rapidly visualize the folder structure and spot
 2. Run the command: `attrib`
 
 ### Example
-
-![Task 8 — Identify File Attributes](../../Screenshot/Lab-02/task-08.png)
 
 ```
 A        Evidence.txt
@@ -173,8 +159,6 @@ dir /r
 ```
 
 ### Example
-
-![Task 10 — Investigate Alternate Data Streams](../../Screenshot/Lab-02/task-10.png)
 
 ```
 08/02/2026  10:00 AM                13 safe.txt
