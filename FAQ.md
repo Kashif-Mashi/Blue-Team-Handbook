@@ -30,7 +30,7 @@ The project focuses on:
 This repository is designed for:
 
 - Beginners in Cybersecurity
-- BSIT / BSCS Students
+- Self-Taught & Open-Source Learners
 - SOC Analyst Aspirants
 - Blue Team Learners
 - IT Professionals

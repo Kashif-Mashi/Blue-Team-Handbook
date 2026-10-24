@@ -1,7 +1,7 @@
 # System and Network Administrator (SNA) Certifications & Career Roadmaps
 
 > **Module:** System and Network Administrator (SNA) Foundations  
-> **Topic Level:** Academic / Professional Career Roadmap  
+> **Topic Level:** Professional Career & Certification Roadmap  
 > **Previous Reference:** [01-Introduction-to-SNA.md](01-Introduction-to-SNA.md) | [SNA Index](README.md)
 
 ---
@@ -13,16 +13,16 @@ By the end of this note, you will be able to:
 - Differentiate between **vendor-neutral** and **vendor-specific** industry certifications.
 - Identify the leading credential tracks across Linux administration (Red Hat, LPI, CompTIA) and networking (Cisco, CompTIA).
 - Understand how hands-on performance-based exams (e.g., RHCSA) differ from multiple-choice knowledge assessments.
-- Formulate a pragmatic, student-friendly certification roadmap starting from foundational studies through junior administrator readiness.
+- Formulate a pragmatic certification roadmap starting from foundational studies through administrator readiness.
 - Avoid common certification traps, "paper certification" risks, and exam preparation misconceptions.
 
 ---
 
 ## 1. Introduction and Context
 
-In the IT industry, university degrees demonstrate foundational computer science knowledge and disciplined problem-solving capability. However, enterprise employers hiring for System and Network Administrator positions frequently rely on standardized industry certifications as objective benchmarks of hands-on competence.
+In the IT industry, hands-on ability is the ultimate benchmark. Enterprise employers hiring for System and Network Administrator positions rely on standardized industry certifications as objective measures of terminal proficiency and operational competence.
 
-Certifications validate that a candidate understands standard command-line tools, network cabling, protocol behavior, and troubleshooting workflows. Understanding the certification landscape allows BSIT students to align their academic coursework (such as RHEL 6/8 labs, Cisco packet tracing, and Linux permissions) with globally recognized credentials.
+Certifications validate that a candidate understands standard command-line tools, network cabling, protocol behavior, and troubleshooting workflows. Understanding the certification landscape allows anyone learning systems and networks to align their self-study and open-source lab practice (such as RHEL administration, packet tracing, and Linux permissions) with globally recognized credentials.
 
 ---
 
@@ -113,7 +113,7 @@ flowchart TD
 - **Vendor:** CompTIA — Vendor-Neutral.
 - **Exam Style:** Multiple-choice and performance-based questions.
 - **Core Domains:** Networking concepts, network infrastructure, network operations, network security, and network troubleshooting.
-- **Industry Reputation:** Ideal introductory stepping stone for students with zero prior networking background before attempting vendor-specific material.
+- **Industry Reputation:** Ideal introductory stepping stone for anyone with zero prior networking background before attempting vendor-specific material.
 
 ---
 
@@ -129,12 +129,12 @@ flowchart TD
 
 ---
 
-## 5. Practical Student Recommendation Roadmap
+## 5. Practical Self-Study & Career Recommendation Roadmap
 
-For students currently pursuing a degree in Information Technology or Computer Science:
+For anyone building foundational skills in systems, networking, and cloud administration:
 
 ```text
-[Academic Coursework: RHEL Labs & Networking]
+[Foundational Learning: RHEL Practice & Networking]
                        │
                        ▼
             [Step 1: Foundational Study]
@@ -177,7 +177,7 @@ For students currently pursuing a degree in Information Technology or Computer S
 
 ## 8. Summary & Next Steps
 
-Certifications provide clear milestones for technical growth. In the context of our SNA curriculum, mastering Red Hat Enterprise Linux commands, filesystem hierarchies, user permissions, and networking packet capture directly aligns with both RHCSA and CCNA domains.
+Certifications provide clear milestones for technical growth. In the context of this open-source SNA guide, mastering Red Hat Enterprise Linux commands, filesystem hierarchies, user permissions, and networking packet capture directly aligns with both RHCSA and CCNA domains.
 
 - **Next Chapter:** Dive into enterprise Linux operating systems in [03-Linux-Fundamentals/01-Introduction-to-RHEL.md](03-Linux-Fundamentals/01-Introduction-to-RHEL.md).
 - **Practical Cheatsheets:** Review the [cheatsheets/README.md](cheatsheets/README.md) for quick terminal references.

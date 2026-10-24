@@ -22,7 +22,7 @@ By the end of this note, you will be able to:
 
 In the computing world, general-purpose consumer operating systems prioritize bleeding-edge features and multimedia convenience. In contrast, enterprise servers prioritize **stability**, **predictability**, **long-term security backporting**, and **strict vendor support**.
 
-**Red Hat Enterprise Linux (RHEL)** is the commercial market leader in enterprise server distributions. Developed by Red Hat (an IBM subsidiary), RHEL powers global financial institutions, mission-critical healthcare systems, telecommunication backbones, cloud hyperscalers, and government datacenters. Because of this industry footprint, university SNA curricula heavily base practical laboratory work on RHEL and its binary-compatible derivatives.
+**Red Hat Enterprise Linux (RHEL)** is the commercial market leader in enterprise server distributions. Developed by Red Hat (an IBM subsidiary), RHEL powers global financial institutions, mission-critical healthcare systems, telecommunication backbones, cloud hyperscalers, and government datacenters. Because of this industry footprint, enterprise training programs, open-source communities, and technical certifications heavily base practical server administration work on RHEL and its binary-compatible derivatives.
 
 ```mermaid
 flowchart TD
@@ -84,9 +84,9 @@ flowchart LR
 
 ## 4. RHEL 6 Legacy Compatibility vs. Modern RHEL
 
-Many academic computer labs and legacy industrial facilities maintain **RHEL 6** instances due to established curricula, legacy hardware, or specialized enterprise software. It is vital for an SNA student to understand how RHEL 6 differs from modern releases:
+Many enterprise environments and legacy industrial facilities maintain **RHEL 6** instances due to older hardware or specialized mission-critical software. It is vital for any systems administrator to understand how RHEL 6 differs from modern releases:
 
-| Feature / Subsystem | RHEL 6 (Legacy Academic Environment) | RHEL 7 / 8 / 9 (Modern Enterprise) |
+| Feature / Subsystem | RHEL 6 (Legacy Environment) | RHEL 7 / 8 / 9 (Modern Enterprise) |
 |---|---|---|
 | **Init System** | Upstart / SysVinit (`/sbin/init`, `/etc/inittab`) | `systemd` (`/usr/lib/systemd/systemd`) |
 | **Service Control** | `service httpd status` | `systemctl status httpd` |
@@ -159,7 +159,7 @@ rpm -qa | head -n 10
 
 ## 8. Summary & Next Steps
 
-Red Hat Enterprise Linux establishes the enterprise standard for stability, long-term support, and software management. Understanding its architecture and legacy RHEL 6 compatibility is essential for both academic lab exams and real-world infrastructure administration.
+Red Hat Enterprise Linux establishes the enterprise standard for stability, long-term support, and software management. Understanding its architecture and legacy RHEL 6 compatibility is essential for both legacy maintenance and modern cloud/datacenter infrastructure administration.
 
 - **Next Chapter:** Master daily operational CLI syntax in [02-Common-Linux-Commands.md](02-Common-Linux-Commands.md).
 - **Service Control Reference:** Review boot and runlevels in [06-System-Initialization.md](06-System-Initialization.md).

@@ -1,7 +1,7 @@
 # Introduction to System and Network Administration (SNA)
 
 > **Module:** System and Network Administrator (SNA) Foundations  
-> **Topic Level:** Beginner / Academic BSIT Level  
+> **Topic Level:** Beginner / Open-Source Foundations  
 > **Related Reference:** [02-SNA-Certifications.md](02-SNA-Certifications.md) | [SNA Index](README.md)
 
 ---
@@ -67,7 +67,7 @@ flowchart TD
 
 ### 3.1 Differentiating IT Responsibilities
 
-To avoid confusion in academic and workplace contexts, observe the hierarchy of technical support and administration:
+To clearly understand real-world roles, observe the operational hierarchy of technical support and administration:
 
 1. **IT Support / Help Desk (Tier 1 & Tier 2)**:
    - Focused primarily on end-user endpoints (laptops, desktop monitors, local printers, software installations).

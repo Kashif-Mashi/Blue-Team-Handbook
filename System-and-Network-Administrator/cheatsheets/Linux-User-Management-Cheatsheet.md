@@ -68,7 +68,7 @@
 - Field 2: Password placeholder (`x` = check `/etc/shadow`)
 - Field 3: Numerical User ID (`UID 1001`)
 - Field 4: Primary Group ID (`GID 1001`)
-- Field 5: Comment / GECOS description (`BSIT Student`)
+- Field 5: Comment / GECOS description (`Standard User`)
 - Field 6: Home directory path (`/home/student`)
 - Field 7: Login shell (`/bin/bash` or `/sbin/nologin`)
 

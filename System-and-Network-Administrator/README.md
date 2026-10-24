@@ -4,8 +4,8 @@
 
 # System and Network Administrator (SNA) Foundations
 
-> **Foundational Coursework & Technical Reference**  
-> Tailored for BSIT / Computer Science students studying Systems & Network Administration.  
+> **Foundational Learning Notes & Technical Reference**  
+> A free and open-source guide for anyone who wants to learn Systems & Network Administration.  
 > Includes enterprise server administration concepts, legacy and modern Red Hat Enterprise Linux (RHEL) operational models, networking utilities, disk partitioning, and quick-reference cheatsheets.
 
 ---
@@ -14,7 +14,7 @@
 
 The **System and Network Administrator (SNA)** section is a dedicated curriculum module inside the *Blue Team Handbook*. While defensive security analysts spend significant time triaging alerts and analyzing attack telemetry, effective defense is impossible without understanding the underlying operating system architecture, networking stack, identity management, and server administration practices.
 
-This section organizes foundational lecture notes, technical workflows, and field reference cheatsheets based on university SNA curriculum milestones.
+This section organizes foundational notes, practical workflows, and field reference cheatsheets for learners, self-taught enthusiasts, and IT administrators alike.
 
 ```mermaid
 flowchart TD
@@ -118,16 +118,16 @@ flowchart LR
 | **Diagrams** | Architecture flows, state diagrams, data structures | Compact ASCII / tables only |
 | **Safety Warnings** | Detailed incident analysis and failure modes | Explicit visual badges (`⚠️ DESTRUCTIVE`) |
 
-When working on a live system, keep the [Cheatsheets Directory](cheatsheets/README.md) bookmarked. When preparing for academic examinations or mastering root concepts, read the full foundational notes.
+When working on a live system, keep the [Cheatsheets Directory](cheatsheets/README.md) bookmarked. When building deep conceptual understanding or preparing for technical certifications, read the full foundational notes.
 
 ---
 
 ## ⚙️ Environment Notice: RHEL 6 vs. Modern Enterprise Linux
 
-A key component of this syllabus is legacy compatibility. Many academic laboratories and industrial control platforms maintain legacy **Red Hat Enterprise Linux 6 (RHEL 6)** installations alongside modern RHEL 8/9 or Ubuntu Server deployments.
+A key component of this section is real-world legacy compatibility. Many enterprise environments, industrial control platforms, and older servers maintain legacy **Red Hat Enterprise Linux 6 (RHEL 6)** installations alongside modern RHEL 8/9 or Ubuntu Server deployments.
 
 - **Service Management**: RHEL 6 utilizes `service <daemon> <action>` and `chkconfig <daemon> <on|off>`, while modern platforms use `systemctl <action> <daemon>`.
 - **System Initialization**: RHEL 6 uses `/etc/inittab`, SysV runlevels `0` through `6`, and scripts under `/etc/rc.d/init.d/`. Modern systems use systemd targets (`multi-user.target`, `graphical.target`).
 - **Storage Subsystems**: Traditional MBR partitioning schemes (`fdisk`) are standard in RHEL 6 environments with BIOS firmware, while modern UEFI installations default to GPT (`gdisk` / `parted`).
 
-All notes in this curriculum clearly indicate whether a command applies to legacy RHEL 6 SysVinit, modern systemd, or POSIX-standard Linux utilities.
+All notes in this section clearly indicate whether a command applies to legacy RHEL 6 SysVinit, modern systemd, or POSIX-standard Linux utilities.

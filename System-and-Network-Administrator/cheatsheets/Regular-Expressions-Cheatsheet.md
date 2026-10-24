@@ -35,15 +35,15 @@
 
 ---
 
-## 🎓 Coursework & Field Pattern Reference
+## 🔍 Practical Field Pattern Reference
 
-| Syllabus / Operational Pattern | Regex Syntax | Command Example | Expected Match Behavior |
+| Operational Pattern / Use Case | Regex Syntax | Command Example | Expected Match Behavior |
 |---|---|---|---|
-| **Lines starting with capital 'A'** | `^A` | `grep '^A' students.txt` | Matches "Ali", "Ahmed", "Ayesha" at start of line. |
+| **Lines starting with capital 'A'** | `^A` | `grep '^A' records.txt` | Matches "Ali", "Ahmed", "Ayesha" at start of line. |
 | **Lines starting with 'root'** | `^root` | `grep '^root' /etc/passwd` | Matches user `root` in `/etc/passwd`. |
 | **Single numerical digit** | `[0-9]` | `grep '[0-9]' records.txt` | Matches any line containing at least one digit. |
-| **Exactly two consecutive digits** | `[0-9][0-9]` | `grep '[0-9][0-9]' records.txt` | Matches two adjacent numbers (e.g., ages 18-99). |
-| **Lines ending with 'BSCS'** | `BSCS$` | `grep 'BSCS$' students.txt` | Matches student records enrolled in BSCS program. |
+| **Exactly two consecutive digits** | `[0-9][0-9]` | `grep '[0-9][0-9]' records.txt` | Matches two adjacent numbers (e.g., identifiers or ages). |
+| **Lines ending with 'DEV'** | `DEV$` | `grep 'DEV$' records.txt` | Matches records ending in department or role DEV. |
 | **Lines ending with interactive shell**| `/bin/bash$` | `grep '/bin/bash$' /etc/passwd` | Filters users with full interactive BASH logins. |
 | **Filter out comments and blanks** | `grep -v '^#' \| grep -v '^$'` | `grep -v '^#' /etc/httpd/conf/httpd.conf \| grep -v '^$'` | Strips out all hash comments and blank whitespace lines. |
 | **Extract valid IPv4 addresses** | `[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}` | `grep -E -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' log.txt` | Extracts dotted-decimal IP addresses from logs. |

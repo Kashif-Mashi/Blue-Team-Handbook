@@ -68,8 +68,8 @@ flowchart TD
 This file is world-readable (`644`) so system utilities and compilers can map numerical UIDs to human usernames. Each line contains **7 colon-separated fields**:
 
 ```text
-student:x:1001:1001:BSIT Student User:/home/student:/bin/bash
-   1    2   3    4           5             6           7
+student:x:1001:1001:Standard System User:/home/student:/bin/bash
+   1    2   3    4            5               6           7
 ```
 
 1. **Username**: Login name (`student`).
@@ -231,7 +231,7 @@ backupuser ALL=(root) NOPASSWD: /usr/local/bin/backup.sh
 ## 7. Security Considerations
 
 1. **Enforcing Password Complexity**: In enterprise RHEL, the `pam_cracklib` (RHEL 6) or `pam_pwquality` (RHEL 7/8/9) module enforces minimum lengths, character variety, and dictionary checks.
-2. **Auditing Inactive Accounts**: Terminated employees or abandoned student accounts should be locked (`usermod -L`) and have their shell set to `/sbin/nologin`.
+2. **Auditing Inactive Accounts**: Terminated employees or inactive user accounts should be locked (`usermod -L`) and have their shell set to `/sbin/nologin`.
 
 ---
 

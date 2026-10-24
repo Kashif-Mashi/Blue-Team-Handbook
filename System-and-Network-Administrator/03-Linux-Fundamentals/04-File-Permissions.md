@@ -66,7 +66,7 @@ flowchart TD
 
 ## 3. File vs. Directory Permission Semantics
 
-One of the most common stumbling blocks for BSIT students is assuming `r`, `w`, and `x` behave identically on files and directories. In Linux, directories are simply specialized files containing a table of filenames and inode numbers:
+One of the most common stumbling blocks for beginners and new administrators is assuming `r`, `w`, and `x` behave identically on files and directories. In Linux, directories are simply specialized files containing a table of filenames and inode numbers:
 
 | Permission | Behavior on Regular Files | Behavior on Directories |
 |:---:|---|---|
@@ -223,7 +223,7 @@ umask 077
 
 ## 8. The Dangers of `chmod 777`
 
-In academic forums and hasty internet guides, beginners are often told: *"If you get a Permission Denied error, just run `chmod 777`."*
+In online forums and hasty internet guides, beginners are often told: *"If you get a Permission Denied error, just run `chmod 777`."*
 
 > 🚨 **Why `chmod 777` is a Critical Anti-Pattern:**
 > - `777` (`rwxrwxrwx`) grants **every single local user and service daemon** on the system the ability to read, modify, overwrite, and delete the resource.

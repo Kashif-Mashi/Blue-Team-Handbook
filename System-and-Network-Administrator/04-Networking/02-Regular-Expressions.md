@@ -14,7 +14,7 @@ By the end of this note, you will be able to:
 - Distinguish between **Basic Regular Expressions (BRE)** and **Extended Regular Expressions (ERE)**.
 - Master line and word boundary anchors (`^` and `$`).
 - Build character classes (`[0-9]`, `[a-zA-Z]`, `[^0-9]`) and repetition quantifiers.
-- Apply practical regex filters supported by SNA coursework (such as `^A`, `[0-9][0-9]`, and `BSCS$`).
+- Apply practical regex filters used in administrative text processing (such as `^A`, `[0-9][0-9]`, and `DEV$`).
 - Utilize regex pattern matching inside command-line utilities (`grep`, `egrep`, `sed`, `awk`).
 
 ---
@@ -23,14 +23,14 @@ By the end of this note, you will be able to:
 
 In System and Network Administration, automated tools generate enormous volumes of text data every second: web access logs, firewall drop alerts, authentication journals (`/var/log/secure`), and packet captures.
 
-A human administrator cannot manually read 100,000 log lines to locate an IP address or anomalous user account. **Regular Expressions (Regex)** provide a formalized, concise syntax for searching, extracting, and manipulating string patterns. Whether validating student record IDs, filtering failed login attempts, or crafting Snort intrusion detection rules, regex is an essential operational skill.
+A human administrator cannot manually read 100,000 log lines to locate an IP address or anomalous user account. **Regular Expressions (Regex)** provide a formalized, concise syntax for searching, extracting, and manipulating string patterns. Whether validating personnel record IDs, filtering failed login attempts, or crafting Snort intrusion detection rules, regex is an essential operational skill.
 
 ```mermaid
 flowchart TD
     subgraph Engine["Regex Evaluation & Token Matching Pipeline"]
         direction TB
-        TEXT["Raw Input Stream<br/>(e.g., student lists, /var/log/secure, tcpdump output)"] --> ENGINE["Regex Matching Engine<br/>(grep -E / sed / awk)"]
-        PAT["Target Regex Pattern<br/>e.g., ^A[0-9][0-9]...BSCS$"] --> ENGINE
+        TEXT["Raw Input Stream<br/>(e.g., user records, /var/log/secure, tcpdump output)"] --> ENGINE["Regex Matching Engine<br/>(grep -E / sed / awk)"]
+        PAT["Target Regex Pattern<br/>e.g., ^A[0-9][0-9]...DEV$"] --> ENGINE
         ENGINE --> MATCH["Matching Lines Emitted to stdout<br/>(Only records satisfying entire pattern)"]
         ENGINE --> NONMATCH["Non-Matching Lines Discarded<br/>(Suppressed by default)"]
     end
@@ -78,7 +78,7 @@ Beginners frequently confuse shell wildcards with regular expressions:
 - **`^` (Caret)**: Matches the absolute beginning of a line.
   ```bash
   # Match lines starting with capital letter 'A'
-  grep "^A" students.txt
+  grep "^A" records.txt
 
   # Match lines starting with 'root'
   grep "^root" /etc/passwd
@@ -86,8 +86,8 @@ Beginners frequently confuse shell wildcards with regular expressions:
 
 - **`$` (Dollar)**: Matches the absolute end of a line.
   ```bash
-  # Match lines ending with 'BSCS'
-  grep "BSCS$" students.txt
+  # Match lines ending with 'DEV'
+  grep "DEV$" records.txt
 
   # Match lines ending with '/bin/bash' (users with interactive shells)
   grep "/bin/bash$" /etc/passwd
@@ -132,25 +132,25 @@ Bracket expressions match any single character enclosed:
 
 ---
 
-## 5. Practical Coursework Patterns
+## 5. Practical Pattern Matching Examples
 
-In academic SNA practical exercises, students often process student rosters, network logs, and serial numbers. Consider a file named `students.txt`:
+In system and network administration, administrators routinely process structured text exports, employee rosters, and inventory logs. Consider a sample record file named `records.txt`:
 
 ```text
-Ali-21-BSIT
-Ahmed-23-BSCS
-Bilal-19-BSSE
-Ayesha-22-BSCS
-Usman-20-BSIT
+Ali-21-OPS
+Ahmed-23-DEV
+Bilal-19-SEC
+Ayesha-22-DEV
+Usman-20-OPS
 ```
 
 ### Pattern 1: Lines Starting with `A`
 ```bash
-grep "^A" students.txt
+grep "^A" records.txt
 # Output:
-# Ali-21-BSIT
-# Ahmed-23-BSCS
-# Ayesha-22-BSCS
+# Ali-21-OPS
+# Ahmed-23-DEV
+# Ayesha-22-DEV
 ```
 
 ### Pattern 2: Matching Specific Digit Lengths
@@ -159,22 +159,22 @@ grep "^A" students.txt
 - Exactly three digits: `[0-9][0-9][0-9]`
 
 ```bash
-# Match students with two-digit age/roll numbers
-grep "-[0-9][0-9]-" students.txt
+# Match records with two-digit numerical identifiers
+grep "-[0-9][0-9]-" records.txt
 ```
 
-### Pattern 3: Lines Ending with a Specific Program
+### Pattern 3: Lines Ending with a Specific Role or Department
 ```bash
-grep "BSCS$" students.txt
+grep "DEV$" records.txt
 # Output:
-# Ahmed-23-BSCS
-# Ayesha-22-BSCS
+# Ahmed-23-DEV
+# Ayesha-22-DEV
 ```
 
-### Pattern 4: Combining Anchors, Digits, and Program Codes
-Find students whose name begins with `A`, followed by any characters, containing a 2-digit number, and enrolled in `BSCS`:
+### Pattern 4: Combining Anchors, Digits, and Role Identifiers
+Find records where the name begins with `A`, followed by any characters, containing a 2-digit number, and ending in department `DEV`:
 ```bash
-grep -E "^A.*[0-9][0-9].*BSCS$" students.txt
+grep -E "^A.*[0-9][0-9].*DEV$" records.txt
 ```
 
 ---
@@ -187,7 +187,7 @@ In **Extended Regular Expressions (ERE)**, these characters are operators by def
 
 ```bash
 # Alternation (OR) using ERE (-E flag)
-grep -E "BSIT|BSCS" students.txt
+grep -E "OPS|DEV" records.txt
 
 # Quantifier: one or more digits (+ operator)
 grep -E "[0-9]+" log.txt

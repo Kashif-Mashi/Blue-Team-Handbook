@@ -112,7 +112,7 @@ Windows 11 Guide/
 This guide is designed for:
 
 - Cybersecurity Beginners
-- BSIT / BSCS Students
+- Self-Taught & Open-Source Learners
 - SOC Analyst Aspirants
 - Blue Team Learners
 - IT Support Engineers

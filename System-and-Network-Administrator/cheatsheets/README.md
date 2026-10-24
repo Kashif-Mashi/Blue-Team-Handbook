@@ -16,7 +16,7 @@
 | [Linux User Management Cheatsheet](Linux-User-Management-Cheatsheet.md) | Identity | Account creation (`useradd`), modification (`usermod -aG`), password policies (`chage`, `passwd -l`), `su -` vs `sudo` | [05-User-Management.md](../03-Linux-Fundamentals/05-User-Management.md) |
 | [Vim and Nano Cheatsheet](Vim-and-Nano-Cheatsheet.md) | Editors | Nano keybindings, Vim modal transitions (Normal, Insert, Visual, Command-line), search/replace, swap recovery | [07-Vim-and-Nano.md](../03-Linux-Fundamentals/07-Vim-and-Nano.md) |
 | [Tcpdump Cheatsheet](Tcpdump-Cheatsheet.md) | Networking | Sniffing flags (`-nn`, `-X`, `-A`, `-w`, `-r`), BPF filters (hosts, ports, CIDRs, TCP control flags) | [01-Tcpdump-Commands.md](../04-Networking/01-Tcpdump-Commands.md) |
-| [Regular Expressions Cheatsheet](Regular-Expressions-Cheatsheet.md) | Text Parsing | Anchors (`^`, `$`), digit patterns (`[0-9]`, `[0-9][0-9]`), syllabus codes (`BSCS$`), BRE vs ERE operators | [02-Regular-Expressions.md](../04-Networking/02-Regular-Expressions.md) |
+| [Regular Expressions Cheatsheet](Regular-Expressions-Cheatsheet.md) | Text Parsing | Anchors (`^`, `$`), digit patterns (`[0-9]`, `[0-9][0-9]`), pattern matches (`DEV$`), BRE vs ERE operators | [02-Regular-Expressions.md](../04-Networking/02-Regular-Expressions.md) |
 | [Disk Management Cheatsheet](Disk-Management-Cheatsheet.md) | Storage | Block inspection (`lsblk`, `fdisk -l`), MBR vs GPT rules, LVM hierarchy (`pvcreate`, `vgcreate`, `lvcreate`, `lvextend`) | [01-MBR-vs-GPT.md](../05-Disk-Management/01-MBR-vs-GPT.md) & [02-RAID-and-LVM.md](../05-Disk-Management/02-RAID-and-LVM.md) |
 | [PuTTY and WinSCP Cheatsheet](PuTTY-and-WinSCP-Cheatsheet.md) | Remote Admin | SSH host setup, PuTTYgen `.ppk` generation, server `authorized_keys` deployment, WinSCP SFTP transfers | [01-PuTTY-and-WinSCP.md](../06-Remote-File-Management/01-PuTTY-and-WinSCP.md) |
 
@@ -29,7 +29,7 @@
   - You need the exact syntax of a flag (e.g., `grep -E`, `usermod -aG`, `tcpdump -nn`).
   - You need to confirm whether an operation is destructive before pressing Enter.
 - **Use Detailed Notes When**:
-  - You are studying for academic exams, certifications (RHCSA, CCNA), or job interviews.
+  - You are preparing for technical certifications (RHCSA, CCNA), practical assessments, or job interviews.
   - You need to understand *how* the Linux kernel, BPF virtual machine, or filesystem inodes function internally.
   - You are architecting enterprise infrastructure or designing backup/recovery policies.
 
