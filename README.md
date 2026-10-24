@@ -404,7 +404,7 @@ After completing this handbook, you will be able to:
 ### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/kashifkhanamv123/Blue-Team-Handbook.git
+git clone https://github.com/Kashif-Mashi/Blue-Team-Handbook
 cd Blue-Team-Handbook
 ```
 
@@ -456,7 +456,7 @@ Contributions are welcome from everyone — whether you are fixing a typo, impro
 
 ```bash
 # 1. Fork the repository on GitHub, then clone your fork
-git clone https://github.com/your-username/Blue-Team-Handbook.git
+git clone https://github.com/Kashif-Mashi/Blue-Team-Handbook
 
 # 2. Create a descriptive feature branch
 git checkout -b improve/linux-permissions-guide
