@@ -126,10 +126,13 @@ Blue-Team-Handbook/
 │   └── README.md
 │
 ├── System-and-Network-Administrator/    # Systems & Network Administration foundations
+│   ├── 01-Introduction-to-SNA.md        # Core administration duties, SLAs & triage
+│   ├── 02-SNA-Certifications.md         # Industry credentials, homelabs & roadmaps
 │   ├── 03-Linux-Fundamentals/           # Enterprise RHEL, CLI, permissions, init
 │   ├── 04-Networking/                   # Packet capture (tcpdump) & regex filtering
 │   ├── 05-Disk-Management/              # MBR vs GPT partitioning, RAID, LVM
 │   ├── 06-Remote-File-Management/       # PuTTY & WinSCP administration
+│   ├── assignments/                     # Coursework assignments & hands-on exercises
 │   ├── cheatsheets/                     # Command & operational reference cards
 │   └── README.md
 │
@@ -247,6 +250,7 @@ Foundational enterprise server administration, networking utilities, disk archit
 - Storage partitioning: MBR vs. GPT architecture and the 2.2TB barrier
 - Fault-tolerant RAID levels and dynamic Logical Volume Management (LVM)
 - Remote server management from Windows clients using PuTTY (SSH) and WinSCP (SFTP)
+- Structured hands-on coursework assignments (e.g., Linux Filesystem Hierarchy Standard)
 - 9 dedicated quick-reference cheatsheets
 
 📁 [SNA Module & Cheatsheets →](System-and-Network-Administrator/README.md)
