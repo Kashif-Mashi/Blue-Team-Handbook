@@ -174,34 +174,34 @@ Purge conflicting legacy volume groups and active partitions on `/dev/sdb`, reso
 
 #### Visual Evidence: Step 1 (Partitioning & Troubleshooting)
 
-![Figure 1: Initial Inspection of Saturated Partition Table](./1.png)
+![Figure 1: Initial Inspection of Saturated Partition Table](Screenshot/1.png)
 *Figure 1: Initial execution of `fdisk /dev/sdb` showing all 4 primary partition slots occupied.*
 
-![Figure 2: Viewing Saturated MBR Partition Table Entries](./2.png)
+![Figure 2: Viewing Saturated MBR Partition Table Entries](Screenshot/2.png)
 *Figure 2: Printing partition table details showing cylinders and conflicting boundaries.*
 
-![Figure 3: Systematically Deleting Partitions 1 through 4](./3.png)
+![Figure 3: Systematically Deleting Partitions 1 through 4](Screenshot/3.png)
 *Figure 3: Executing `d` command in `fdisk` to remove partitions 1, 2, 3, and 4.*
 
-![Figure 4: Writing Table and Executing wipefs to Clear Disk Signatures](./4.png)
+![Figure 4: Writing Table and Executing wipefs to Clear Disk Signatures](Screenshot/4.png)
 *Figure 4: Committing alterations with `w` and running `wipefs -a /dev/sdb`.*
 
-![Figure 5: Troubleshooting Kernel Lock: Disabling Swap, Removing VolGroup22, and Rebooting](./5.png)
+![Figure 5: Troubleshooting Kernel Lock: Disabling Swap, Removing VolGroup22, and Rebooting](Screenshot/5.png)
 *Figure 5: Resolving "Device or resource busy" error by running `swapoff -a`, `vgremove -f VolGroup22`, and `reboot`.*
 
-![Figure 6: Creating Partition 1 with +600M Size](./6.png)
+![Figure 6: Creating Partition 1 with +600M Size](Screenshot/6.png)
 *Figure 6: Launching `fdisk /dev/sdb` post-reboot and creating primary partition 1 (`+600M`).*
 
-![Figure 7: Creating Partition 2 (+600M) and Partition 3 (Remaining Cylinders)](./7.png)
+![Figure 7: Creating Partition 2 (+600M) and Partition 3 (Remaining Cylinders)](Screenshot/7.png)
 *Figure 7: Creating primary partition 2 (`+600M`) and primary partition 3 to consume the rest of the disk.*
 
-![Figure 8: Reviewing Partition Creation Workflow](./8.png)
+![Figure 8: Reviewing Partition Creation Workflow](Screenshot/8.png)
 *Figure 8: Progression of partition allocation across cylinders 1 to 261.*
 
-![Figure 9: Changing Partition Hex IDs to fd (RAID) and 82 (Swap)](./9.png)
+![Figure 9: Changing Partition Hex IDs to fd (RAID) and 82 (Swap)](Screenshot/9.png)
 *Figure 9: Using `t` command to change partitions 1 and 2 to `fd`, and partition 3 to `82`.*
 
-![Figure 10: Final Partition Table Verification and Saving with w](./10.png)
+![Figure 10: Final Partition Table Verification and Saving with w](Screenshot/10.png)
 *Figure 10: Printing the finalized partition layout and writing changes to disk with `w`.*
 
 ---
@@ -241,10 +241,10 @@ Initialize and activate virtual memory paging on the swap partition (`/dev/sdb3`
 
 #### Visual Evidence: Step 2 (Swap & RAID Initialization)
 
-![Figure 11: Formatting Swap, Enabling swapon, Creating mdadm Array, and Initiating mkfs.ext4](./11.png)
+![Figure 11: Formatting Swap, Enabling swapon, Creating mdadm Array, and Initiating mkfs.ext4](Screenshot/11.png)
 *Figure 11: Executing `mkswap /dev/sdb3`, `swapon /dev/sdb3`, `mdadm --create /dev/md0`, and starting `mkfs.ext4`.*
 
-![Figure 12: Completing ext4 Filesystem Creation on /dev/md0](./12.png)
+![Figure 12: Completing ext4 Filesystem Creation on /dev/md0](Screenshot/12.png)
 *Figure 12: Terminal output confirming inode tables, journaling, and superblocks successfully written to `/dev/md0`.*
 
 ---
@@ -290,7 +290,7 @@ Verify that the block device tree, RAID mirror state, and active virtual memory 
 
 #### Visual Evidence: Step 3 (Verification)
 
-![Figure 13: Final Verification using lsblk, cat /proc/mdstat, and swapon --show](./13.png)
+![Figure 13: Final Verification using lsblk, cat /proc/mdstat, and swapon --show](Screenshot/13.png)
 *Figure 13: Complete verification demonstrating healthy RAID 1 mirror `md0` (`[UU]`) and active swap on `sdb3`.*
 
 ---
