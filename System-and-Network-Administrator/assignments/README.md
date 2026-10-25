@@ -12,6 +12,7 @@ This directory contains structured assignments designed to translate conceptual 
 |---|---|---|---|
 | **Assignment 01** | **Linux Filesystem Hierarchy Standard (FHS)** | Understanding the unified inverted directory tree (`/`), contrasting Linux with Windows drive letters, distinguishing `/` vs. `root` vs. `/root`, exploring all 18 FHS directories, inspecting dynamic virtual filesystems (`/proc`, `/sys`), and hands-on system exploration. | [Assignment 01: Linux FHS](Assignment-01-Linux-File-System-Hierarchy.md) |
 | **Assignment 02** | **Remote Linux Server Management Using PuTTY & WinSCP** | Remote SSH administration via PuTTY, GUI SFTP file operations via WinSCP, Linux discretionary access permissions (`chmod`), root escalation (`su -`), configuration editing with safety rollback (`diff`/`nano`), 500 MB transfer with SHA-256 verification, firewall rule persistence (`iptables`), and RSA-2048 public-key authentication. | [Assignment 02: PuTTY & WinSCP Management](Remote%20linux%20server%20manage%20using%20putty/README.md) |
+| **Assignment 03** | **Disk Partitioning, Swap, and Software RAID 1 Mirroring** | MBR disk repartitioning (`fdisk`), troubleshooting device/resource busy locks (`swapoff`, `vgremove`), creating equal partitions with Hex types `fd` (RAID) and `82` (Swap), activating virtual memory (`mkswap`/`swapon`), creating mirrored array (`mdadm`), formatting with `ext4`, and verification via `lsblk` and `/proc/mdstat`. | [Assignment 03: Partitioning, Swap & RAID 1](Raid%20assigment/README.md) |
 
 ---
 

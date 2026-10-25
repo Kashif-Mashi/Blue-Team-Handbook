@@ -250,7 +250,7 @@ Foundational enterprise server administration, networking utilities, disk archit
 - Storage partitioning: MBR vs. GPT architecture and the 2.2TB barrier
 - Fault-tolerant RAID levels and dynamic Logical Volume Management (LVM)
 - Remote server management from Windows clients using PuTTY (SSH) and WinSCP (SFTP)
-- Structured hands-on coursework assignments (Linux FHS, Remote Server Administration via PuTTY & WinSCP)
+- Structured hands-on coursework assignments (Linux FHS, Remote Server Management via PuTTY/WinSCP, Disk Partitioning & RAID 1)
 - 9 dedicated quick-reference cheatsheets
 
 📁 [SNA Module & Cheatsheets →](System-and-Network-Administrator/README.md)

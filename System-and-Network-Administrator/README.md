@@ -69,9 +69,12 @@ System-and-Network-Administrator/
 ├── assignments/                              # Structured Academic Coursework & Lab Assignments
 │   ├── README.md                             # Assignments hub and student submission guidelines
 │   ├── Assignment-01-Linux-File-System-Hierarchy.md # Detailed FHS assignment with lab exercises
-│   └── Remote linux server manage using putty/ # Assignment 02: PuTTY & WinSCP management lab
-│       ├── README.md                         # Detailed assignment report with step-by-step screenshots
-│       └── Screenshot/                       # Complete visual evidence (1.png - 34.png)
+│   ├── Remote linux server manage using putty/ # Assignment 02: PuTTY & WinSCP management lab
+│   │   ├── README.md                         # Detailed assignment report with step-by-step screenshots
+│   │   └── Screenshot/                       # Complete visual evidence (1.png - 34.png)
+│   └── Raid assigment/                       # Assignment 03: Partitioning, Swap & Software RAID 1
+│       ├── README.md                         # Hands-on lab report with troubleshooting & verification
+│       └── 1.png - 13.png                    # Terminal command screenshots & array health verification
 │
 └── cheatsheets/                              # High-Density Operational Field Reference Cards
     ├── README.md                             # Cheatsheet index and quick-lookup directory
@@ -96,6 +99,8 @@ To bridge the gap between classroom theory and real-world system administration,
   *Detailed examination of the unified inverted tree (`/`), Windows drive letters vs. Linux mount points, the three "roots" (`/`, `root`, `/root`), 18 primary FHS directories, dynamic virtual filesystems (`/proc`, `/sys`), and 5 hands-on terminal lab exercises.*
 * **[Assignment 02: Remote Linux Server Management Using PuTTY & WinSCP](assignments/Remote%20linux%20server%20manage%20using%20putty/README.md)**  
   *Complete hands-on report covering PuTTY SSH terminal administration, WinSCP graphical SFTP file transfers, POSIX file permissions (`chmod`), root privilege escalation (`su -`), configuration editing with safety backups (`diff`/`nano`), 500 MB data transfer with SHA-256 validation, firewall persistence (`iptables`), and RSA-2048 public-key authentication with 34 annotated screenshots.*
+* **[Assignment 03: Disk Partitioning, Swap Configuration, and Software RAID 1 Mirroring](assignments/Raid%20assigment/README.md)**  
+  *Comprehensive lab guide covering MBR repartitioning (`fdisk`), kernel resource lock troubleshooting (`swapoff`, `vgremove`, `wipefs`), equal partition creation with Hex IDs `fd` (RAID) and `82` (Swap), virtual memory paging activation (`mkswap`, `swapon`), mirrored array assembly (`mdadm`), ext4 formatting, and health verification (`lsblk`, `/proc/mdstat` `[UU]`) with 13 terminal screenshots.*
 * **[Assignments Hub & Guidelines](assignments/README.md)**  
   *Master index of all academic coursework and practical guidelines for terminal-based practice.*
 
