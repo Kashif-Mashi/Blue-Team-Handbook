@@ -250,7 +250,7 @@ Foundational enterprise server administration, networking utilities, disk archit
 - Storage partitioning: MBR vs. GPT architecture and the 2.2TB barrier
 - Fault-tolerant RAID levels and dynamic Logical Volume Management (LVM)
 - Remote server management from Windows clients using PuTTY (SSH) and WinSCP (SFTP)
-- Structured hands-on coursework assignments (e.g., Linux Filesystem Hierarchy Standard)
+- Structured hands-on coursework assignments (Linux FHS, Remote Server Administration via PuTTY & WinSCP)
 - 9 dedicated quick-reference cheatsheets
 
 📁 [SNA Module & Cheatsheets →](System-and-Network-Administrator/README.md)
@@ -435,6 +435,7 @@ Follow the learning roadmap sequentially. Each module builds on the knowledge fr
 | Repository Structure & Documentation | ✅ Complete |
 | Cybersecurity Foundations | ✅ Complete |
 | Linux Fundamentals | ✅ Complete |
+| System & Network Administration (SNA) Foundations | ✅ Complete |
 | Windows Fundamentals | 🚧 In Progress |
 | Security Operations — Ubuntu Server Guide | ✅ Complete |
 | Security Operations — Windows 11 Guide | ✅ Complete |
