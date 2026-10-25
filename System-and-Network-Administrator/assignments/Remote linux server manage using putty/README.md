@@ -67,8 +67,8 @@ graph TD
         fs["Linux File System (/home/kashif, /tmp, /etc)"]
     end
 
-    puttyApp --> | "Encrypted Terminal Session" | traffic
-    winscpApp --> | "Encrypted SFTP File Transfers" | traffic
+    puttyApp -->|Encrypted Terminal Session| traffic
+    winscpApp -->|Encrypted SFTP File Transfers| traffic
     traffic --> iptables
     iptables --> sshd
     sshd --> authKeys
@@ -504,15 +504,15 @@ When working across remote Linux systems, administrators routinely encounter `Pe
 ```mermaid
 flowchart TD
     A["Error: Permission denied"] --> B{"Is target a file or directory?"}
-    B --> | "Directory" | C{"Missing +x (traverse) bit?"}
-    C --> | "Yes" | D["Fix: chmod +x directory_name"]
-    C --> | "No" | E{"Is parent directory writable?"}
-    E --> | "No" | F["Fix: chmod u+w parent_dir or sudo"]
-    B --> | "File" | G{"Are you the file owner?"}
-    G --> | "No" | H{"Do you have sudo access?"}
-    H --> | "Yes" | I["Fix: sudo command or sudo chown user:group file"]
-    H --> | "No" | J["Escalate to system administrator"]
-    G --> | "Yes" | K["Fix: chmod u+rw file_name"]
+    B -->|Directory| C{"Missing +x traverse bit?"}
+    C -->|Yes| D["Fix: chmod +x directory_name"]
+    C -->|No| E{"Is parent directory writable?"}
+    E -->|No| F["Fix: chmod u+w parent_dir or sudo"]
+    B -->|File| G{"Are you the file owner?"}
+    G -->|No| H{"Do you have sudo access?"}
+    H -->|Yes| I["Fix: sudo command or sudo chown user:group file"]
+    H -->|No| J["Escalate to system administrator"]
+    G -->|Yes| K["Fix: chmod u+rw file_name"]
 ```
 
 #### Common Causes & Remediation:
